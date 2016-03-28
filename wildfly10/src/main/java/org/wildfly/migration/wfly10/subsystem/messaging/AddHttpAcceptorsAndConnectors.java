@@ -71,7 +71,7 @@ public class AddHttpAcceptorsAndConnectors implements WildFly10SubsystemMigratio
             return;
         } else {
             if (!undertowConfig.hasDefined(SERVER, SERVER_NAME, HTTP_LISTENER, HTTP_LISTENER_NAME)) {
-                ServerMigrationLogger.ROOT_LOGGER.debug("Skipping configuration of Messaging http acceptors and connectors, Undertow's default HTTP listener not found.");
+                ServerMigrationLogger.ROOT_LOGGER.debug("Skipping configuration of Messaging ActiveMQ http acceptors and connectors, Undertow's default HTTP listener not found.");
                 return;
             }
         }
@@ -83,31 +83,35 @@ public class AddHttpAcceptorsAndConnectors implements WildFly10SubsystemMigratio
                     final ModelNode addOp = Util.createEmptyOperation(ADD, pathAddress);
                     addOp.get(HTTP_LISTENER).set(HTTP_LISTENER_NAME);
                     server.executeManagementOperation(addOp);
-                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Acceptor named %s added.", HTTP_ACCEPTOR_NAME);
+                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Acceptor named %s added to Messaging ActiveMQ subsystem configuration.", HTTP_ACCEPTOR_NAME);
                 }
+                /*
                 if (!config.hasDefined(SERVER, serverName, HTTP_ACCEPTOR, HTTP_ACCEPTOR_THROUGHPUT_NAME)) {
                     final PathAddress pathAddress = pathAddress(pathElement(SUBSYSTEM, subsystem.getName()), pathElement(SERVER, serverName), pathElement(HTTP_ACCEPTOR, HTTP_ACCEPTOR_THROUGHPUT_NAME));
                     final ModelNode addOp = Util.createEmptyOperation(ADD, pathAddress);
                     addOp.get(HTTP_LISTENER).set(HTTP_LISTENER_NAME);
                     server.executeManagementOperation(addOp);
-                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Acceptor named %s added.", HTTP_ACCEPTOR_NAME);
+                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Acceptor named %s added to Messaging ActiveMQ subsystem configuration.", HTTP_ACCEPTOR_THROUGHPUT_NAME);
                 }
+                */
                 if (!config.hasDefined(SERVER, serverName, HTTP_CONNECTOR, HTTP_CONNECTOR_NAME)) {
                     final PathAddress pathAddress = pathAddress(pathElement(SUBSYSTEM, subsystem.getName()), pathElement(SERVER, serverName), pathElement(HTTP_CONNECTOR, HTTP_CONNECTOR_NAME));
                     final ModelNode addOp = Util.createEmptyOperation(ADD, pathAddress);
                     addOp.get(SOCKET_BINDING).set(SOCKET_BINDING_NAME);
                     addOp.get(ENDPOINT).set(HTTP_ACCEPTOR_NAME);
                     server.executeManagementOperation(addOp);
-                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Connector named %s added.", HTTP_CONNECTOR_NAME);
+                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Connector named %s added to Messaging ActiveMQ subsystem configuration.", HTTP_CONNECTOR_NAME);
                 }
+                /*
                 if (!config.hasDefined(SERVER, serverName, HTTP_CONNECTOR, HTTP_CONNECTOR_THROUGHPUT_NAME)) {
                     final PathAddress pathAddress = pathAddress(pathElement(SUBSYSTEM, subsystem.getName()), pathElement(SERVER, serverName), pathElement(HTTP_CONNECTOR, HTTP_CONNECTOR_THROUGHPUT_NAME));
                     final ModelNode addOp = Util.createEmptyOperation(ADD, pathAddress);
                     addOp.get(SOCKET_BINDING).set(SOCKET_BINDING_NAME);
                     addOp.get(ENDPOINT).set(HTTP_ACCEPTOR_NAME);
                     server.executeManagementOperation(addOp);
-                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Connector named %s added.", HTTP_CONNECTOR_NAME);
+                    ServerMigrationLogger.ROOT_LOGGER.infof("HTTP Connector named %s added to Messaging ActiveMQ subsystem configuration.", HTTP_CONNECTOR_THROUGHPUT_NAME);
                 }
+                */
             }
         }
     }

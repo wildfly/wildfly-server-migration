@@ -62,7 +62,7 @@ public class WildFly10StandaloneConfigFileDeploymentsMigration<S extends Server>
         op.get(CHILD_TYPE).set(DEPLOYMENT);
         op.get(RECURSIVE).set(true);
         final ModelNode result = target.getModelControllerClient().execute(op);
-        ServerMigrationLogger.ROOT_LOGGER.infof("Op result: %s", result.asString());
+        ServerMigrationLogger.ROOT_LOGGER.debugf("Op result: %s", result.asString());
         if(!SUCCESS.equals(result.get(OUTCOME).asString())) {
             throw new RuntimeException("Failed to retrieve deployments from server.");
         }
