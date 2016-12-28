@@ -3,6 +3,8 @@ JBoss Server Migration Tool
 
 The JBoss Server Migration Tool is a tool that migrates JBoss Application Servers. It reads the server configuration and properties files for a previous release of WildFly or JBoss EAP, referred to as the source server, and migrates them to the latest release or target server.
 
+Note that the tool at present does not attempt to migrate modules added to the system, such as database driver modules. The target server will need manual modification to install any such modules.
+
 System Requirements
 ------------
 
