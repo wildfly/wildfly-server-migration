@@ -19,6 +19,7 @@ package org.jboss.migration.wfly9.to.eap7;
 import org.jboss.migration.wfly10.config.task.subsystem.ExtensionNames;
 import org.jboss.migration.wfly10.config.task.subsystem.SubsystemNames;
 import org.jboss.migration.wfly10.config.task.subsystem.UpdateSubsystemTaskFactory;
+import org.jboss.migration.wfly10.config.task.subsystem.undertow.HttpListenerWorkerWarning;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostResponseHeaderServer;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostResponseHeaderXPoweredBy;
 
@@ -28,7 +29,7 @@ import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostR
 public class WildFly9ToEAP7_0SubsystemUpdates {
 
     public static final UpdateSubsystemTaskFactory UNDERTOW = new UpdateSubsystemTaskFactory.Builder(SubsystemNames.UNDERTOW, ExtensionNames.UNDERTOW)
-            .subtasks(new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy())
+            .subtasks(new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy(),HttpListenerWorkerWarning.INSTANCE)
             .build();
 
 }
