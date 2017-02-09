@@ -24,6 +24,7 @@ import org.jboss.migration.wfly10.config.task.subsystem.infinispan.FixHibernateC
 import org.jboss.migration.wfly10.config.task.subsystem.infinispan.UpdateWebCache;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.AddHttpsListener;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.EnableHttp2;
+import org.jboss.migration.wfly10.config.task.subsystem.undertow.HttpListenerWorkerWarning;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostResponseHeaderServer;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostResponseHeaderXPoweredBy;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHttpListenerRedirectSocket;
@@ -38,6 +39,6 @@ public class WildFly8ToWildFly10_1SubsystemUpdates {
             .build();
 
     public static final UpdateSubsystemTaskFactory UNDERTOW = new UpdateSubsystemTaskFactory.Builder(SubsystemNames.UNDERTOW, ExtensionNames.UNDERTOW)
-            .subtasks(SetDefaultHttpListenerRedirectSocket.INSTANCE, AddHttpsListener.INSTANCE, EnableHttp2.INSTANCE, new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy())
+            .subtasks(SetDefaultHttpListenerRedirectSocket.INSTANCE, AddHttpsListener.INSTANCE, EnableHttp2.INSTANCE, new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy(),HttpListenerWorkerWarning.INSTANCE)
             .build();
 }

@@ -29,6 +29,7 @@ import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHostR
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.AddHttpsListener;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.AddWebsockets;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.EnableHttp2;
+import org.jboss.migration.wfly10.config.task.subsystem.undertow.HttpListenerWorkerWarning;
 import org.jboss.migration.wfly10.config.task.subsystem.undertow.SetDefaultHttpListenerRedirectSocket;
 
 /**
@@ -47,7 +48,7 @@ public class EAPSubsystemUpdates7_1 {
     public static final UpdateSubsystemTaskFactory REMOTING = EAPSubsystemUpdates7_0.REMOTING;
 
     public static final UpdateSubsystemTaskFactory UNDERTOW = new UpdateSubsystemTaskFactory.Builder(SubsystemNames.UNDERTOW, ExtensionNames.UNDERTOW)
-            .subtasks(AddBufferCache.INSTANCE, SetDefaultHttpListenerRedirectSocket.INSTANCE, AddWebsockets.INSTANCE, AddHttpsListener.INSTANCE, EnableHttp2.INSTANCE, new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy())
+            .subtasks(AddBufferCache.INSTANCE, SetDefaultHttpListenerRedirectSocket.INSTANCE, AddWebsockets.INSTANCE, AddHttpsListener.INSTANCE, EnableHttp2.INSTANCE, new SetDefaultHostResponseHeaderServer(), new SetDefaultHostResponseHeaderXPoweredBy(),HttpListenerWorkerWarning.INSTANCE)
             .build();
 
     public static final UpdateSubsystemTaskFactory MESSAGING_ACTIVEMQ = EAPSubsystemUpdates7_0.MESSAGING_ACTIVEMQ;
