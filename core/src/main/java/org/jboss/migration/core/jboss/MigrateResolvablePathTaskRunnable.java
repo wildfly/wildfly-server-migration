@@ -14,28 +14,25 @@
  * limitations under the License.
  */
 
-package org.jboss.migration.wfly10.config.task.update;
+package org.jboss.migration.core.jboss;
 
 import org.jboss.migration.core.ServerMigrationFailureException;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
-import org.jboss.migration.core.jboss.ResolvablePath;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.core.task.component.TaskRunnable;
-import org.jboss.migration.wfly10.config.management.ManageableServerConfiguration;
 
 import java.nio.file.Path;
 
 /**
  * @author emmartins
  */
-public class MigrateResolvablePath implements TaskRunnable {
+public class MigrateResolvablePathTaskRunnable implements TaskRunnable {
 
     private final ResolvablePath path;
-    private final JBossServerConfigurationPath sourceConfiguration;
-    private final ManageableServerConfiguration targetConfiguration;
+    private final JBossServerConfiguration sourceConfiguration;
+    private final JBossServerConfiguration targetConfiguration;
 
-    public MigrateResolvablePath(ResolvablePath path, JBossServerConfigurationPath sourceConfiguration, ManageableServerConfiguration targetConfiguration) {
+    public MigrateResolvablePathTaskRunnable(ResolvablePath path, JBossServerConfiguration sourceConfiguration, JBossServerConfiguration targetConfiguration) {
         this.path = path;
         this.sourceConfiguration = sourceConfiguration;
         this.targetConfiguration = targetConfiguration;
@@ -68,8 +65,9 @@ public class MigrateResolvablePath implements TaskRunnable {
                     }
                 }
             }
-            return new MigratePath(sourcePath, targetPath).run(context);
+            return new CopyPath(sourcePath, targetPath).run(context);
         } else {
+            context.getLogger().warnf("Skipping migration of path '%s', not a relative path!", path);
             return ServerMigrationTaskResult.SKIPPED;
         }
     }

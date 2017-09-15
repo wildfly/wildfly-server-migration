@@ -23,6 +23,7 @@ import org.jboss.migration.eap.task.subsystem.logging.RemoveConsoleHandlerFromLo
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.update.MigrateCompatibleSecurityRealms;
 import org.jboss.migration.wfly10.config.task.update.MigrateDeployments;
 import org.jboss.migration.wfly10.config.task.update.RemoveAllUnsupportedSubsystems;
@@ -42,6 +43,7 @@ public class WildFly10_1ToEAP7_1ServerMigrationProvider implements EAPServerMigr
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly10_1ToEAP7_1UpdateUndertowSubsystem<>())
                         .subtask(new AddCoreManagementSubsystem<>())
                         .subtask(new AddElytronSubsystem<>())
@@ -51,6 +53,7 @@ public class WildFly10_1ToEAP7_1ServerMigrationProvider implements EAPServerMigr
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly10_1ToEAP7_1UpdateUndertowSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
                                 .subtask(new AddElytronSubsystem<>())
@@ -58,6 +61,7 @@ public class WildFly10_1ToEAP7_1ServerMigrationProvider implements EAPServerMigr
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new AddCoreManagementSubsystem<>())
                                         .subtask(new AddElytronSubsystem<>())

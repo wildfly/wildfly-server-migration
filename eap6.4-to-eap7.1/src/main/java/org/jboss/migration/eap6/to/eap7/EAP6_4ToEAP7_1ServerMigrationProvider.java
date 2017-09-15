@@ -30,6 +30,7 @@ import org.jboss.migration.eap6.to.eap7.tasks.EAP6_4ToEAP7_1UpdateUndertowSubsys
 import org.jboss.migration.eap6.to.eap7.tasks.SetupHttpUpgradeManagement;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jacorb.MigrateJacorbSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
@@ -62,6 +63,7 @@ public class EAP6_4ToEAP7_1ServerMigrationProvider implements EAPServerMigration
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new MigrateJacorbSubsystem<>())
                         .subtask(new MigrateWebSubsystem<>())
                         .subtask(new EAP6_4ToEAP7_1UpdateUndertowSubsystem<>())
@@ -88,6 +90,7 @@ public class EAP6_4ToEAP7_1ServerMigrationProvider implements EAPServerMigration
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new MigrateJacorbSubsystem<>())
                                 .subtask(new MigrateWebSubsystem<>())
                                 .subtask(new EAP6_4ToEAP7_1UpdateUndertowSubsystem<>())
@@ -113,6 +116,7 @@ public class EAP6_4ToEAP7_1ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new AddCoreManagementSubsystem<>())
                                         .subtask(new AddElytronSubsystem<>())

@@ -20,6 +20,7 @@ import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.management.ManageableServerConfiguration;
 import org.jboss.migration.wfly10.config.management.ManagementOperationException;
@@ -36,6 +37,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
  */
 public abstract class AbstractManageableServerConfiguration extends AbstractManageableResource implements ManageableServerConfiguration {
 
+    private final JBossServerConfiguration configurationPath;
     private final WildFlyServer10 server;
     private ModelControllerClient modelControllerClient;
     private final ExtensionResourceImpl.Factory extensionConfigurations;
@@ -44,9 +46,10 @@ public abstract class AbstractManageableServerConfiguration extends AbstractMana
     private final SocketBindingGroupResourceImpl.Factory socketBindingGroupResources;
     private final SystemPropertyResourceImpl.Factory systemPropertyResources;
 
-    protected AbstractManageableServerConfiguration(String resourceName, PathAddress pathAddress, WildFlyServer10 server) {
+    protected AbstractManageableServerConfiguration(String resourceName, PathAddress pathAddress, JBossServerConfiguration configurationPath, WildFlyServer10 server) {
         super(resourceName, pathAddress, null);
         this.server = server;
+        this.configurationPath = configurationPath;
         extensionConfigurations = new ExtensionResourceImpl.Factory(pathAddress, this);
         interfaceResources = new InterfaceResourceImpl.Factory(pathAddress, this);
         pathResources = new PathResourceImpl.Factory(pathAddress, this);
@@ -83,6 +86,11 @@ public abstract class AbstractManageableServerConfiguration extends AbstractMana
     @Override
     public boolean isStarted() {
         return modelControllerClient != null;
+    }
+
+    @Override
+    public JBossServerConfiguration getConfigurationPath() {
+        return configurationPath;
     }
 
     @Override

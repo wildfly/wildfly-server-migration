@@ -20,6 +20,7 @@ import org.jboss.migration.core.Server;
 import org.jboss.migration.core.console.ConsoleWrapper;
 import org.jboss.migration.core.console.UserConfirmationServerMigrationTask;
 import org.jboss.migration.core.env.SkippableByEnvServerMigrationTask;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.ServerMigrationTask;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -56,7 +57,7 @@ public class StandaloneServerMigration<S extends Server> implements ServerMigrat
                 consoleWrapper.printf("%n");
                 context.getLogger().infof("Standalone server migration starting...");
                 beforeConfigurationsMigration(source, target, context);
-                context.execute(configFilesMigration.getServerMigrationTask(source, target, target.getStandaloneConfigurationDir()));
+                context.execute(configFilesMigration.getServerMigrationTask(source, target, JBossServerConfiguration.Type.STANDALONE));
                 afterConfigurationsMigration(source, target, context);
                 consoleWrapper.printf("%n");
                 context.getLogger().infof("Standalone server migration done.");

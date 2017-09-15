@@ -17,7 +17,7 @@
 package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.jboss.ModulesMigrationTask;
 import org.jboss.migration.wfly10.config.task.DomainConfigurationMigration;
 import org.jboss.migration.wfly10.config.task.HostConfigurationMigration;
@@ -63,11 +63,11 @@ public class ServerUpdate<S extends JBossServer<S>> extends ServerMigration<S> {
             return standaloneServer(new StandaloneServerUpdate<>(configurationsMigration));
         }
 
-        public Builder<S> standaloneServer(StandaloneServerConfigurationMigration<JBossServerConfigurationPath<S>> standaloneServerConfigurationUpdate) {
+        public Builder<S> standaloneServer(StandaloneServerConfigurationMigration<JBossServerConfiguration<S>> standaloneServerConfigurationUpdate) {
            return standaloneServer(new StandaloneServerConfigurationsUpdate<>(standaloneServerConfigurationUpdate));
         }
 
-        public Builder<S> standaloneServer(StandaloneServerConfigurationMigration.Builder<JBossServerConfigurationPath<S>> standaloneServerConfigurationUpdateBuilder) {
+        public Builder<S> standaloneServer(StandaloneServerConfigurationMigration.Builder<JBossServerConfiguration<S>> standaloneServerConfigurationUpdateBuilder) {
             return standaloneServer(standaloneServerConfigurationUpdateBuilder.build());
         }
 
@@ -76,23 +76,23 @@ public class ServerUpdate<S extends JBossServer<S>> extends ServerMigration<S> {
         }
     }
 
-    public static class Builders<S extends JBossServer<S>> extends MigrationBuilders<S, JBossServerConfigurationPath<S>> {
+    public static class Builders<S extends JBossServer<S>> extends MigrationBuilders<S, JBossServerConfiguration<S>> {
 
-        private final ServerConfigurationMigration.XMLConfigurationProvider<JBossServerConfigurationPath<S>> defaultXmlConfigurationProvider = new CopySourceXMLConfiguration<>();
+        private final ServerConfigurationMigration.XMLConfigurationProvider<JBossServerConfiguration<S>> defaultXmlConfigurationProvider = new CopySourceXMLConfiguration<>();
 
         public ServerUpdate.Builder<S> serverUpdateBuilder() {
             return new ServerUpdate.Builder();
         }
 
-        public DomainConfigurationMigration.Builder<JBossServerConfigurationPath<S>> domainConfigurationBuilder() {
+        public DomainConfigurationMigration.Builder<JBossServerConfiguration<S>> domainConfigurationBuilder() {
             return new DomainConfigurationMigration.Builder<>(defaultXmlConfigurationProvider);
         }
 
-        public HostConfigurationMigration.Builder<JBossServerConfigurationPath<S>> hostConfigurationBuilder() {
+        public HostConfigurationMigration.Builder<JBossServerConfiguration<S>> hostConfigurationBuilder() {
             return new HostConfigurationMigration.Builder<>(defaultXmlConfigurationProvider);
         }
 
-        public StandaloneServerConfigurationMigration.Builder<JBossServerConfigurationPath<S>> standaloneConfigurationBuilder() {
+        public StandaloneServerConfigurationMigration.Builder<JBossServerConfiguration<S>> standaloneConfigurationBuilder() {
             return new StandaloneServerConfigurationMigration.Builder<>(defaultXmlConfigurationProvider);
         }
 

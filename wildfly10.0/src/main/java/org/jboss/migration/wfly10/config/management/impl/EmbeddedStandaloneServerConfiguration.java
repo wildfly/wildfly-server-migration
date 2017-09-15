@@ -18,6 +18,7 @@ package org.jboss.migration.wfly10.config.management.impl;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.management.DeploymentResource;
 import org.jboss.migration.wfly10.config.management.ManagementOperationException;
@@ -27,7 +28,6 @@ import org.wildfly.core.embedded.EmbeddedProcessFactory;
 import org.wildfly.core.embedded.EmbeddedProcessStartException;
 import org.wildfly.core.embedded.StandaloneServer;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
@@ -48,9 +48,9 @@ public class EmbeddedStandaloneServerConfiguration extends AbstractManageableSer
     private final SecurityRealmResourceImpl.Factory securityRealmResources;
     private final SubsystemResourceImpl.Factory subsystemResources;
 
-    public EmbeddedStandaloneServerConfiguration(String config, WildFlyServer10 server) {
-        super("", PathAddress.EMPTY_ADDRESS, server);
-        this.config = config;
+    public EmbeddedStandaloneServerConfiguration(JBossServerConfiguration configurationPath, WildFlyServer10 server) {
+        super("", PathAddress.EMPTY_ADDRESS, configurationPath, server);
+        this.config = configurationPath.getPath().getFileName().toString();
         deploymentResources = new DeploymentResourceImpl.Factory(getResourcePathAddress(), this);
         addChildResourceFactory(deploymentResources);
         deploymentOverlayResources = new DeploymentOverlayResourceImpl.Factory(getResourcePathAddress(), this);
@@ -111,10 +111,8 @@ public class EmbeddedStandaloneServerConfiguration extends AbstractManageableSer
 
     public static class ConfigFileMigrationFactory implements ServerConfigurationMigration.ManageableConfigurationProvider {
         @Override
-        public StandaloneServerConfiguration getManageableConfiguration(Path configFile, WildFlyServer10 server) {
-            return new EmbeddedStandaloneServerConfiguration(configFile.getFileName().toString(), server);
+        public StandaloneServerConfiguration getManageableConfiguration(JBossServerConfiguration configurationPath, WildFlyServer10 server) {
+            return new EmbeddedStandaloneServerConfiguration(configurationPath, server);
         }
     }
-
-
 }

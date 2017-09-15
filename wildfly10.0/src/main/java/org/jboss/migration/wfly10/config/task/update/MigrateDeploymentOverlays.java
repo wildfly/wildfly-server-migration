@@ -20,7 +20,7 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.jboss.DeploymentOverlayLinkMatcher;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.component.TaskRunnable;
@@ -42,7 +42,7 @@ import static org.jboss.migration.wfly10.config.management.ManageableResourceSel
  * Task which handles the migration/removal of a server configuration's deployment overlays.  When used this task can't be skipped, since any deployments found must either be migrated, or removed.
  * @author emmartins
  */
-public class MigrateDeploymentOverlays<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfigurationPath<S>> {
+public class MigrateDeploymentOverlays<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfiguration<S>> {
 
     public MigrateDeploymentOverlays() {
         name("deployments.overlays.migrate");
@@ -71,7 +71,7 @@ public class MigrateDeploymentOverlays<S extends JBossServer<S>> extends Managea
                     // until deployment overlays missing content don't fail to boot server we first copy all content, and then filter
                     //final ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> subtaskBuilder = migrateResource ? new MigrateResourceSubtask<>(overlay) : new RemoveResourceSubtask<>(overlay);
                     if (!migrateResource) {
-                        final ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> subtaskBuilder = new RemoveResourceSubtask<>(overlay);
+                        final ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> subtaskBuilder = new RemoveResourceSubtask<>(overlay);
                         context.execute(subtaskBuilder.build(params));
                     }
                 }
@@ -80,10 +80,10 @@ public class MigrateDeploymentOverlays<S extends JBossServer<S>> extends Managea
         });
     }
 
-    public static class MigrateResourceSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> {
+    public static class MigrateResourceSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> {
         protected MigrateResourceSubtask(DeploymentOverlayResource resource) {
             nameBuilder(parameters -> new ServerMigrationTaskName.Builder("deployments.overlay."+resource.getResourceName()+".migrate").addAttribute("resource", resource.getResourceAbsoluteName()).build());
-            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfigurationPath<S>>> runnableBuilder = params -> context -> {
+            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfiguration<S>>> runnableBuilder = params -> context -> {
                 final ModelNode resourceConfig = resource.getResourceConfiguration();
                 if (!resourceConfig.hasDefined(CONTENT)) {
                     throw new ServerMigrationFailureException("Unexpected deployment overlay "+resource.getResourceName()+" configuration: "+resourceConfig.asString());
@@ -108,10 +108,10 @@ public class MigrateDeploymentOverlays<S extends JBossServer<S>> extends Managea
         }
     }
 
-    public static class RemoveResourceSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> {
+    public static class RemoveResourceSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> {
         protected RemoveResourceSubtask(DeploymentOverlayResource resource) {
             nameBuilder(parameters -> new ServerMigrationTaskName.Builder("deployments.overlay."+resource.getResourceName()+".remove").addAttribute("resource", resource.getResourceAbsoluteName()).build());
-            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfigurationPath<S>>> runnableBuilder = params -> context -> {
+            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfiguration<S>>> runnableBuilder = params -> context -> {
                 if (params.getServerConfiguration() instanceof HostControllerConfiguration) {
                     // the resource may be referenced in server groups, remove these first
                     for (DeploymentOverlayResource serverGroupDeploymentResource : selectResources(ServerGroupResource.class).andThen(selectResources(DeploymentOverlayResource.class, resource.getResourceName())).fromResources(params.getServerConfiguration())) {

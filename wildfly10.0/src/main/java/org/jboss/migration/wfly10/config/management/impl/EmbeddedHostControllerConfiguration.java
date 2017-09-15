@@ -18,6 +18,7 @@ package org.jboss.migration.wfly10.config.management.impl;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.management.HostControllerConfiguration;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
@@ -25,7 +26,6 @@ import org.wildfly.core.embedded.EmbeddedProcessFactory;
 import org.wildfly.core.embedded.EmbeddedProcessStartException;
 import org.wildfly.core.embedded.HostController;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +44,8 @@ public class EmbeddedHostControllerConfiguration extends AbstractManageableServe
     private final ProfileResourceImpl.Factory profileResources;
     private final ServerGroupResourceImpl.Factory serverGroupResources;
 
-    protected EmbeddedHostControllerConfiguration(String domainConfig, String hostConfig, WildFlyServer10 server) {
-        super("", PathAddress.EMPTY_ADDRESS, server);
+    protected EmbeddedHostControllerConfiguration(String domainConfig, String hostConfig, JBossServerConfiguration configurationPath, WildFlyServer10 server) {
+        super("", PathAddress.EMPTY_ADDRESS, configurationPath, server);
         this.domainConfig = domainConfig;
         this.hostConfig = hostConfig;
         deploymentResources = new DeploymentResourceImpl.Factory(getResourcePathAddress(), this);
@@ -92,15 +92,15 @@ public class EmbeddedHostControllerConfiguration extends AbstractManageableServe
 
     public static class DomainConfigFileMigrationFactory implements ServerConfigurationMigration.ManageableConfigurationProvider {
         @Override
-        public HostControllerConfiguration getManageableConfiguration(Path configFile, WildFlyServer10 server) {
-            return new EmbeddedHostControllerConfiguration(configFile.getFileName().toString(), null, server);
+        public HostControllerConfiguration getManageableConfiguration(JBossServerConfiguration configurationPath, WildFlyServer10 server) {
+            return new EmbeddedHostControllerConfiguration(configurationPath.getPath().getFileName().toString(), null, configurationPath, server);
         }
     }
 
     public static class HostConfigFileMigrationFactory implements ServerConfigurationMigration.ManageableConfigurationProvider {
         @Override
-        public HostControllerConfiguration getManageableConfiguration(Path configFile, WildFlyServer10 server) {
-            return new EmbeddedHostControllerConfiguration(null, configFile.getFileName().toString(), server);
+        public HostControllerConfiguration getManageableConfiguration(JBossServerConfiguration configurationPath, WildFlyServer10 server) {
+            return new EmbeddedHostControllerConfiguration(null, configurationPath.getPath().getFileName().toString(), configurationPath, server);
         }
     }
 }

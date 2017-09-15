@@ -66,9 +66,9 @@ public class MigrationFiles {
             ServerMigrationLogger.ROOT_LOGGER.debugf("Skipping previously copied file %s", source);
         } else {
             try {
-                if (Files.exists(target)) {
-                    Files.walkFileTree(target, new BackupVisitor(target));
-                }
+                /*if (Files.exists(target)) {
+                    Files.walkFileTree(target, new BackupVisitor(target, copiedFiles));
+                }*/
                 Files.createDirectories(target.getParent());
                 Files.walkFileTree(source, new CopyVisitor(source, target, copiedFiles));
             } catch (IOException e) {
@@ -81,17 +81,31 @@ public class MigrationFiles {
 
         private final Path source;
         private final Path backup;
+        private final Map<Path, Path> copiedFiles;
 
-        BackupVisitor(Path source) {
+        BackupVisitor(Path source, final Map<Path, Path> copiedFiles) {
             this.source = source;
+            this.copiedFiles = copiedFiles;
             this.backup = source.resolveSibling(source.getFileName().toString()+".beforeMigration");
         }
 
         @Override
         public FileVisitResult preVisitDirectory(Path sourcePath, BasicFileAttributes attrs) throws IOException {
-            final Path backupPath = getBackupPath(sourcePath);
-            Files.move(sourcePath, backupPath, COPY_OPTIONS);
-            return Files.newDirectoryStream(backupPath).iterator().hasNext() ? SKIP_SUBTREE : CONTINUE;
+            boolean backup = true;
+            // if there is a child that was previously copied do not backup the directory
+            for (Path copiedTarget : copiedFiles.keySet()) {
+                if (copiedTarget.equals(sourcePath) || copiedTarget.startsWith(sourcePath)) {
+                    backup = false;
+                    break;
+                }
+            }
+            if (backup) {
+                final Path backupPath = getBackupPath(sourcePath);
+                Files.move(sourcePath, backupPath, COPY_OPTIONS);
+                return Files.newDirectoryStream(backupPath).iterator().hasNext() ? SKIP_SUBTREE : CONTINUE;
+            } else {
+                return Files.newDirectoryStream(sourcePath).iterator().hasNext() ? SKIP_SUBTREE : CONTINUE;
+            }
         }
 
         @Override
@@ -104,8 +118,10 @@ public class MigrationFiles {
         @Override
         public FileVisitResult postVisitDirectory(Path sourcePath, IOException exc) throws IOException {
             final Path backupPath = getBackupPath(sourcePath);
-            FileTime time = Files.getLastModifiedTime(sourcePath);
-            Files.setLastModifiedTime(backupPath, time);
+            if (Files.exists(backupPath)) {
+                FileTime time = Files.getLastModifiedTime(sourcePath);
+                Files.setLastModifiedTime(backupPath, time);
+            }
             return CONTINUE;
         }
 
@@ -150,8 +166,18 @@ public class MigrationFiles {
                     throw new ServerMigrationFailureException("Target "+targetPath+" previously copied and sources mismatch: new = "+sourcePath+", previous = "+previousSourcePath);
                 }
             }
-            ServerMigrationLogger.ROOT_LOGGER.tracef("Copying file %s", targetPath);
             try {
+                if (Files.exists(targetPath)) {
+                    if (!Files.isDirectory(targetPath)) {
+                        // backup file to be replaced
+                        final Path backupPath = targetPath.resolveSibling(targetPath.getFileName().toString()+".beforeMigration");
+                        Files.move(targetPath, backupPath, COPY_OPTIONS);
+                    } else {
+                        // dir already exists
+                        return CONTINUE;
+                    }
+                }
+                ServerMigrationLogger.ROOT_LOGGER.tracef("Copying file %s", targetPath);
                 Files.copy(sourcePath, targetPath, COPY_OPTIONS);
             } catch (IOException e) {
                 throw new ServerMigrationFailureException("File copy failed.", e);

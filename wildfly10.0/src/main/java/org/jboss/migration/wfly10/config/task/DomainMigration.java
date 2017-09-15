@@ -20,6 +20,7 @@ import org.jboss.migration.core.Server;
 import org.jboss.migration.core.console.ConsoleWrapper;
 import org.jboss.migration.core.console.UserConfirmationServerMigrationTask;
 import org.jboss.migration.core.env.SkippableByEnvServerMigrationTask;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.ServerMigrationTask;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -59,10 +60,10 @@ public class DomainMigration<S extends Server> implements ServerMigration.Subtas
                 context.getLogger().infof("Domain migration starting...");
                 beforeConfigurationsMigration(source, target, context);
                 if (domainConfigurationsMigration != null) {
-                    context.execute(domainConfigurationsMigration.getServerMigrationTask(source, target, target.getDomainConfigurationDir()));
+                    context.execute(domainConfigurationsMigration.getServerMigrationTask(source, target, JBossServerConfiguration.Type.DOMAIN));
                 }
                 if (hostConfigurationsMigration != null) {
-                    context.execute(hostConfigurationsMigration.getServerMigrationTask(source, target, target.getDomainConfigurationDir()));
+                    context.execute(hostConfigurationsMigration.getServerMigrationTask(source, target, JBossServerConfiguration.Type.HOST));
                 }
                 afterConfigurationsMigration(source, target, context);
                 consoleWrapper.printf("%n");

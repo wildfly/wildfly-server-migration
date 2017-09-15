@@ -21,6 +21,7 @@ import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.console.BasicResultHandlers;
 import org.jboss.migration.core.console.ConsoleWrapper;
 import org.jboss.migration.core.console.UserConfirmation;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.ServerMigrationTask;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -28,7 +29,6 @@ import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.management.ManageableServerConfiguration;
 
-import java.nio.file.Path;
 import java.util.Collection;
 
 import static org.jboss.migration.core.logger.ServerMigrationLogger.ROOT_LOGGER;
@@ -49,8 +49,8 @@ public class ServerConfigurationsMigration<S extends Server, C, T extends Manage
         this.taskName = new ServerMigrationTaskName.Builder(configFileMigration.getConfigType()+"-configurations").build();
     }
 
-    public ServerMigrationTask getServerMigrationTask(S source, WildFlyServer10 target, Path targetConfigDir) {
-        return new Task<>(getServerMigrationTaskName(), sourceConfigurations.getConfigurations(source, target), target, targetConfigDir, configFileMigration);
+    public ServerMigrationTask getServerMigrationTask(S source, WildFlyServer10 target, JBossServerConfiguration.Type targetConfigurationType) {
+        return new Task<>(getServerMigrationTaskName(), sourceConfigurations.getConfigurations(source, target), target, targetConfigurationType, configFileMigration);
     }
 
     /**
@@ -65,14 +65,14 @@ public class ServerConfigurationsMigration<S extends Server, C, T extends Manage
 
         private final ServerMigrationTaskName name;
         private final Collection<S> sourceConfigs;
-        private final Path targetConfigDir;
+        private final JBossServerConfiguration.Type targetConfigurationType;
         private final WildFlyServer10 target;
         private final ServerConfigurationMigration<S, T> configFileMigration;
 
-        protected Task(ServerMigrationTaskName name, Collection<S> sourceConfigs, WildFlyServer10 target, Path targetConfigDir, ServerConfigurationMigration<S, T> configFileMigration) {
+        protected Task(ServerMigrationTaskName name, Collection<S> sourceConfigs, WildFlyServer10 target, JBossServerConfiguration.Type targetConfigurationType, ServerConfigurationMigration<S, T> configFileMigration) {
             this.name = name;
             this.sourceConfigs = sourceConfigs;
-            this.targetConfigDir = targetConfigDir;
+            this.targetConfigurationType = targetConfigurationType;
             this.target = target;
             this.configFileMigration = configFileMigration;
         }
@@ -101,10 +101,10 @@ public class ServerConfigurationsMigration<S extends Server, C, T extends Manage
                 new UserConfirmation(consoleWrapper, "Migrate all configurations?", ROOT_LOGGER.yesNo(), resultHandler).execute();
                 switch (resultHandler.getResult()) {
                     case NO:
-                        confirmAllConfigs(sourceConfigs, targetConfigDir, target, taskContext);
+                        confirmAllConfigs(sourceConfigs, targetConfigurationType, target, taskContext);
                         break;
                     case YES:
-                        migrateAllConfigs(sourceConfigs, targetConfigDir, target, taskContext);
+                        migrateAllConfigs(sourceConfigs, targetConfigurationType, target, taskContext);
                         break;
                     case ERROR:
                         return run(taskContext);
@@ -112,36 +112,36 @@ public class ServerConfigurationsMigration<S extends Server, C, T extends Manage
                         throw new ServerMigrationFailureException("unexpected user interaction result");
                 }
             } else {
-                migrateAllConfigs(sourceConfigs, targetConfigDir, target, taskContext);
+                migrateAllConfigs(sourceConfigs, targetConfigurationType, target, taskContext);
             }
             return taskContext.hasSucessfulSubtasks() ? ServerMigrationTaskResult.SUCCESS : ServerMigrationTaskResult.SKIPPED;
         }
 
-        protected void migrateAllConfigs(Collection<S> sourceConfigs, final Path targetConfigDir, WildFlyServer10 target, final TaskContext taskContext) {
+        protected void migrateAllConfigs(Collection<S> sourceConfigs, final JBossServerConfiguration.Type targetConfigurationType, WildFlyServer10 target, final TaskContext taskContext) {
             for (S sourceConfig : sourceConfigs) {
-                taskContext.execute(configFileMigration.getServerMigrationTask(sourceConfig, targetConfigDir, target));
+                taskContext.execute(configFileMigration.getServerMigrationTask(sourceConfig, targetConfigurationType, target));
             }
         }
 
-        protected void confirmAllConfigs(Collection<S> sourceConfigs, final Path targetConfigDir, WildFlyServer10 target, final TaskContext taskContext) {
+        protected void confirmAllConfigs(Collection<S> sourceConfigs, final JBossServerConfiguration.Type targetConfigurationType, WildFlyServer10 target, final TaskContext taskContext) {
             for (S sourceConfig : sourceConfigs) {
-                confirmConfig(sourceConfig, targetConfigDir, target, taskContext);
+                confirmConfig(sourceConfig, targetConfigurationType, target, taskContext);
             }
         }
 
-        protected void confirmConfig(final S sourceConfig, final Path targetConfigDir, final WildFlyServer10 target, final TaskContext taskContext) {
+        protected void confirmConfig(final S sourceConfig, final JBossServerConfiguration.Type targetConfigurationType, final WildFlyServer10 target, final TaskContext taskContext) {
             final UserConfirmation.ResultHandler resultHandler = new UserConfirmation.ResultHandler() {
                 @Override
                 public void onNo() {
                 }
                 @Override
                 public void onYes() {
-                    taskContext.execute(configFileMigration.getServerMigrationTask(sourceConfig, targetConfigDir, target));
+                    taskContext.execute(configFileMigration.getServerMigrationTask(sourceConfig, targetConfigurationType, target));
                 }
                 @Override
                 public void onError() {
                     // repeat
-                    confirmConfig(sourceConfig, targetConfigDir, target, taskContext);
+                    confirmConfig(sourceConfig, targetConfigurationType, target, taskContext);
                 }
             };
             final ConsoleWrapper consoleWrapper = taskContext.getConsoleWrapper();

@@ -17,6 +17,7 @@ package org.jboss.migration.wfly8.to.wfly10;
 
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jacorb.MigrateJacorbSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
@@ -51,6 +52,7 @@ public class WildFly8ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly8ToWildFly10_1UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly8ToWildFly10_1UpdateUndertowSubsystem<>())
                         .subtask(new MigrateJacorbSubsystem<>())
@@ -68,6 +70,7 @@ public class WildFly8ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly8ToWildFly10_1UpdateInfinispanSubsystem<>())
                                 .subtask(new WildFly8ToWildFly10_1UpdateUndertowSubsystem<>())
                                 .subtask(new MigrateJacorbSubsystem<>())
@@ -84,6 +87,7 @@ public class WildFly8ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new AddJmxSubsystemToHosts<>())
                                         .subtask(new RemoveUnsecureInterface<>())

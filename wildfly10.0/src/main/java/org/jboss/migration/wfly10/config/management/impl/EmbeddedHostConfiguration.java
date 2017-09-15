@@ -39,7 +39,7 @@ public class EmbeddedHostConfiguration extends AbstractManageableServerConfigura
 
 
     public EmbeddedHostConfiguration(HostControllerConfiguration hostController, String host) {
-        super(host, pathAddress(HOST, host), hostController.getServer());
+        super(host, pathAddress(HOST, host), hostController.getConfigurationPath(), hostController.getServer());
         this.hostController = hostController;
 
         jvmResources = new JvmResourceImpl.Factory(getResourcePathAddress(), this);

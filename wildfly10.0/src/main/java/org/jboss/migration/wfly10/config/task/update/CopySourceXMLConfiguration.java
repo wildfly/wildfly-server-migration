@@ -17,7 +17,7 @@
 package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
@@ -28,14 +28,14 @@ import java.nio.file.Path;
  * The xml config factory for WildFly10 updates, simply copies the config file to target server.
  * @author emmartins
  */
-public class CopySourceXMLConfiguration<S extends JBossServer<S>> implements ServerConfigurationMigration.XMLConfigurationProvider<JBossServerConfigurationPath<S>> {
+public class CopySourceXMLConfiguration<S extends JBossServer<S>> implements ServerConfigurationMigration.XMLConfigurationProvider<JBossServerConfiguration<S>> {
     @Override
-    public Path getXMLConfiguration(JBossServerConfigurationPath<S> source, Path targetConfigDir, WildFlyServer10 target, TaskContext context) {
-        final Path targetConfigFilePath = targetConfigDir.resolve(source.getPath().getFileName());
+    public JBossServerConfiguration getXMLConfiguration(JBossServerConfiguration<S> source, JBossServerConfiguration.Type targetConfigurationType, WildFlyServer10 target, TaskContext context) {
+        final Path targetConfigFilePath = target.getConfigurationDir(targetConfigurationType).resolve(source.getPath().getFileName());
         context.getLogger().tracef("Target configuration file is %s", targetConfigFilePath);
         // copy xml from source to target
         context.getMigrationFiles().copy(source.getPath(), targetConfigFilePath);
         context.getLogger().debugf("Source XML configuration copied to target server ( %s ).", targetConfigFilePath);
-        return targetConfigFilePath;
+        return new JBossServerConfiguration(targetConfigFilePath, targetConfigurationType, target);
     }
 }

@@ -16,8 +16,6 @@
 
 package org.jboss.migration.wfly10.config.management;
 
-import java.nio.file.Path;
-
 /**
  * @author emmartins
  */
@@ -28,20 +26,5 @@ public interface StandaloneServerConfiguration extends ManageableServerConfigura
     @Override
     default ManageableServerConfigurationType getResourceType() {
         return RESOURCE_TYPE;
-    }
-
-    @Override
-    default Path getConfigurationDir() {
-        return getServer().getStandaloneConfigurationDir();
-    }
-
-    @Override
-    default Path getContentDir() {
-        return getServer().getStandaloneContentDir();
-    }
-
-    @Override
-    default Path getDataDir() {
-        return getServer().getStandaloneDataDir();
     }
 }

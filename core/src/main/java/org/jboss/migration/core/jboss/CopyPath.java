@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jboss.migration.wfly10.config.task.update;
+package org.jboss.migration.core.jboss;
 
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
@@ -25,12 +25,12 @@ import java.nio.file.Path;
 /**
  * @author emmartins
  */
-public class MigratePath implements TaskRunnable {
+public class CopyPath implements TaskRunnable {
 
     private final Path sourcePath;
     private final Path targetPath;
 
-    public MigratePath(Path sourcePath, Path targetPath) {
+    public CopyPath(Path sourcePath, Path targetPath) {
         this.sourcePath = sourcePath;
         this.targetPath = targetPath;
     }
@@ -42,9 +42,17 @@ public class MigratePath implements TaskRunnable {
         if (!sourcePath.equals(targetPath)) {
             context.getMigrationFiles().copy(sourcePath, targetPath);
             context.getLogger().infof("Resource with path %s migrated.", sourcePath, targetPath);
-            return ServerMigrationTaskResult.SUCCESS;
+            return new ServerMigrationTaskResult.Builder()
+                    .success()
+                    .addAttribute("sourcePath", sourcePath)
+                    .addAttribute("targetPath", targetPath)
+                    .build();
         } else {
-            return ServerMigrationTaskResult.SKIPPED;
+            return new ServerMigrationTaskResult.Builder()
+                    .skipped()
+                    .addAttribute("sourcePath", sourcePath)
+                    .addAttribute("targetPath", targetPath)
+                    .build();
         }
     }
 }

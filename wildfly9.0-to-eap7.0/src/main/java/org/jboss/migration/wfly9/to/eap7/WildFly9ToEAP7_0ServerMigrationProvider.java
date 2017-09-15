@@ -18,6 +18,7 @@ package org.jboss.migration.wfly9.to.eap7;
 import org.jboss.migration.eap.EAPServerMigrationProvider7_0;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.singleton.AddSingletonSubsystem;
@@ -44,6 +45,7 @@ public class WildFly9ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly9ToEAP7_0UpdateUndertowSubsystem<>())
                         .subtask(new MigrateMessagingSubsystem<>())
                         .subtask(new AddBatchJBeretSubsystem<>())
@@ -55,6 +57,7 @@ public class WildFly9ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly9ToEAP7_0UpdateUndertowSubsystem<>())
                                 .subtask(new MigrateMessagingSubsystem<>())
                                 .subtask(new AddBatchJBeretSubsystem<>())
@@ -65,6 +68,7 @@ public class WildFly9ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new RemoveUnsecureInterface<>())
                                         .subtask(new RemovePermgenAttributesFromJVMConfigs<>())

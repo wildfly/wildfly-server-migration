@@ -17,7 +17,7 @@
 package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.config.task.management.configuration.ManageableServerConfigurationCompositeSubtasks;
 import org.jboss.migration.wfly10.config.task.management.configuration.ManageableServerConfigurationCompositeTask;
 
@@ -25,11 +25,11 @@ import org.jboss.migration.wfly10.config.task.management.configuration.Manageabl
  * Task which handles the migration/removal of a server configuration's deployments and overlays. When used this task can't be skipped, since any deployments found must either be migrated, or removed.
  * @author emmartins
  */
-public class MigrateDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfigurationPath<S>> {
+public class MigrateDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfiguration<S>> {
     public MigrateDeployments() {
         name("deployments.migrate-deployments");
         beforeRun(context -> context.getLogger().debugf("Processing source configuration's deployments..."));
-        subtasks(new ManageableServerConfigurationCompositeSubtasks.Builder<JBossServerConfigurationPath<S>>()
+        subtasks(new ManageableServerConfigurationCompositeSubtasks.Builder<JBossServerConfiguration<S>>()
                 .subtask(new MigratePersistentDeployments<>())
                 .subtask(new MigrateScannerDeployments<>())
                 .subtask(new MigrateDeploymentOverlays<>()));

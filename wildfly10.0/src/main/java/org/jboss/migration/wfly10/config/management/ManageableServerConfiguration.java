@@ -19,9 +19,12 @@ package org.jboss.migration.wfly10.config.management;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.jboss.AbsolutePathResolver;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
+import org.jboss.migration.core.jboss.ResolvablePath;
 import org.jboss.migration.wfly10.WildFlyServer10;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author emmartins
@@ -35,21 +38,38 @@ public interface ManageableServerConfiguration extends AbsolutePathResolver, Man
     WildFlyServer10 getServer();
     Path resolvePath(String path) throws ManagementOperationException;
     ModelControllerClient getModelControllerClient();
-    Path getConfigurationDir();
-    Path getDataDir();
-    Path getContentDir();
+    JBossServerConfiguration getConfigurationPath();
 
     default ManageableServerConfigurationType getConfigurationType() {
         return (ManageableServerConfigurationType) getResourceType();
     }
 
     @Override
-    default Path resolveNamedPath(String string) {
-        PathResource pathResource = getPathResource(string);
+    default Path resolveNamedPath(String path) {
+        PathResource pathResource = getPathResource(path);
         if (pathResource != null) {
-            return resolvePath(pathResource.getResourceConfiguration());
+            return resolvePath(new ResolvablePath(pathResource.getResourceConfiguration()));
         } else {
-            return getServer().resolveNamedPath(string);
+            return getServer().resolveNamedPath(path);
         }
+    }
+
+    @Override
+    default Path resolvePath(String path, String relativeTo) {
+        path = getServer().resolveExpression(path);
+        if (path == null) {
+            return null;
+        }
+        final Path resolvedPath;
+        if (relativeTo == null) {
+            resolvedPath = Paths.get(path).toAbsolutePath();
+        } else {
+            final Path resolvedRelativeTo = resolveNamedPath(relativeTo);
+            if (resolvedRelativeTo == null) {
+                return null;
+            }
+            resolvedPath = path != null ? resolvedRelativeTo.resolve(path).toAbsolutePath() : resolvedRelativeTo.toAbsolutePath();
+        }
+        return resolvedPath;
     }
 }

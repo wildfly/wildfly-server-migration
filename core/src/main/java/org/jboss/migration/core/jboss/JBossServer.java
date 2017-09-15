@@ -16,6 +16,7 @@
 
 package org.jboss.migration.core.jboss;
 
+import org.jboss.dmr.ValueExpression;
 import org.jboss.migration.core.AbstractServer;
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.ServerMigrationFailureException;
@@ -29,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -75,7 +75,10 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
     private final Path standaloneDataDir;
     private final Path standaloneContentDir;
 
+    private final ValueExpressionResolver expressionResolver;
+
     private final Map<String, Path> pathResolver;
+
     private final Modules modules;
 
     public JBossServer(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
@@ -123,16 +126,26 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         }
         this.standaloneContentDir = standaloneContentDir;
 
+        this.expressionResolver = new ValueExpressionResolver();
+
         this.pathResolver = new HashMap<>();
+        this.pathResolver.put("jboss.home.dir", baseDir);
         this.pathResolver.put("jboss.server.base.dir", standaloneServerDir);
         this.pathResolver.put("jboss.server.config.dir", standaloneConfigDir);
-        this.pathResolver.put("jboss.server.data.dir", standaloneDataDir);
         this.pathResolver.put("jboss.server.content.dir", standaloneContentDir);
+        this.pathResolver.put("jboss.server.data.dir", standaloneDataDir);
+        this.pathResolver.put("jboss.server.deploy.dir", standaloneContentDir);
         this.pathResolver.put("jboss.server.log.dir", standaloneServerDir.resolve("log"));
+        this.pathResolver.put("jboss.server.temp.dir", standaloneServerDir.resolve("tmp"));
         this.pathResolver.put("jboss.domain.base.dir", domainBaseDir);
         this.pathResolver.put("jboss.domain.config.dir", domainConfigDir);
-        this.pathResolver.put("jboss.domain.data.dir", domainDataDir);
         this.pathResolver.put("jboss.domain.content.dir", domainContentDir);
+        this.pathResolver.put("jboss.domain.data.dir", domainDataDir);
+        this.pathResolver.put("jboss.domain.deployment.dir", domainContentDir);
+        this.pathResolver.put("jboss.domain.log.dir", domainBaseDir.resolve("log"));
+        this.pathResolver.put("jboss.domain.servers.dir", domainBaseDir.resolve("servers"));
+        this.pathResolver.put("jboss.domain.temp.dir", domainBaseDir.resolve("tmp"));
+
         this.modules = new Modules(baseDir);
     }
 
@@ -140,18 +153,18 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         return EnvironmentProperties.PROPERTIES_PREFIX + getMigrationName() + "." + propertyName;
     }
 
-    protected Collection<JBossServerConfigurationPath<S>> getConfigs(final Path configurationDir, final Path dataDir, final Path contentDir, final String xmlDocumentElementName, final String envPropertyName) {
-        final List<JBossServerConfigurationPath<S>> configs = new ArrayList<>();
+    protected Collection<JBossServerConfiguration<S>> getConfigs(final JBossServerConfiguration.Type configurationType, final String xmlDocumentElementName, final String envPropertyName) {
+        final List<JBossServerConfiguration<S>> configs = new ArrayList<>();
         final String fullEnvPropertyName = getFullEnvironmentPropertyName(envPropertyName);
         final List<String> envConfigs = getMigrationEnvironment().getPropertyAsList(fullEnvPropertyName);
         if (envConfigs != null && !envConfigs.isEmpty()) {
             for (String envConfig : envConfigs) {
                 Path config = Paths.get(envConfig);
                 if (!config.isAbsolute()) {
-                    config = configurationDir.resolve(config);
+                    config = getConfigurationDir(configurationType).resolve(config);
                 }
                 if (Files.exists(config)) {
-                    configs.add(new JBossServerConfigurationPath<>(config, (S) this, configurationDir, dataDir, contentDir));
+                    configs.add(new JBossServerConfiguration<>(config, configurationType, (S) this));
                 } else {
                     ServerMigrationLogger.ROOT_LOGGER.warnf("Config file %s, specified by the environment property %s, does not exists.", config, fullEnvPropertyName);
                 }
@@ -168,23 +181,23 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                     return namespaceURI.startsWith("urn:jboss:domain:");
                 }
             };
-            for (Path path : XMLFiles.scan(configurationDir, false, scanMatcher)) {
-                configs.add(new JBossServerConfigurationPath<>(path, (S) this, configurationDir, dataDir, contentDir));
+            for (Path path : XMLFiles.scan(getConfigurationDir(configurationType), false, scanMatcher)) {
+                configs.add(new JBossServerConfiguration<>(path, configurationType, (S) this));
             }
         }
         return Collections.unmodifiableList(configs);
     }
 
-    public Collection<JBossServerConfigurationPath<S>> getStandaloneConfigs() {
-        return getConfigs(getStandaloneConfigurationDir(), getStandaloneDataDir(), getStandaloneContentDir(), "server", EnvironmentProperties.PROPERTY_STANDALONE_CONFIG_FILES);
+    public Collection<JBossServerConfiguration<S>> getStandaloneConfigs() {
+        return getConfigs(JBossServerConfiguration.Type.STANDALONE, "server", EnvironmentProperties.PROPERTY_STANDALONE_CONFIG_FILES);
     }
 
-    public Collection<JBossServerConfigurationPath<S>> getDomainDomainConfigs() {
-        return getConfigs(getDomainConfigurationDir(), getDomainDataDir(), getDomainContentDir(), "domain", EnvironmentProperties.PROPERTY_DOMAIN_DOMAIN_CONFIG_FILES);
+    public Collection<JBossServerConfiguration<S>> getDomainDomainConfigs() {
+        return getConfigs(JBossServerConfiguration.Type.DOMAIN, "domain", EnvironmentProperties.PROPERTY_DOMAIN_DOMAIN_CONFIG_FILES);
     }
 
-    public Collection<JBossServerConfigurationPath<S>> getDomainHostConfigs() {
-        return getConfigs(getDomainConfigurationDir(), getDomainDataDir(), getDomainContentDir(), "host", EnvironmentProperties.PROPERTY_DOMAIN_HOST_CONFIG_FILES);
+    public Collection<JBossServerConfiguration<S>> getDomainHostConfigs() {
+        return getConfigs(JBossServerConfiguration.Type.HOST, "host", EnvironmentProperties.PROPERTY_DOMAIN_HOST_CONFIG_FILES);
     }
 
     public Path getDomainDir() {
@@ -219,27 +232,77 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         return standaloneContentDir;
     }
 
+    public Path getConfigurationDir(JBossServerConfiguration.Type configurationType) {
+        return configurationType == JBossServerConfiguration.Type.STANDALONE ? getStandaloneConfigurationDir() : getDomainConfigurationDir();
+    }
+
+    public Path getDataDir(JBossServerConfiguration.Type configurationType) {
+        return configurationType == JBossServerConfiguration.Type.STANDALONE ? getStandaloneDataDir() : getDomainDataDir();
+    }
+
+    public Path getContentDir(JBossServerConfiguration.Type configurationType) {
+        return configurationType == JBossServerConfiguration.Type.STANDALONE ? getStandaloneContentDir() : getDomainContentDir();
+    }
+
+    public String resolveExpression(String expression) {
+        return expressionResolver.resolve(expression);
+    }
+
     @Override
-    public Path resolveNamedPath(String path) {
-        Path resolved = pathResolver.get(path);
-        if (resolved == null) {
-            try {
-                final String property = System.getProperty(path);
-                if (property != null) {
-                    final Path propertyPath = Paths.get(property);
-                    if (Files.isDirectory(propertyPath)) {
-                        resolved = propertyPath;
-                    }
-                }
-            } catch (InvalidPathException e) {
-                // ignore, was a long shot...
+    public Path resolveNamedPath(String name) {
+        Path path = pathResolver.get(name);
+        if (path == null) {
+            // try expression resolver
+            final String s = expressionResolver.resolvePart(name);
+            if (s != null) {
+                path = Paths.get(s);
             }
         }
-        return resolved;
+        return path;
+    }
+
+    @Override
+    public Path resolvePath(String path, String relativeTo) {
+        path = resolveExpression(path);
+        if (path == null && relativeTo == null) {
+            return null;
+        }
+        final Path resolvedPath;
+        if (relativeTo == null) {
+            resolvedPath = Paths.get(path).toAbsolutePath();
+        } else {
+            final Path resolvedRelativeTo = resolveNamedPath(relativeTo);
+            if (resolvedRelativeTo == null) {
+                return null;
+            }
+            resolvedPath = path != null ? resolvedRelativeTo.resolve(path).toAbsolutePath() : resolvedRelativeTo.toAbsolutePath();
+        }
+        return resolvedPath;
     }
 
     public Modules getModules() {
         return modules;
+    }
+
+    public class ValueExpressionResolver extends org.jboss.dmr.ValueExpressionResolver {
+        @Override
+        protected String resolvePart(String name) {
+            final Path path = pathResolver.get(name);
+            if (path != null) {
+                return path.toAbsolutePath().toString();
+            } else {
+                return super.resolvePart(name);
+            }
+        }
+
+        public String resolve(String value) {
+            return isExpression(value) ? resolve(new ValueExpression(value)) : value;
+        }
+
+        protected boolean isExpression(String value) {
+            int openIdx = value.indexOf("${");
+            return openIdx > -1 && value.lastIndexOf('}') > openIdx;
+        }
     }
 
     public static class Module {

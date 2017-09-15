@@ -21,6 +21,7 @@ import org.jboss.migration.eap.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.eap.task.subsystem.logging.RemoveConsoleHandlerFromLoggingSubsystem;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.singleton.AddSingletonSubsystem;
@@ -50,6 +51,7 @@ public class WildFly9ToEAP7_1ServerMigrationProvider implements EAPServerMigrati
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly9ToEAP7_1UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly9ToEAP7_1UpdateUndertowSubsystem<>())
                         .subtask(new MigrateMessagingSubsystem<>())
@@ -66,6 +68,7 @@ public class WildFly9ToEAP7_1ServerMigrationProvider implements EAPServerMigrati
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly9ToEAP7_1UpdateInfinispanSubsystem<>())
                                 .subtask(new WildFly9ToEAP7_1UpdateUndertowSubsystem<>())
                                 .subtask(new MigrateMessagingSubsystem<>())
@@ -82,6 +85,7 @@ public class WildFly9ToEAP7_1ServerMigrationProvider implements EAPServerMigrati
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new AddCoreManagementSubsystem<>())
                                         .subtask(new AddElytronSubsystem<>())

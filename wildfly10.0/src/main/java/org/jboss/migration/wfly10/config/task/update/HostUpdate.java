@@ -17,7 +17,7 @@
 package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.config.management.HostConfiguration;
 import org.jboss.migration.wfly10.config.task.HostMigration;
 import org.jboss.migration.wfly10.config.task.factory.HostConfigurationTaskFactory;
@@ -26,22 +26,22 @@ import org.jboss.migration.wfly10.config.task.factory.ManageableServerConfigurat
 /**
  * @author emmartins
  */
-public class HostUpdate<S extends JBossServer<S>> extends HostMigration<JBossServerConfigurationPath<S>> {
+public class HostUpdate<S extends JBossServer<S>> extends HostMigration<JBossServerConfiguration<S>> {
 
-    protected HostUpdate(HostMigration.Builder<JBossServerConfigurationPath<S>> builder) {
+    protected HostUpdate(HostMigration.Builder<JBossServerConfiguration<S>> builder) {
         super(builder);
     }
 
-    public static class Builder<S extends JBossServer<S>> extends HostMigration.Builder<JBossServerConfigurationPath<S>> {
+    public static class Builder<S extends JBossServer<S>> extends HostMigration.Builder<JBossServerConfiguration<S>> {
 
         @Override
-        public Builder<S> subtask(HostConfigurationTaskFactory<JBossServerConfigurationPath<S>> subtaskFactory) {
+        public Builder<S> subtask(HostConfigurationTaskFactory<JBossServerConfiguration<S>> subtaskFactory) {
             super.subtask(subtaskFactory);
             return this;
         }
 
         @Override
-        public Builder<S> subtask(ManageableServerConfigurationTaskFactory<JBossServerConfigurationPath<S>, HostConfiguration> subtaskFactory) {
+        public Builder<S> subtask(ManageableServerConfigurationTaskFactory<JBossServerConfiguration<S>, HostConfiguration> subtaskFactory) {
             super.subtask(subtaskFactory);
             return this;
         }

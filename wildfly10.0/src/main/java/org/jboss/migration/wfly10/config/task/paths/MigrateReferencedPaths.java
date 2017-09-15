@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package org.jboss.migration.core.jboss;
+package org.jboss.migration.wfly10.config.task.paths;
 
-import java.nio.file.Path;
+import org.jboss.migration.core.jboss.JBossServer;
+import org.jboss.migration.core.jboss.XmlConfigurationMigration;
 
 /**
  * @author emmartins
  */
-public interface AbsolutePathResolver {
-
-    Path resolveNamedPath(String string);
-
-    Path resolvePath(String path, String relativeTo);
-
-    default Path resolvePath(String path) {
-        return resolvePath(path, null);
-    }
-
-    default Path resolvePath(ResolvablePath resolvablePath) {
-        return resolvePath(resolvablePath.getPath(), resolvablePath.getRelativeTo());
+public class MigrateReferencedPaths<S extends JBossServer<S>> extends ConfigurationPathsMigrationTaskFactory<S> {
+    public MigrateReferencedPaths() {
+        super(new XmlConfigurationMigration.Builder<S>()
+                .componentFactory(new VaultPathsMigration.Factory()));
     }
 }

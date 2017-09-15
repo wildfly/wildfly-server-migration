@@ -17,11 +17,10 @@
 package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.jboss.ContentHashToPathMapper;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.core.task.component.TaskRunnable;
-import org.jboss.migration.wfly10.config.management.ManageableServerConfiguration;
 
 import java.nio.file.Path;
 
@@ -31,10 +30,10 @@ import java.nio.file.Path;
 public class MigrateContent implements TaskRunnable {
 
     private final byte[] contentHash;
-    private final JBossServerConfigurationPath sourceConfiguration;
-    private final ManageableServerConfiguration targetConfiguration;
+    private final JBossServerConfiguration sourceConfiguration;
+    private final JBossServerConfiguration targetConfiguration;
 
-    public MigrateContent(byte[] contentHash, JBossServerConfigurationPath sourceConfiguration, ManageableServerConfiguration targetConfiguration) {
+    public MigrateContent(byte[] contentHash, JBossServerConfiguration sourceConfiguration, JBossServerConfiguration targetConfiguration) {
         this.contentHash = contentHash;
         this.sourceConfiguration = sourceConfiguration;
         this.targetConfiguration = targetConfiguration;

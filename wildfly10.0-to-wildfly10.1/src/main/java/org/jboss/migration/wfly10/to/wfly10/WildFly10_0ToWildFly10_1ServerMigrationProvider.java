@@ -19,6 +19,7 @@ package org.jboss.migration.wfly10.to.wfly10;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.update.AddApplicationRealmSSLServerIdentity;
 import org.jboss.migration.wfly10.config.task.update.AddLoadBalancerProfile;
 import org.jboss.migration.wfly10.config.task.update.AddSocketBindingMulticastAddressExpressions;
@@ -42,6 +43,7 @@ public class WildFly10_0ToWildFly10_1ServerMigrationProvider implements WildFlyF
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly10_0ToWildFly10_1UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly10_0ToWildFly10_1UpdateUndertowSubsystem<>())
                         .subtask(new AddSocketBindingMulticastAddressExpressions<>())
@@ -52,6 +54,7 @@ public class WildFly10_0ToWildFly10_1ServerMigrationProvider implements WildFlyF
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly10_0ToWildFly10_1UpdateInfinispanSubsystem<>())
                                 .subtask(new WildFly10_0ToWildFly10_1UpdateUndertowSubsystem<>())
                                 .subtask(new AddSocketBindingMulticastAddressExpressions<>())
@@ -59,6 +62,7 @@ public class WildFly10_0ToWildFly10_1ServerMigrationProvider implements WildFlyF
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new MigrateCompatibleSecurityRealms<>())
                                         .subtask(new AddApplicationRealmSSLServerIdentity<>()))))

@@ -18,6 +18,7 @@ package org.jboss.migration.wfly10.config.task.update;
 
 import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.jboss.JBossServer;
+import org.jboss.migration.core.jboss.CopyPath;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.component.SimpleComponentTask;
@@ -57,7 +58,7 @@ public class MigrateContentDir<S extends JBossServer<S>> extends SimpleComponent
                 // execute subtasks
                 for (Path content : contents) {
                     final ServerMigrationTaskName subtaskName = new ServerMigrationTaskName.Builder("contents."+contentsName+".migrate-content").addAttribute("path", content.toString()).build();
-                    context.execute(subtaskName, subtaskContext -> new MigratePath(sourceContentDir.resolve(content), targetContentDir.resolve(content)).run(subtaskContext));
+                    context.execute(subtaskName, subtaskContext -> new CopyPath(sourceContentDir.resolve(content), targetContentDir.resolve(content)).run(subtaskContext));
                 }
                 return context.hasSucessfulSubtasks() ? ServerMigrationTaskResult.SUCCESS : ServerMigrationTaskResult.SKIPPED;
             }

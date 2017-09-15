@@ -26,7 +26,8 @@ import org.jboss.migration.core.env.EnvironmentProperty;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.env.TaskEnvironment;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
+import org.jboss.migration.core.jboss.CopyPath;
 import org.jboss.migration.core.jboss.ResolvablePath;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -50,7 +51,7 @@ import static org.jboss.migration.core.console.BasicResultHandlers.UserConfirmat
  * Task which handles the migration/removal of a server configuration's scanner deployments.  When used this task can't be skipped, since any deployments found must either be migrated, or removed.
  * @author emmartins
  */
-public class MigrateScannerDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> {
+public class MigrateScannerDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> {
 
     private static final EnvironmentProperty<List<String>> ENV_PROPERTY_PROCESSED_DEPLOYMENT_SCANNER_DIRS = EnvironmentProperties.newStringListProperty("processedDeploymentScannerDirs", new ArrayList<>());
 
@@ -59,7 +60,7 @@ public class MigrateScannerDeployments<S extends JBossServer<S>> extends Managea
     public MigrateScannerDeployments() {
         name("deployments.migrate-deployment-scanner-deployments");
         runBuilder(params -> context -> {
-            final JBossServerConfigurationPath sourceConfiguration = params.getSource();
+            final JBossServerConfiguration sourceConfiguration = params.getSource();
             final ManageableServerConfiguration targetConfiguration = params.getServerConfiguration();
             for (SubsystemResource subsystemResource : targetConfiguration.findResources(SubsystemResource.class, SubsystemNames.DEPLOYMENT_SCANNER)) {
                 context.getLogger().debugf("Deployment-scanner found, analysing its configuration %s...", subsystemResource.getResourceAbsoluteName());
@@ -147,7 +148,7 @@ public class MigrateScannerDeployments<S extends JBossServer<S>> extends Managea
                                                     .addAttribute("source", sourcePath.toString())
                                                     .addAttribute("target", targetPath.toString())
                                                     .build();
-                                            context.execute(subtaskName, subtaskContext -> new MigratePath(sourcePath, targetPath).run(subtaskContext));
+                                            context.execute(subtaskName, subtaskContext -> new CopyPath(sourcePath, targetPath).run(subtaskContext));
                                         }
                                     }
                                 }

@@ -17,6 +17,7 @@ package org.jboss.migration.wfly9.to.wfly10;
 
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.singleton.AddSingletonSubsystem;
@@ -47,6 +48,7 @@ public class WildFly9ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new WildFly9ToWildFly10_1UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly9ToWildFly10_1UpdateUndertowSubsystem<>())
                         .subtask(new MigrateMessagingSubsystem<>())
@@ -61,6 +63,7 @@ public class WildFly9ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new WildFly9ToWildFly10_1UpdateInfinispanSubsystem<>())
                                 .subtask(new WildFly9ToWildFly10_1UpdateUndertowSubsystem<>())
                                 .subtask(new MigrateMessagingSubsystem<>())
@@ -74,6 +77,7 @@ public class WildFly9ToWildFly10_1ServerMigrationProvider implements WildFlyFull
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new RemoveUnsecureInterface<>())
                                         .subtask(new RemovePermgenAttributesFromJVMConfigs<>())

@@ -23,7 +23,8 @@ import org.jboss.migration.core.console.UserConfirmation;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.env.TaskEnvironment;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
+import org.jboss.migration.core.jboss.MigrateResolvablePathTaskRunnable;
 import org.jboss.migration.core.jboss.ResolvablePath;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -47,7 +48,7 @@ import static org.jboss.migration.wfly10.config.management.ManageableResourceSel
  * Task which handles the migration/removal of a server configuration's persisted deployments.  When used this task can't be skipped, since any deployments found must either be migrated, or removed.
  * @author emmartins
  */
-public class MigratePersistentDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfigurationPath<S>> {
+public class MigratePersistentDeployments<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfiguration<S>> {
 
     public MigratePersistentDeployments() {
         name("deployments.migrate-persistent-deployments");
@@ -88,7 +89,7 @@ public class MigratePersistentDeployments<S extends JBossServer<S>> extends Mana
                     // until deployment overlays missing content don't fail to boot server we first copy all content, and then filter
                     //final ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> subtaskBuilder = migrateDeployment ? new MigrateDeploymentSubtask<>(deploymentResource) : new RemoveDeploymentSubtask<>(deploymentResource);
                     if (!migrateDeployment) {
-                        final ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> subtaskBuilder = new RemoveDeploymentSubtask<>(deploymentResource);
+                        final ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> subtaskBuilder = new RemoveDeploymentSubtask<>(deploymentResource);
                         context.execute(subtaskBuilder.build(params));
                     }
                 }
@@ -97,19 +98,19 @@ public class MigratePersistentDeployments<S extends JBossServer<S>> extends Mana
         });
     }
 
-    public static class MigrateDeploymentSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> {
+    public static class MigrateDeploymentSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> {
         protected MigrateDeploymentSubtask(DeploymentResource resource) {
             nameBuilder(parameters -> new ServerMigrationTaskName.Builder("deployments.migrate-persistent-deployment").addAttribute("resource", resource.getResourceAbsoluteName()).build());
-            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfigurationPath<S>>> runnableBuilder = params -> context -> {
+            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfiguration<S>>> runnableBuilder = params -> context -> {
                 final ModelNode deploymentConfig = resource.getResourceConfiguration();
                 if (!deploymentConfig.hasDefined(CONTENT)) {
                     throw new ServerMigrationFailureException("Unexpected deployment "+resource.getResourceName()+" configuration: "+deploymentConfig.asString());
                 }
                 for (ModelNode content : deploymentConfig.get(CONTENT).asList()) {
                     if (content.hasDefined(HASH)) {
-                        new MigrateContent(content.get(HASH).asBytes(), params.getSource(), params.getServerConfiguration()).run(context);
+                        new MigrateContent(content.get(HASH).asBytes(), params.getSource(), params.getServerConfiguration().getConfigurationPath()).run(context);
                     } else if (content.hasDefined(PATH)) {
-                        new MigrateResolvablePath(new ResolvablePath(content), params.getSource(), params.getServerConfiguration()).run(context);
+                        new MigrateResolvablePathTaskRunnable(new ResolvablePath(content), params.getSource(), params.getServerConfiguration().getConfigurationPath()).run(context);
                     } else {
                         throw new ServerMigrationFailureException("Unexpected deployment "+resource.getResourceName()+" content: "+content.asString());
                     }
@@ -120,10 +121,10 @@ public class MigratePersistentDeployments<S extends JBossServer<S>> extends Mana
         }
     }
 
-    public static class RemoveDeploymentSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfigurationPath<S>> {
+    public static class RemoveDeploymentSubtask<S extends JBossServer<S>> extends ManageableServerConfigurationLeafTask.Builder<JBossServerConfiguration<S>> {
         protected RemoveDeploymentSubtask(DeploymentResource resource) {
             nameBuilder(parameters -> new ServerMigrationTaskName.Builder("deployments.remove-persistent-deployment").addAttribute("resource", resource.getResourceAbsoluteName()).build());
-            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfigurationPath<S>>> runnableBuilder = params -> context -> {
+            final TaskRunnable.Builder<ManageableServerConfigurationBuildParameters<JBossServerConfiguration<S>>> runnableBuilder = params -> context -> {
                 if (params.getServerConfiguration() instanceof HostControllerConfiguration) {
                     // the deployment may be referenced in server groups, remove these first
                     for (DeploymentResource serverGroupDeploymentResource : selectResources(ServerGroupResource.class).andThen(selectResources(DeploymentResource.class, resource.getResourceName())).fromResources(params.getServerConfiguration())) {

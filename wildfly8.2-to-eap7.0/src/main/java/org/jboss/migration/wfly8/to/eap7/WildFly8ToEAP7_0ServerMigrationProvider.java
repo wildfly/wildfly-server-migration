@@ -18,6 +18,7 @@ package org.jboss.migration.wfly8.to.eap7;
 import org.jboss.migration.eap.EAPServerMigrationProvider7_0;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
 import org.jboss.migration.wfly10.config.task.subsystem.jacorb.MigrateJacorbSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.jberet.AddBatchJBeretSubsystem;
 import org.jboss.migration.wfly10.config.task.subsystem.messaging.MigrateMessagingSubsystem;
@@ -48,6 +49,7 @@ public class WildFly8ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                 .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
                         .subtask(new RemoveAllUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
+                        .subtask(new MigrateReferencedPaths<>())
                         .subtask(new MigrateJacorbSubsystem<>())
                         .subtask(new MigrateMessagingSubsystem<>())
                         .subtask(new WildFly8ToEAP7_0UpdateInfinispanSubsystem<>())
@@ -63,6 +65,7 @@ public class WildFly8ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveAllUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(new MigrateJacorbSubsystem<>())
                                 .subtask(new MigrateMessagingSubsystem<>())
                                 .subtask(new WildFly8ToEAP7_0UpdateInfinispanSubsystem<>())
@@ -77,6 +80,7 @@ public class WildFly8ToEAP7_0ServerMigrationProvider implements EAPServerMigrati
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
+                                .subtask(new MigrateReferencedPaths<>())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(new AddJmxSubsystemToHosts<>())
                                         .subtask(new RemoveUnsecureInterface<>())

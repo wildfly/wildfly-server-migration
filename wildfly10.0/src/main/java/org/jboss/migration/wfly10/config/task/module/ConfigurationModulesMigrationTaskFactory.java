@@ -19,12 +19,11 @@ package org.jboss.migration.wfly10.config.task.module;
 import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.env.SkippableByEnvServerMigrationTask;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.jboss.ModulesMigrationTask;
 import org.jboss.migration.core.task.ServerMigrationTask;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.TaskContext;
-import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
 
 import javax.xml.stream.XMLInputFactory;
@@ -33,7 +32,6 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +44,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 /**
  * @author emmartins
  */
-public class ConfigurationModulesMigrationTaskFactory<S extends JBossServer<S>> implements ServerConfigurationMigration.XMLConfigurationSubtaskFactory<JBossServerConfigurationPath<S>> {
+public class ConfigurationModulesMigrationTaskFactory<S extends JBossServer<S>> implements ServerConfigurationMigration.XMLConfigurationSubtaskFactory<JBossServerConfiguration<S>> {
 
     private final Map<String, List<ModulesFinder>> modulesFinders;
 
@@ -55,20 +53,20 @@ public class ConfigurationModulesMigrationTaskFactory<S extends JBossServer<S>> 
     }
 
     @Override
-    public ServerMigrationTask getTask(final JBossServerConfigurationPath<S> source, final Path xmlConfigurationPath, final WildFlyServer10 target) {
-        return new SkippableByEnvServerMigrationTask(new Task(source.getServer(), target, xmlConfigurationPath, modulesFinders));
+    public ServerMigrationTask getTask(final JBossServerConfiguration<S> source, final JBossServerConfiguration targetConfigurationPath) {
+        return new SkippableByEnvServerMigrationTask(new Task(source.getServer(), targetConfigurationPath, modulesFinders));
     }
 
     private static class Task extends ModulesMigrationTask {
 
         private final ServerMigrationTaskName taskName;
-        private final Path xmlConfigurationPath;
+        private final JBossServerConfiguration targetConfigurationPath;
         private final Map<String, List<ModulesFinder>> modulesFinders;
 
-        public Task(JBossServer source, JBossServer target, Path xmlConfigurationPath, Map<String, List<ModulesFinder>> modulesFinders) {
-            super(source, target, "configuration");
-            this.taskName = new ServerMigrationTaskName.Builder("modules.migrate-modules-requested-by-configuration").addAttribute("path", xmlConfigurationPath.toString()).build();
-            this.xmlConfigurationPath = xmlConfigurationPath;
+        public Task(JBossServer source, JBossServerConfiguration targetConfigurationPath, Map<String, List<ModulesFinder>> modulesFinders) {
+            super(source, targetConfigurationPath.getServer(), "configuration");
+            this.taskName = new ServerMigrationTaskName.Builder("modules.migrate-modules-requested-by-configuration").addAttribute("path", targetConfigurationPath.getPath().toString()).build();
+            this.targetConfigurationPath = targetConfigurationPath;
             this.modulesFinders = modulesFinders;
         }
 
@@ -79,7 +77,7 @@ public class ConfigurationModulesMigrationTaskFactory<S extends JBossServer<S>> 
 
         @Override
         protected void migrateModules(ModuleMigrator moduleMigrator, TaskContext context) {
-            try (InputStream in = new BufferedInputStream(new FileInputStream(xmlConfigurationPath.toFile()))) {
+            try (InputStream in = new BufferedInputStream(new FileInputStream(targetConfigurationPath.getPath().toFile()))) {
                 XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(in);
                 reader.require(START_DOCUMENT, null, null);
                 while (reader.hasNext()) {

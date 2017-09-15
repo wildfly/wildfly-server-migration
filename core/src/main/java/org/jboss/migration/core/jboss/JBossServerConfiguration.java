@@ -23,33 +23,45 @@ import java.nio.file.Path;
 /**
  * @author emmartins
  */
-public class JBossServerConfigurationPath<S extends JBossServer<S>> extends ServerPath<S> implements AbsolutePathResolver {
+public class JBossServerConfiguration<S extends JBossServer<S>> extends ServerPath<S> implements AbsolutePathResolver {
 
-    private final Path configurationDir;
-    private final Path dataDir;
-    private final Path contentDir;
+    public enum Type {
+        STANDALONE,
+        DOMAIN,
+        HOST
+    }
 
-    protected JBossServerConfigurationPath(Path path, S server, Path configurationDir, Path dataDir, Path contentDir) {
+    private final Type configurationType;
+
+    public JBossServerConfiguration(Path path, Type configurationType, S server) {
         super(path, server);
-        this.configurationDir = configurationDir;
-        this.dataDir = dataDir;
-        this.contentDir = contentDir;
+        this.configurationType = configurationType;
+    }
+
+    @Override
+    public S getServer() {
+        return super.getServer();
     }
 
     public Path getConfigurationDir() {
-        return configurationDir;
+        return getServer().getConfigurationDir(configurationType);
     }
 
     public Path getDataDir() {
-        return dataDir;
+        return getServer().getDataDir(configurationType);
     }
 
     public Path getContentDir() {
-        return contentDir;
+        return getServer().getContentDir(configurationType);
     }
 
     @Override
     public Path resolveNamedPath(String path) {
         return getServer().resolveNamedPath(path);
+    }
+
+    @Override
+    public Path resolvePath(String path, String relativeTo) {
+        return getServer().resolvePath(path, relativeTo);
     }
 }

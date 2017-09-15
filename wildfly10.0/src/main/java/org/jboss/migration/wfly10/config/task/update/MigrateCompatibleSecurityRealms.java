@@ -19,7 +19,8 @@ package org.jboss.migration.wfly10.config.task.update;
 import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfigurationPath;
+import org.jboss.migration.core.jboss.JBossServerConfiguration;
+import org.jboss.migration.core.jboss.MigrateResolvablePathTaskRunnable;
 import org.jboss.migration.core.jboss.ResolvablePath;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
@@ -37,7 +38,7 @@ import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.*;
  * Migration of security realms fully compatible with WildFly 10.
  * @author emmartins
  */
-public class MigrateCompatibleSecurityRealms<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfigurationPath<S>> {
+public class MigrateCompatibleSecurityRealms<S extends JBossServer<S>> extends ManageableServerConfigurationCompositeTask.Builder<JBossServerConfiguration<S>> {
 
     public MigrateCompatibleSecurityRealms() {
         name("security-realms.migrate-properties");
@@ -48,10 +49,10 @@ public class MigrateCompatibleSecurityRealms<S extends JBossServer<S>> extends M
 
     }
 
-    protected static class Subtask<S extends JBossServer<S>> extends ManageableResourceLeafTask.Builder<JBossServerConfigurationPath<S>, SecurityRealmResource> {
+    protected static class Subtask<S extends JBossServer<S>> extends ManageableResourceLeafTask.Builder<JBossServerConfiguration<S>, SecurityRealmResource> {
         protected Subtask() {
             nameBuilder(parameters -> new ServerMigrationTaskName.Builder("security-realm."+parameters.getResource().getResourceName()+".migrate-properties").build());
-            final ManageableResourceTaskRunnableBuilder<JBossServerConfigurationPath<S>, SecurityRealmResource> runnableBuilder = params -> context -> {
+            final ManageableResourceTaskRunnableBuilder<JBossServerConfiguration<S>, SecurityRealmResource> runnableBuilder = params -> context -> {
                 final SecurityRealmResource securityRealmResource = params.getResource();
                 final String securityRealmConfigName = securityRealmResource.getResourceAbsoluteName();
                 context.getLogger().debugf("Security realm %s migration starting...", securityRealmConfigName);
@@ -68,10 +69,10 @@ public class MigrateCompatibleSecurityRealms<S extends JBossServer<S>> extends M
             runBuilder(runnableBuilder);
         }
 
-        private void copyPropertiesFile(String propertiesName, ModelNode securityRealmConfig, JBossServerConfigurationPath<S> source, SecurityRealmResource securityRealmResource, TaskContext context) throws ServerMigrationFailureException {
+        private void copyPropertiesFile(String propertiesName, ModelNode securityRealmConfig, JBossServerConfiguration<S> source, SecurityRealmResource securityRealmResource, TaskContext context) throws ServerMigrationFailureException {
             final ModelNode properties = securityRealmConfig.get(propertiesName, PROPERTIES);
             if (properties.hasDefined(PATH)) {
-                new MigrateResolvablePath(new ResolvablePath(properties), source, securityRealmResource.getServerConfiguration()).run(context);
+                new MigrateResolvablePathTaskRunnable(new ResolvablePath(properties), source, securityRealmResource.getServerConfiguration().getConfigurationPath()).run(context);
             }
         }
     }
