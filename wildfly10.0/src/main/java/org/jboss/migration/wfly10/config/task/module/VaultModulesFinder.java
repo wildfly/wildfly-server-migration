@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc.
+ * Copyright 2017 Red Hat, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 
 /**
- * Finds modules referenced by Security Realms plugin configs.
+ * Finds modules referenced by Vault configs.
  * @author emmartins
  */
-public class SecurityRealmsPluginModulesFinder implements ConfigurationModulesMigrationTaskFactory.ModulesFinder {
+public class VaultModulesFinder implements ConfigurationModulesMigrationTaskFactory.ModulesFinder {
     @Override
     public String getElementLocalName() {
-        return "plug-in";
+        return "vault";
     }
 
     @Override
@@ -38,6 +38,6 @@ public class SecurityRealmsPluginModulesFinder implements ConfigurationModulesMi
         if (namespaceURI == null || !namespaceURI.startsWith("urn:jboss:domain:")) {
             return;
         }
-        moduleMigrator.migrateModule(reader.getAttributeValue(null, "module"), "Requird by Security Realm plugin", context);
+        moduleMigrator.migrateModule(reader.getAttributeValue(null, "module"), "Requird by Vault", context);
     }
 }

@@ -29,6 +29,7 @@ public class MigrateReferencedModules<S extends JBossServer<S>> extends Configur
                 .modulesFinder(new EEGlobalModulesFinder())
                 .modulesFinder(new JMSBridgesModulesFinder())
                 .modulesFinder(new NamingObjectFactoriesModulesFinder())
-                .modulesFinder(new SecurityRealmsPluginModulesFinder()));
+                .modulesFinder(new SecurityRealmsPluginModulesFinder())
+                .modulesFinder(new VaultModulesFinder()));
     }
 }
