@@ -14,7 +14,7 @@
                 <link rel="stylesheet" type="text/css" href="licenses.css"/>
             </head>
             <body>
-                <h2>Red Hat JBoss Enterprise Application Platform <xsl:value-of select="$version"/> - Server Migration Feature Pack</h2>
+                <h2>JBoss Server Migration Tool <xsl:value-of select="$version"/> - JBoss Enterprise Application Platform 7.1 Feature Pack</h2>
                 <p>The following material has been provided for informational purposes only, and should not be relied upon or construed as a legal opinion or legal advice.</p>
                 <!-- Read matching templates -->
                 <table>
