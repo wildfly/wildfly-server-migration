@@ -104,6 +104,7 @@ public class CommandLineServerMigration {
             if (environment != null) {
                 userEnvironment.setProperties(loadProperties(environment));
             }
+            userEnvironment.setProperties(SystemEnvironment.INSTANCE);
 
             // run migration
             final MigrationData migrationData = new ServerMigration()
