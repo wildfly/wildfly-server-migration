@@ -115,11 +115,12 @@ public class CommandLineServerMigration {
                     .run();
 
             // write reports
-            final String htmlReportFileName = userEnvironment.getPropertyAsString(EnvironmentProperties.REPORT_HTML_FILE_NAME);
-            final String xmlReportFileName = userEnvironment.getPropertyAsString(EnvironmentProperties.REPORT_XML_FILE_NAME);
+
+            final String htmlReportFileName = SystemEnvironment.INSTANCE.getPropertyAsString(EnvironmentProperties.REPORT_HTML_FILE_NAME);
+            final String xmlReportFileName = SystemEnvironment.INSTANCE.getPropertyAsString(EnvironmentProperties.REPORT_XML_FILE_NAME);
             if (htmlReportFileName != null) {
                 try {
-                    final String htmlReportTemplateFileName = userEnvironment.getPropertyAsString(EnvironmentProperties.REPORT_HTML_TEMPLATE_FILE_NAME, "migration-report-template.html");
+                    final String htmlReportTemplateFileName = SystemEnvironment.INSTANCE.getPropertyAsString(EnvironmentProperties.REPORT_HTML_TEMPLATE_FILE_NAME, "migration-report-template.html");
                     final Path htmlReportTemplatePath = configDirPath.resolve(htmlReportTemplateFileName);
                     HtmlReportWriter.INSTANCE.toPath(reportsDirPath.resolve(htmlReportFileName), migrationData, HtmlReportWriter.ReportTemplate.from(htmlReportTemplatePath));
                 } catch (Throwable e) {
