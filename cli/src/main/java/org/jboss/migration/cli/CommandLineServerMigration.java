@@ -164,7 +164,7 @@ public class CommandLineServerMigration {
                 t.printStackTrace(STDERR);
             }
         } finally {
-            System.exit(1);
+            System.exit(t == null ? 0 : 1);
         }
     }
 
