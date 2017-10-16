@@ -34,6 +34,7 @@ import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -144,9 +145,11 @@ public class CommandLineServerMigration {
     }
 
     private static void help() {
+        PrintWriter pw = new PrintWriter(System.out);
         HelpFormatter help = new HelpFormatter();
-        help.setWidth(1024);
-        help.printHelp(CommandLineMigrationLogger.ROOT_LOGGER.argUsage("jboss-server-migration"), cmdOptions.getOptions(),true);
+        pw.println( CommandLineMigrationLogger.ROOT_LOGGER.helpHeader());
+        help.printHelp(pw, 1024, CommandLineMigrationLogger.ROOT_LOGGER.argUsage("jboss-server-migration"), "", cmdOptions.getOptions(), help.getLeftPadding(), help.getDescPadding(), "", true);
+        pw.flush();
         abort(null);
     }
 
