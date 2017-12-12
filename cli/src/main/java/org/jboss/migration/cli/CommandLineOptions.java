@@ -46,6 +46,10 @@ public class CommandLineOptions {
         opt = Option.builder("h").longOpt(CommandLineConstants.HELP.getArgument()).argName("help")
                 .desc(CommandLineConstants.HELP.getDescription()).hasArg(false).build();
         options.addOption(opt);
+
+        opt = Option.builder("m").longOpt(CommandLineConstants.SILENT_MODE.getArgument()).argName("silent")
+                .desc(CommandLineConstants.SILENT_MODE.getDescription()).hasArg(false).build();
+        options.addOption(opt);
     }
 
     public Options getOptions() {
