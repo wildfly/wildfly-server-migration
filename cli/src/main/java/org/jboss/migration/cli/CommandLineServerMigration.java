@@ -21,6 +21,7 @@ import org.jboss.cli.commonscli.DefaultParser;
 import org.jboss.cli.commonscli.HelpFormatter;
 import org.jboss.cli.commonscli.MissingOptionException;
 import org.jboss.cli.commonscli.ParseException;
+import org.jboss.logmanager.handlers.ConsoleHandler;
 import org.jboss.migration.cli.logger.CommandLineMigrationLogger;
 import org.jboss.migration.core.MigrationData;
 import org.jboss.migration.core.ServerMigration;
@@ -37,7 +38,11 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Properties;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * The command line tool to migrate a WildFly server.
@@ -83,6 +88,11 @@ public class CommandLineServerMigration {
             Path target = resolvePath(cmdLine.getOptionValue(CommandLineConstants.TARGET.getArgument()));
             Path environment = cmdLine.hasOption(CommandLineConstants.ENVIRONMENT.getArgument()) ? resolvePath(cmdLine.getOptionValue(CommandLineConstants.ENVIRONMENT.getArgument())) : null;
             boolean interactive = !cmdLine.hasOption(CommandLineConstants.NON_INTERACTIVE.getArgument());
+            boolean silentMode = cmdLine.hasOption(CommandLineConstants.SILENT_MODE.getArgument());
+
+            if (silentMode) {
+                configureSilentMode();
+            }
 
             if (!cmdLine.getArgList().isEmpty()) {
                 System.err.printf("Incorrect argument(s), %s. Exiting...\n", cmdLine.getArgList());
@@ -146,6 +156,20 @@ public class CommandLineServerMigration {
         } catch (Throwable t) {
             t.printStackTrace(STDERR);
             System.exit(1);
+        }
+    }
+
+    private static void configureSilentMode() {
+        LogManager logManager = LogManager.getLogManager();
+        Enumeration<String> loggerNames = logManager.getLoggerNames();
+        while (loggerNames.hasMoreElements()) {
+            String loggerName = loggerNames.nextElement();
+            Logger logger = logManager.getLogger(loggerName);
+            for (Handler handler : logger.getHandlers()) {
+                if (handler instanceof ConsoleHandler) {
+                    logger.removeHandler(handler);
+                }
+            }
         }
     }
 

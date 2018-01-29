@@ -25,7 +25,8 @@ public enum CommandLineConstants {
    NON_INTERACTIVE("non-interactive", CommandLineMigrationLogger.ROOT_LOGGER.argInteractive()),
    SOURCE("source", CommandLineMigrationLogger.ROOT_LOGGER.argSource()),
    TARGET("target", CommandLineMigrationLogger.ROOT_LOGGER.argTarget()),
-   HELP("help", CommandLineMigrationLogger.ROOT_LOGGER.argUsage("jboss-server-migration"));
+   HELP("help", CommandLineMigrationLogger.ROOT_LOGGER.argUsage("jboss-server-migration")),
+   SILENT_MODE("silent", CommandLineMigrationLogger.ROOT_LOGGER.argSilent());
 
    private final String argument;
    private final String description;
