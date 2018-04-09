@@ -19,6 +19,7 @@ import org.jboss.migration.eap.EAPServerMigrationProvider7_1;
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedExtensions;
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems;
 import org.jboss.migration.wfly11.task.subsystem.coremanagement.AddCoreManagementSubsystem;
+import org.jboss.migration.eap.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.eap.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.wfly11.task.subsystem.logging.RemoveConsoleHandlerFromLoggingSubsystem;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
@@ -86,6 +87,7 @@ public class WildFly8ToEAP7_1ServerMigrationProvider implements EAPServerMigrati
                                 .subtask(new AddBatchJBeretSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
                                 .subtask(new AddElytronSubsystem<>())
+                                .subtask(new AddHostExcludesResource<>())
                                 .subtask(new AddRequestControllerSubsystem<>())
                                 .subtask(new AddSecurityManagerSubsystem<>())
                                 .subtask(new AddSingletonSubsystem<>())

@@ -29,7 +29,7 @@ import java.nio.file.Paths;
 /**
  * @author emmartins
  */
-public interface ManageableServerConfiguration extends AbsolutePathResolver, ManageableResource, ExtensionResource.Parent, InterfaceResource.Parent, PathResource.Parent, SocketBindingGroupResource.Parent, SystemPropertyResource.Parent {
+public interface ManageableServerConfiguration extends AbsolutePathResolver, ManageableResource, ExtensionResource.Parent, HostExcludeResource.Parent, InterfaceResource.Parent, PathResource.Parent, SocketBindingGroupResource.Parent, SystemPropertyResource.Parent {
 
     void start();
     void stop();

@@ -21,6 +21,7 @@ import org.jboss.migration.eap.EAPServerMigrationProvider7_1;
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedExtensions;
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems;
 import org.jboss.migration.wfly11.task.subsystem.coremanagement.AddCoreManagementSubsystem;
+import org.jboss.migration.eap.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.eap.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.wfly11.task.subsystem.logging.RemoveConsoleHandlerFromLoggingSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
@@ -68,6 +69,7 @@ public class EAP7_0ToEAP7_1ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new EAP7_0ToEAP7_1UpdateUndertowSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
                                 .subtask(new AddElytronSubsystem<>())
+                                .subtask(new AddHostExcludesResource<>())
                                 .subtask(new AddSocketBindingMulticastAddressExpressions<>())
                                 .subtask(new AddLoadBalancerProfile<>())
                                 .subtask(new RemoveConsoleHandlerFromLoggingSubsystem<>())

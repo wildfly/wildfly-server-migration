@@ -21,6 +21,7 @@ import org.jboss.migration.eap6.to.eap7.tasks.EAP6_4ToEAP7_2UpdateJGroupsSubsyst
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedExtensions;
 import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems;
 import org.jboss.migration.wfly11.task.subsystem.coremanagement.AddCoreManagementSubsystem;
+import org.jboss.migration.eap.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.eap.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.eap.task.subsystem.web.EAP7_1MigrateWebSubsystem;
 import org.jboss.migration.wfly11.task.subsystem.logging.RemoveConsoleHandlerFromLoggingSubsystem;
@@ -80,6 +81,7 @@ public class EAP6_4ToEAP7_2ServerMigrationProvider implements EAPServerMigration
                         .subtask(new EAP6_4ToEAP7_2UpdateRemotingSubsystem<>())
                         .subtask(new AddBatchJBeretSubsystem<>())
                         .subtask(new AddCoreManagementSubsystem<>())
+                        .subtask(new AddHostExcludesResource<>())
                         .subtask(new AddRequestControllerSubsystem<>())
                         .subtask(new AddSecurityManagerSubsystem<>())
                         .subtask(new AddSingletonSubsystem<>())

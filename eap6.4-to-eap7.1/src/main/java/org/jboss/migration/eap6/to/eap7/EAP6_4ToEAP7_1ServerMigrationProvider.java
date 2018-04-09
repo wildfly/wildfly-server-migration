@@ -17,6 +17,7 @@ package org.jboss.migration.eap6.to.eap7;
 
 import org.jboss.migration.eap.EAPServer6_4;
 import org.jboss.migration.eap.EAPServerMigrationProvider7_1;
+import org.jboss.migration.eap.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.eap.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.eap.task.subsystem.web.EAP7_1MigrateWebSubsystem;
 import org.jboss.migration.eap6.to.eap7.tasks.AddSocketBindingPortExpressions;
@@ -109,6 +110,7 @@ public class EAP6_4ToEAP7_1ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new EAP6_4ToEAP7_1UpdateJGroupsSubsystem<>())
                                 .subtask(new AddBatchJBeretSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
+                                .subtask(new AddHostExcludesResource<>())
                                 .subtask(new AddRequestControllerSubsystem<>())
                                 .subtask(new AddSecurityManagerSubsystem<>())
                                 .subtask(new AddSingletonSubsystem<>())
