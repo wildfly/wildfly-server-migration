@@ -22,7 +22,7 @@ package org.jboss.migration.wfly10.config.management;
 public class ManageableServerConfigurationType extends ManageableResourceType {
 
     protected ManageableServerConfigurationType(Class<? extends ManageableResource> type) {
-        super(type, ExtensionResource.RESOURCE_TYPE, InterfaceResource.RESOURCE_TYPE, SocketBindingGroupResource.RESOURCE_TYPE, SystemPropertyResource.RESOURCE_TYPE);
+        super(type, ExtensionResource.RESOURCE_TYPE, HostExcludeResource.RESOURCE_TYPE, InterfaceResource.RESOURCE_TYPE, SocketBindingGroupResource.RESOURCE_TYPE, SystemPropertyResource.RESOURCE_TYPE);
     }
 
     protected ManageableServerConfigurationType(Class<? extends ManageableResource> type, ManageableResourceType... childTypes) {

@@ -34,6 +34,7 @@ import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems
 import org.jboss.migration.wfly10.config.task.update.ServerUpdate;
 import org.jboss.migration.wfly10.config.task.update.UpdateUnsecureInterface;
 import org.jboss.migration.wfly11.WildFlyFullServerMigrationProvider11_0;
+import org.jboss.migration.wfly11.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.wfly11.task.subsystem.coremanagement.AddCoreManagementSubsystem;
 import org.jboss.migration.wfly11.task.subsystem.elytron.AddElytronSubsystem;
 import org.jboss.migration.wfly11.task.subsystem.logging.RemoveConsoleHandlerFromLoggingSubsystem;
@@ -78,6 +79,7 @@ public class WildFly9ToWildFly11_0ServerMigrationProvider implements WildFlyFull
                                 .subtask(new AddBatchJBeretSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
                                 .subtask(new AddElytronSubsystem<>())
+                                .subtask(new AddHostExcludesResource<>())
                                 .subtask(new AddSingletonSubsystem<>())
                                 .subtask(new UpdateUnsecureInterface<>())
                                 .subtask(new AddPrivateInterface<>())

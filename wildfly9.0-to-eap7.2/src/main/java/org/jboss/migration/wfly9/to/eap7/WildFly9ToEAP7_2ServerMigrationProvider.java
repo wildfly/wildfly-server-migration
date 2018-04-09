@@ -16,6 +16,7 @@
 package org.jboss.migration.wfly9.to.eap7;
 
 import org.jboss.migration.eap.EAPServerMigrationProvider7_2;
+import org.jboss.migration.eap.task.hostexclusion.AddHostExcludesResource;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
 import org.jboss.migration.wfly10.config.task.paths.MigrateReferencedPaths;
@@ -80,6 +81,7 @@ public class WildFly9ToEAP7_2ServerMigrationProvider implements EAPServerMigrati
                                 .subtask(new AddBatchJBeretSubsystem<>())
                                 .subtask(new AddCoreManagementSubsystem<>())
                                 .subtask(new AddElytronSubsystem<>())
+                                .subtask(new AddHostExcludesResource<>())
                                 .subtask(new AddSingletonSubsystem<>())
                                 .subtask(new UpdateUnsecureInterface<>())
                                 .subtask(new AddPrivateInterface<>())

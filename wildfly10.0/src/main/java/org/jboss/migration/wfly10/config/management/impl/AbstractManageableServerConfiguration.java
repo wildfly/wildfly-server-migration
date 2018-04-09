@@ -41,6 +41,7 @@ public abstract class AbstractManageableServerConfiguration extends AbstractMana
     private final WildFlyServer10 server;
     private ModelControllerClient modelControllerClient;
     private final ExtensionResourceImpl.Factory extensionConfigurations;
+    private final HostExcludeResourceImpl.Factory hostExcludeResources;
     private final InterfaceResourceImpl.Factory interfaceResources;
     private final PathResourceImpl.Factory pathResources;
     private final SocketBindingGroupResourceImpl.Factory socketBindingGroupResources;
@@ -51,11 +52,13 @@ public abstract class AbstractManageableServerConfiguration extends AbstractMana
         this.server = server;
         this.configurationPath = configurationPath;
         extensionConfigurations = new ExtensionResourceImpl.Factory(pathAddress, this);
+        hostExcludeResources = new HostExcludeResourceImpl.Factory(pathAddress, this);
         interfaceResources = new InterfaceResourceImpl.Factory(pathAddress, this);
         pathResources = new PathResourceImpl.Factory(pathAddress, this);
         socketBindingGroupResources = new SocketBindingGroupResourceImpl.Factory(pathAddress, this);
         systemPropertyResources = new SystemPropertyResourceImpl.Factory(pathAddress, this);
         addChildResourceFactory(extensionConfigurations);
+        addChildResourceFactory(hostExcludeResources);
         addChildResourceFactory(interfaceResources);
         addChildResourceFactory(pathResources);
         addChildResourceFactory(socketBindingGroupResources);
