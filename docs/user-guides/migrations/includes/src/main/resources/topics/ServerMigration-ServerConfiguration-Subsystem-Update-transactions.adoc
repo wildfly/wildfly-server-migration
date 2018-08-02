@@ -1,0 +1,7 @@
+= Update the transaction Subsystem
+
+The JBoss Server Migration Tool  updates the *transactions* subsystem with the configuration changes required by the {server-target-productName} server.
+
+The  JBoss Server Migration Tool removes the `path` and `relative-to` attributes from the *transactions* subsystem and replaces them with the equivalent `object-store-path` and `opbject-store-relative-to` attributes.
+
+To skip the automatic update of the *transactions* subsystem configuration, set the `subsystem.transactions.update-xml-object-store-paths.skip` environment property to `true`.
