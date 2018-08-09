@@ -16,6 +16,8 @@ include::ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
 
 include::ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
 
+include::ServerMigration-ServerConfiguration-Subsystem-Update-transactions.adoc[]
+
 include::ServerMigration-ServerConfiguration-Subsystem-Migrate-jacorb.adoc[]
 
 include::ServerMigration-ServerConfiguration-Subsystem-Migrate-web.adoc[]
