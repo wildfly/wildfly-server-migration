@@ -359,6 +359,7 @@
                                     <sortByGroupIdAndArtifactId>true</sortByGroupIdAndArtifactId>
                                     <licensesOutputDirectory>${license.directory}</licensesOutputDirectory>
                                     <licensesOutputFile>${license.directory}/migration-feature-pack-licenses.xml</licensesOutputFile>
+                                    <excludedArtifacts>wildfly-core-feature-pack</excludedArtifacts>
                                     <excludedScopes>system,provided</excludedScopes>
                                 </configuration>
                             </execution>
