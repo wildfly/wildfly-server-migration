@@ -77,7 +77,7 @@
         <version.junit>4.12</version.junit>
         <version.org.wildfly.checkstyle-config>1.0.5.Final</version.org.wildfly.checkstyle-config>
         <version.org.wildfly.build-tools>1.2.10.Final</version.org.wildfly.build-tools>
-        <version.org.wildfly.galleon-plugins>1.0.1.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.galleon-plugins>2.0.0.Alpha6</version.org.wildfly.galleon-plugins>
     </properties>
 
     <modules>
@@ -290,7 +290,7 @@
                 </plugin>
                 <plugin>
                     <groupId>org.wildfly.galleon-plugins</groupId>
-                    <artifactId>wildfly-galleon-maven-plugins</artifactId>
+                    <artifactId>wildfly-galleon-maven-plugin</artifactId>
                     <version>${version.org.wildfly.galleon-plugins}</version>
                 </plugin>
                 <plugin>
