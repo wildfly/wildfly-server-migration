@@ -24,9 +24,15 @@ import java.nio.file.Path;
 
 /**
  * The WildFly 19.0 {@link org.jboss.migration.core.ServerProvider}.
- *  @author emmartins
+ *
+ * @author emmartins
  */
 public class WildFly19_0ServerProvider extends WildFlyFullServerProvider10_0 {
+
+    @Override
+    protected String getModuleName() {
+        return "org.jboss.as.product:main";
+    }
 
     @Override
     protected String getProductVersionRegex() {
