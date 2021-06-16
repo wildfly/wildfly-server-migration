@@ -26,7 +26,7 @@ Run the Server Migration Tool (Standalone Build)
 3. Run the following command.
 
         For Linux|Mac:   ./jboss-server-migration.sh -s SOURCE_SERVER_PATH -t TARGET_SERVER_PATH
-        For Windows: jboss-server-migration.bat -s SOURCE_SERVER_PATH -t SOURCE_SERVER_PATH
+        For Windows: jboss-server-migration.bat -s SOURCE_SERVER_PATH -t TARGET_SERVER_PATH
 
     Replace `SOURCE_SERVER_PATH` with the path to previous version of the server installation that you want to migrate from, for example:  `${user.home}/wildfly-11.0.0.Final/`
 
