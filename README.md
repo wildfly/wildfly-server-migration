@@ -106,6 +106,9 @@ Run the Server Migration Tool (Standalone Build)
   * `migration-report.xml`: The XML file includes all migration data collected.
 11. File log(s) may be found in the `logs/` directory.
   * `migration.log`: The log contains detailed information about the server migration execution.
+12. Migration Failed Error
+  * If you get an error message telling you that the migration failed because of version Y not supporting migrations from version X please refer to the [Releases](https://github.com/wildfly/wildfly-server-migration/releases) section to see which version of the Migration Tool you need for migrating your versions. For example you cannot use the Migration Tool 1.11.0 Final for migrating WildFly 16.0.0 to WildFly 22.0.0. For that you require the Migration Tool Version 1.10.0 Final.
+      
   
 Development
 ------------
