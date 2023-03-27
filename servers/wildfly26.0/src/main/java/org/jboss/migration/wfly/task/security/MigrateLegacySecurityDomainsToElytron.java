@@ -205,15 +205,18 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
                 for (Property serverProperty : subsystemConfig.get(SERVER).asPropertyList()) {
                     final String serverName = serverProperty.getName();
                     final ModelNode serverConfig = serverProperty.getValue();
-                    final ModelNode serverSecurityDomainNode = serverConfig.get(SECURITY_DOMAIN);
-                    final String messagingSubsystemSecurityDomain = serverSecurityDomainNode.isDefined() ? serverSecurityDomainNode.asString() : "other";
-                    if (legacySecurityDomain.getName().equals(messagingSubsystemSecurityDomain)) {
-                        logger.debugf("Found messaging-activemq subsystem server %s using the legacy security-domain %s.", serverName, legacySecurityDomainName);
-                        final PathAddress pathAddress = messagingSubsystemResource.getResourcePathAddress().append(SERVER, serverName);
-                        compositeOperationBuilder.addStep(getUndefineAttributeOperation(pathAddress, SECURITY_DOMAIN));
-                        compositeOperationBuilder.addStep(getWriteAttributeOperation(pathAddress, ELYTRON_DOMAIN, elytronSecurityDomainName));
-                        logger.debugf("Migrated messaging-activemq subsystem server %s to Elytron security-domain %s.", serverName, elytronSecurityDomainName);
-                        updated = true;
+                    final ModelNode serverElytronDomainNode = serverConfig.get(ELYTRON_DOMAIN);
+                    if (! serverElytronDomainNode.isDefined()) {
+                        final ModelNode serverSecurityDomainNode = serverConfig.get(SECURITY_DOMAIN);
+                        final String messagingSubsystemSecurityDomain = serverSecurityDomainNode.isDefined() ? serverSecurityDomainNode.asString() : "other";
+                        if (legacySecurityDomain.getName().equals(messagingSubsystemSecurityDomain)) {
+                            logger.debugf("Found messaging-activemq subsystem server %s using the legacy security-domain %s.", serverName, legacySecurityDomainName);
+                            final PathAddress pathAddress = messagingSubsystemResource.getResourcePathAddress().append(SERVER, serverName);
+                            compositeOperationBuilder.addStep(getUndefineAttributeOperation(pathAddress, SECURITY_DOMAIN));
+                            compositeOperationBuilder.addStep(getWriteAttributeOperation(pathAddress, ELYTRON_DOMAIN, elytronSecurityDomainName));
+                            logger.debugf("Migrated messaging-activemq subsystem server %s to Elytron security-domain %s.", serverName, elytronSecurityDomainName);
+                            updated = true;
+                        }
                     }
                 }
             }
