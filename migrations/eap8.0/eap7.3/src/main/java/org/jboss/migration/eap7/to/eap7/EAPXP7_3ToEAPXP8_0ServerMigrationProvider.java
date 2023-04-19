@@ -73,6 +73,7 @@ public class EAPXP7_3ToEAPXP8_0ServerMigrationProvider implements EAPXPServerMig
                                 .subtask(legacySecurityConfigurationMigration.getEnsureBasicElytronSubsystem())
                                 .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityRealmsToElytron())
                                 .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityDomainsToElytron())
+                                .subtask(legacySecurityConfigurationMigration.getMigrateDeprecatedSecurityRealmsToSaslAuthenticationFactory())
                         )
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new WildFly27_0MigrateJBossDomainProperties<>())

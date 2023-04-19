@@ -83,6 +83,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
     public static final String SECURITY_REALMS = "security-realms";
     public static final String SERVER_IDENTITIES = "server-identities";
     public static final String SSL = "ssl";
+    public static final String SASL = "sasl";
+    public static final String SASL_AUTHENTICATION_FACTORY = "sasl-authentication-factory";
+    public static final String DEFAULT_REALM = "default-realm";
     public static final String SUBSYSTEM = "subsystem";
 
     private static final String DEFAULT_USER = "default-user";
@@ -225,6 +228,60 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 break;
             }
         }
+    }
+
+    private void processElementElytronSecurityDomains(StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final TaskContext context, String profileName) throws XMLStreamException {
+        while (xmlEventReader.hasNext()) {
+            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                final StartElement element = xmlEvent.asStartElement();
+                final String elementLocalName = element.getName().getLocalPart();
+                if (elementLocalName.equals(SECURITY_DOMAIN)) {
+                    processElementElytronSecurityDomain(element, xmlEventReader, legacySecurityConfiguration, context, profileName);
+                } else {
+                    // ignore element
+                    skipElement(element, xmlEventReader);
+                }
+            } else if (xmlEvent.isEndElement()) {
+                break;
+            }
+        }
+    }
+
+    private void processElementElytronSecurityDomain(StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final TaskContext context, String profileName) throws XMLStreamException {
+        final String name = startElement.getAttributeByName(new QName("name")).getValue();
+        final Attribute defaultRealm = startElement.getAttributeByName(new QName(DEFAULT_REALM));
+        if (defaultRealm != null) {
+            legacySecurityConfiguration.getElytronSecurityDomainNames().putIfAbsent(name, defaultRealm.getValue());
+        }
+        skipElement(startElement, xmlEventReader);
+    }
+
+    private void processElementElytronSasl(StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final TaskContext context, String profileName) throws XMLStreamException {
+        while (xmlEventReader.hasNext()) {
+            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                final StartElement element = xmlEvent.asStartElement();
+                final String elementLocalName = element.getName().getLocalPart();
+                if (elementLocalName.equals(SASL_AUTHENTICATION_FACTORY)) {
+                    processElementElytronSaslAuthenticationFactory(element, xmlEventReader, legacySecurityConfiguration, context, profileName);
+                } else {
+                    // ignore element
+                    skipElement(element, xmlEventReader);
+                }
+            } else if (xmlEvent.isEndElement()) {
+                break;
+            }
+        }
+    }
+
+    private void processElementElytronSaslAuthenticationFactory(StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final TaskContext context, String profileName) throws XMLStreamException {
+        final String name = startElement.getAttributeByName(new QName("name")).getValue();
+        final Attribute securityDomain = startElement.getAttributeByName(new QName(SECURITY_DOMAIN));
+        if (securityDomain != null) {
+            legacySecurityConfiguration.getElytronSaslAuthenticationFactoryNames().putIfAbsent(name, securityDomain.getValue());
+        }
+        skipElement(startElement, xmlEventReader);
     }
 
     protected void processElementSecurityRealm(final StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final TaskContext context) throws XMLStreamException {
@@ -420,6 +477,8 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 final StartElement element = xmlEvent.asStartElement();
                 if (element.getName().getLocalPart().equals(SUBSYSTEM) && element.getName().getNamespaceURI().startsWith("urn:jboss:domain:security:")) {
                     processElementSecuritySubsystem(element, xmlEventReader, legacySecurityConfiguration, profileName, context);
+                } else if (element.getName().getLocalPart().equals(SUBSYSTEM) && element.getName().getNamespaceURI().startsWith("urn:wildfly:elytron:")) {
+                    processElementElytronSubsystem(element, xmlEventReader, legacySecurityConfiguration, profileName, context);
                 } else {
                     // ignore
                     skipElement(element, xmlEventReader);
@@ -438,6 +497,26 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 final String elementLocalName = element.getName().getLocalPart();
                 if (elementLocalName.equals(SECURITY_DOMAINS)) {
                     processElementSecurityDomains(element, xmlEventReader, legacySecurityConfiguration, profileName, context);
+                } else {
+                    // ignore element
+                    skipElement(element, xmlEventReader);
+                }
+            } else if (xmlEvent.isEndElement()) {
+                break;
+            }
+        }
+    }
+
+    protected void processElementElytronSubsystem(StartElement startElement, XMLEventReader xmlEventReader, LegacySecurityConfiguration legacySecurityConfiguration, final String profileName, final TaskContext context) throws XMLStreamException {
+        while (xmlEventReader.hasNext()) {
+            XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            if (xmlEvent.isStartElement()) {
+                final StartElement element = xmlEvent.asStartElement();
+                final String elementLocalName = element.getName().getLocalPart();
+                if (elementLocalName.equals(SECURITY_DOMAINS)) {
+                    processElementElytronSecurityDomains(element, xmlEventReader, legacySecurityConfiguration, context, profileName);
+                } else if (elementLocalName.equals(SASL)) {
+                    processElementElytronSasl(element, xmlEventReader, legacySecurityConfiguration, context, profileName);
                 } else {
                     // ignore element
                     skipElement(element, xmlEventReader);

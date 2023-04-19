@@ -31,6 +31,11 @@ public class LegacySecurityConfiguration {
     private final Set<LegacySecuredManagementInterface> securedManagementInterfaces = new HashSet<>();
     private final List<LegacySecurityDomain> legacySecurityDomains = new ArrayList<>();
     private String domainControllerRemoteSecurityRealm;
+    // the following 2 attributes relate to the Elytron based configuration found in domain.xml
+    // security domain name -> security realm name
+    private final Map<String, String> elytronSecurityDomainNames = new HashMap<>();
+    // sasl authentication factory name -> security domain name
+    private final Map<String, String> elytronSaslAuthenticationFactoryNames = new HashMap<>();
 
     public LegacySecurityConfiguration(JBossServerConfiguration targetConfiguration) {
         this.targetConfiguration = targetConfiguration;
@@ -62,6 +67,14 @@ public class LegacySecurityConfiguration {
 
     public void setDomainControllerRemoteSecurityRealm(String domainControllerRemoteSecurityRealm) {
         this.domainControllerRemoteSecurityRealm = domainControllerRemoteSecurityRealm;
+    }
+
+    public Map<String, String> getElytronSecurityDomainNames() {
+        return elytronSecurityDomainNames;
+    }
+
+    public Map<String, String> getElytronSaslAuthenticationFactoryNames() {
+        return elytronSaslAuthenticationFactoryNames;
     }
 
     @Override

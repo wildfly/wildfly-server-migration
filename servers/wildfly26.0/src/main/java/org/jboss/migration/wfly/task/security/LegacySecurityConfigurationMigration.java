@@ -46,5 +46,8 @@ public class LegacySecurityConfigurationMigration<S extends JBossServer<S>> {
         return new MigrateLegacySecurityDomainsToElytron<>(legacySecurityConfigurations);
     }
 
+    public MigrateDeprecatedSecurityRealmsToSaslAuthenticationFactory<JBossServerConfiguration<S>> getMigrateDeprecatedSecurityRealmsToSaslAuthenticationFactory() {
+        return new MigrateDeprecatedSecurityRealmsToSaslAuthenticationFactory<>(legacySecurityConfigurations);
+    }
 
 }
