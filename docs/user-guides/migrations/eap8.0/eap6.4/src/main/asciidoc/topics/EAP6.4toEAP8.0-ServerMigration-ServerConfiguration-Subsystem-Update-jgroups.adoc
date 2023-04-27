@@ -1,0 +1,19 @@
+= Update the JGroups Subsystem
+
+The JBoss Server Migration Tool does the following updates to any *jgroups* subsystem configuration found while migrating a server configuration:
+
+* Replaces protocol `MERGE2` with `MERGE3`.
+* Replaces protocol `FD` with `FD_ALL`.
+* Replaces protocol `pbcast.NAKACK` with `pbcast.NAKACK2`.
+* Replaces protocol `UNICAST2` with `UNICAST3`.
+* Removes protocol `RSVP`.
+* Replaces protocol `FRAG2` with `FRAG3`.
+
+If you prefer, you can set the `subsystem.jgroups.update.skip` environment property to `true` to skip automatic update of the *jgroups* subsystem configuration.
+
+Upon successful migration of the *jgroups* subsystem configuration, you should see the following message in the console:
+
+[source,options="nowrap"]
+----
+ INFO  Subsystem jgroups updated.
+----

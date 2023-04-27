@@ -1,0 +1,34 @@
+= Update the undertow Subsystem
+
+In addition to migrating the *web* subsystem to {server-target-productName}, the JBoss Server Migration Tool adds the following functionality provided by the new *undertow* subsystem, which is configured in the {server-target-productName} default server configurations.
+
+* Sets the default `HTTP Listener` redirect socket.
+* Adds support for Jakarta EE `Websockets`.
+* Sets the default `HTTPS` listener.
+* Adds support for `HTTP2`.
+* Removes the `Server` response header.
+* Removes the `X-Powered-By` response header.
+* Sets the default `HTTP Invoker`.
+
+By default, the tool automatically updates any *undertow* subsystem configuration to include these changes.
+If you prefer, you can configure the environment properties to customize the process of updating the *undertow* subsystem configuration.
+
+|===
+| Property Name |Property Description
+
+| `subsystem.undertow.update.skip` | If set to `true`, the tool skips the update of the *undertow* subsystem.
+| `subsystem.undertow.update.set-default-http-listener-redirect-socket.skip` | If set to `true`, the tool does not set the default `HTTP Listener` redirect socket.
+| `subsystem.undertow.update.add-undertow-websockets.skip` | If set to `true`, the tool does not add support for WebSockets.
+| `subsystem.undertow.update.add-undertow-https-listener.skip` | If set to `true`, the tool does not sets the default `HTTPS` listener.
+| `subsystem.undertow.update.enable-http2.skip` | If set to `true`, the tool does not add support for `HTTP2`.
+| `subsystem.undertow.update.remove-response-header.server-header.skip` | If set to `true`, the tool does not removes the `Server` response header.
+| `subsystem.undertow.update.remove-response-header.x-powered-by-header.skip` | If set to `true`, the tool does not removes the `X-Powered-By` response header.
+| `subsystem.undertow.update.add-http-invoker.skip` | If set to `true`, the tool does not sets the default `HTTP Invoker`.
+|===
+
+Upon successful migration of a *undertow* subsystem configuration, you should see the following message in the console:
+
+[source,options="nowrap"]
+----
+ INFO  Subsystem undertow updated.
+----

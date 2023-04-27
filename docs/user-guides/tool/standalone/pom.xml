@@ -73,148 +73,116 @@
             <artifactId>jboss-server-migration-eap7.4-to-eap7.4-userguide</artifactId>
         </dependency>
 
-        <!-- WFLY 23.0 -->
+        <!-- EAP 8.0 -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly8.2-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-eap7.3-to-eap8.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly9.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-eap7.4-to-eap8.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly10.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-eap8.0-to-eap8.0-userguide</artifactId>
+        </dependency>
+
+        <!-- WFLY 26.0 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-wildfly14.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly10.1-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly15.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly11.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly16.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly12.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly17.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly13.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly18.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly14.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly19.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly15.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly20.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly16.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly21.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly17.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly22.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly18.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly23.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly19.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly24.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly20.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly25.0-to-wildfly26.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly21.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly26.0-to-wildfly26.0-userguide</artifactId>
+        </dependency>
+
+        <!-- WFLY 27.0 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-wildfly18.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly22.0-to-wildfly23.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly19.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly23.0-to-wildfly23.0-userguide</artifactId>
-        </dependency>
-        <!-- WFLY 24.0 -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly8.2-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly20.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly9.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly21.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly10.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly22.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly10.1-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly23.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly11.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly24.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly12.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly25.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly13.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly26.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly14.0-to-wildfly24.0-userguide</artifactId>
+            <artifactId>jboss-server-migration-wildfly27.0-to-wildfly27.0-userguide</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly15.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly16.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly17.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly18.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly19.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly20.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly21.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly22.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly23.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly24.0-to-wildfly24.0-userguide</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -342,391 +310,295 @@
                         </configuration>
                     </execution>
 
-                    <!-- WFLY 23.0 -->
+                    <!-- EAP 8.0 -->
                     <execution>
-                        <id>WFLY8.2toWFLY23.0</id>
+                        <id>EAP7.3toEAP8.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly8.2-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly8.2-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-eap7.3-to-eap8.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/eap7.3-to-eap8.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY9.0toWFLY23.0</id>
+                        <id>EAP7.4toEAP8.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly9.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly9.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-eap7.4-to-eap8.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/eap7.4-to-eap8.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY10.0toWFLY23.0</id>
+                        <id>EAP8.0toEAP8.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly10.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly10.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-eap8.0-to-eap8.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/eap8.0-to-eap8.0</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <!-- WFLY 26.0 -->
+                    <execution>
+                        <id>WFLY14.0toWFLY26.0</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>jboss-server-migration-wildfly14.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly14.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY10.1toWFLY23.0</id>
+                        <id>WFLY15.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly10.1-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly10.1-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly15.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly15.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY11.0toWFLY23.0</id>
+                        <id>WFLY16.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly11.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly11.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly16.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly16.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY12.0toWFLY23.0</id>
+                        <id>WFLY17.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly12.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly12.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly17.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly17.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY13.0toWFLY23.0</id>
+                        <id>WFLY18.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly13.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly13.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly18.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly18.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY14.0toWFLY23.0</id>
+                        <id>WFLY19.1toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly14.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly14.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly19.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly19.1-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY15.0toWFLY23.0</id>
+                        <id>WFLY20.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly15.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly15.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly20.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly20.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY16.0toWFLY23.0</id>
+                        <id>WFLY21.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly16.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly16.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly21.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly21.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY17.0toWFLY23.0</id>
+                        <id>WFLY22.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly17.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly17.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly22.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly22.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY18.0toWFLY23.0</id>
+                        <id>WFLY23.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly18.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly18.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly23.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly23.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY19.1toWFLY23.0</id>
+                        <id>WFLY24.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly19.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly19.1-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly24.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly24.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY20.0toWFLY23.0</id>
+                        <id>WFLY25.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly20.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly20.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly25.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly25.0-to-wildfly26.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY21.0toWFLY23.0</id>
+                        <id>WFLY26.0toWFLY26.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly21.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly21.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly26.0-to-wildfly26.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly26.0-to-wildfly26.0</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- WFLY 27.0 -->
+                    <execution>
+                        <id>WFLY18.0toWFLY27.0</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>jboss-server-migration-wildfly18.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly18.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY22.0toWFLY23.0</id>
+                        <id>WFLY19.1toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly22.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly22.0-to-wildfly23.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly19.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly19.1-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY23.0toWFLY23.0</id>
+                        <id>WFLY20.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly23.0-to-wildfly23.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly23.0-to-wildfly23.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <!-- WFLY 24.0 -->
-                    <execution>
-                        <id>WFLY8.2toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly8.2-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly8.2-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly20.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly20.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY9.0toWFLY24.0</id>
+                        <id>WFLY21.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly9.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly9.0-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly21.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly21.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY10.0toWFLY24.0</id>
+                        <id>WFLY22.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly10.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly10.0-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly22.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly22.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY10.1toWFLY24.0</id>
+                        <id>WFLY23.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly10.1-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly10.1-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly23.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly23.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY11.0toWFLY24.0</id>
+                        <id>WFLY24.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly11.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly11.0-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly24.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly24.0-to-wildfly27.0</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>WFLY25.0toWFLY27.0</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>jboss-server-migration-wildfly25.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly25.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY12.0toWFLY24.0</id>
+                        <id>WFLY26.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly12.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly12.0-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly26.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly26.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>WFLY13.0toWFLY24.0</id>
+                        <id>WFLY27.0toWFLY27.0</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly13.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly13.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY14.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly14.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly14.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY15.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly15.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly15.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY16.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly16.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly16.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY17.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly17.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly17.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY18.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly18.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly18.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY19.1toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly19.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly19.1-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY21.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly21.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly21.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY20.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly20.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly20.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY22.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly22.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly22.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY23.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly23.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly23.0-to-wildfly24.0</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>WFLY24.0toWFLY24.0</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>jboss-server-migration-wildfly24.0-to-wildfly24.0-userguide</includeArtifactIds>
-                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly24.0-to-wildfly24.0</outputDirectory>
+                            <includeArtifactIds>jboss-server-migration-wildfly27.0-to-wildfly27.0-userguide</includeArtifactIds>
+                            <outputDirectory>${project.build.outputDirectory}/migrations/wildfly27.0-to-wildfly27.0</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

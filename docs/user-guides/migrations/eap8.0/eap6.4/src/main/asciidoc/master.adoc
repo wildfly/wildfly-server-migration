@@ -1,0 +1,38 @@
+// setup of vars used by this and/or included docs
+:server-source-productName: JBoss EAP 6.4
+:server-source-name: EAP
+:server-source-version: 6.4.0.GA
+:server-source-baseDir: jboss-eap-6.4
+
+:server-target-productName: JBoss EAP 8.0
+:server-target-name: JBoss EAP
+:server-target-version: 8.0.0.GA
+:server-target-baseDir: jboss-eap-8.0
+
+:includesDir: topics
+
+// toc setup
+:toc:
+:numbered:
+
+// include abstract
+include::{includesDir}/ServerMigration.adoc[]
+
+// customize
+The server migration from {server-source-productName} to {server-target-productName} includes:
+
+ * Modules Migration
+ * Standalone Server Migration
+ * Managed Domain Migration
+
+// include the docs for each task
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-Modules.adoc[]
+
+include::{includesDir}/EAP6.4toEAP8.0-ServerMigration-StandaloneServer.adoc[]
+
+include::{includesDir}/EAP6.4toEAP8.0-ServerMigration-ManagedDomain.adoc[]
+
+:leveloffset: -1
+

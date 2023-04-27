@@ -23,6 +23,7 @@ public interface JBossExtensionNames {
     String BATCH = "org.wildfly.extension.batch";
     String BATCH_JBERET = "org.wildfly.extension.batch.jberet";
     String BEAN_VALIDATION = "org.wildfly.extension.bean-validation";
+    String CLUSTERING_EJB = "org.wildfly.extension.clustering.ejb";
     String CLUSTERING_WEB = "org.wildfly.extension.clustering.web";
     String CMP = "org.jboss.as.cmp";
     String CONFIGADMIN = "org.jboss.as.configadmin";
@@ -35,6 +36,7 @@ public interface JBossExtensionNames {
     String EE_SECURITY = "org.wildfly.extension.ee-security";
     String EJB3 = "org.jboss.as.ejb3";
     String ELYTRON = "org.wildfly.extension.elytron";
+    String ELYTRON_OIDC_CLIENT = "org.wildfly.extension.elytron-oidc-client";
     String HEALTH = "org.wildfly.extension.health";
     String IIOP_OPENJDK = "org.wildfly.iiop-openjdk";
     String INFINISPAN = "org.jboss.as.clustering.infinispan";
@@ -64,6 +66,7 @@ public interface JBossExtensionNames {
     String MICROPROFILE_REACTIVE_STREAMS_OPERATORS_SMALLRYE = "org.wildfly.extension.microprofile.reactive-streams-operators-smallrye";
     String MODCLUSTER = "org.jboss.as.modcluster";
     String NAMING = "org.jboss.as.naming";
+    String OPENTELEMETRY = "org.wildfly.extension.opentelemetry";
     String OSGI = "org.jboss.as.osgi";
     String POJO = "org.jboss.as.pojo";
     String REMOTING = "org.jboss.as.remoting";

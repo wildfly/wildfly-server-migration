@@ -477,6 +477,24 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                 return getThis();
             }
 
+            public T extensionsExcept(Extensions extensions, String... moduleNamesToExclude) {
+                for (Extension extension : extensions.getExtensions()) {
+                    boolean exclude = false;
+                    if (moduleNamesToExclude != null) {
+                        for (String moduleName : moduleNamesToExclude) {
+                            if (moduleName.equals(extension.getModule())) {
+                                exclude = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!exclude) {
+                        this.extensionMap.put(extension.getModule(), extension);
+                    }
+                }
+                return getThis();
+            }
+
             public Extensions build() {
                 return new Extensions(this);
             }

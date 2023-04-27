@@ -36,6 +36,11 @@ public interface JBossExtensions {
             .subsystem(JBossSubsystemNames.BEAN_VALIDATION)
             .build();
 
+    Extension CLUSTERING_EJB = Extension.builder()
+            .module(JBossExtensionNames.CLUSTERING_EJB)
+            .subsystem(JBossSubsystemNames.DISTRIBUTABLE_EJB)
+            .build();
+
     Extension CLUSTERING_WEB = Extension.builder()
             .module(JBossExtensionNames.CLUSTERING_WEB)
             .subsystem(JBossSubsystemNames.DISTRIBUTABLE_WEB)
@@ -96,6 +101,11 @@ public interface JBossExtensions {
     Extension ELYTRON = Extension.builder()
             .module(JBossExtensionNames.ELYTRON)
             .subsystem(Subsystem.builder().name(JBossSubsystemNames.ELYTRON).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.ELYTRON))
+            .build();
+
+    Extension ELYTRON_OIDC_CLIENT = Extension.builder()
+            .module(JBossExtensionNames.ELYTRON_OIDC_CLIENT)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.ELYTRON_OIDC_CLIENT).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.ELYTRON_OIDC_CLIENT))
             .build();
 
     Extension HEALTH = Extension.builder()
@@ -241,6 +251,11 @@ public interface JBossExtensions {
     Extension NAMING = Extension.builder()
             .module(JBossExtensionNames.NAMING)
             .subsystem(JBossSubsystemNames.NAMING)
+            .build();
+
+    Extension OPENTELEMETRY = Extension.builder()
+            .module(JBossExtensionNames.OPENTELEMETRY)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.OPENTELEMETRY).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.OPENTELEMETRY))
             .build();
 
     Extension OSGI = Extension.builder()

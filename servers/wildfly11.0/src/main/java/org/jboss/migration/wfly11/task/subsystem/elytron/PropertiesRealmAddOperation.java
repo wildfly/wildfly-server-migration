@@ -77,6 +77,7 @@ public class PropertiesRealmAddOperation {
         private final String path;
         private String relativeTo;
         private String digestRealmName;
+        private Boolean plainText;
 
         public Properties(String path) {
             this.path = path;
@@ -84,6 +85,11 @@ public class PropertiesRealmAddOperation {
 
         public Properties digestRealmName(String digestRealmName) {
             this.digestRealmName = digestRealmName;
+            return this;
+        }
+
+        public Properties plainText(boolean plainText) {
+            this.plainText = plainText;
             return this;
         }
 
@@ -97,6 +103,9 @@ public class PropertiesRealmAddOperation {
             modelNode.get("path").set(path);
             if (relativeTo != null) {
                 modelNode.get("relative-to").set(relativeTo);
+            }
+            if (plainText != null) {
+                modelNode.get("plain-text").set(plainText);
             }
             if (digestRealmName != null) {
                 modelNode.get("digest-realm-name").set(digestRealmName);

@@ -1,0 +1,21 @@
+:toc: macro
+:toc-title:
+
+// include abstract
+include::ServerMigration-ManagedDomain-DomainConfiguration.adoc[]
+
+toc::[]
+
+// include doc for each domain task in EAP8_0ToEAP8_0ServerMigrationProvider.java
+
+:leveloffset: +1
+
+include::ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1

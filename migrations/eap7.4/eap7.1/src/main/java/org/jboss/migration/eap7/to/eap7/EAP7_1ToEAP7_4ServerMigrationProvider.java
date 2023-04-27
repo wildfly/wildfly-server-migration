@@ -21,6 +21,7 @@ import org.jboss.migration.eap.EAPServerMigrationProvider7_4;
 import org.jboss.migration.eap.task.hostexclude.EAP7_4AddHostExcludes;
 import org.jboss.migration.eap.task.subsystem.metrics.EAP7_4AddMetricsSubsystem;
 import org.jboss.migration.wfly.task.subsystem.health.WildFly22_0AddHealthSubsystem;
+import org.jboss.migration.wfly.task.update.WildFly22_0UpdateInfinispanSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
@@ -50,7 +51,7 @@ public class EAP7_1ToEAP7_4ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
                                 .subtask(new MigrateReferencedPaths<>())
-                                .subtask(new EAP7_1ToEAP7_4UpdateInfinispanSubsystem<>())
+                                .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
                                 .subtask(new EAP7_1ToEAP7_4UpdateUndertowSubsystem<>())
                                 .subtask(new EAP7_1ToEAP7_4UpdateJGroupsSubsystem<>())
                                 .subtask(new AddDiscoverySubsystem<>())
@@ -65,7 +66,7 @@ public class EAP7_1ToEAP7_4ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
                                 .subtask(new MigrateReferencedPaths<>())
-                                .subtask(new EAP7_1ToEAP7_4UpdateInfinispanSubsystem<>())
+                                .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
                                 .subtask(new EAP7_1ToEAP7_4UpdateUndertowSubsystem<>())
                                 .subtask(new EAP7_1ToEAP7_4UpdateJGroupsSubsystem<>())
                                 .subtask(new AddDiscoverySubsystem<>())

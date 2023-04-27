@@ -1,0 +1,25 @@
+= Remove Unsupported Subsystems
+
+All subsystems, and related extensions, which are not supported by {server-target-productName}, are automatically removed from a migrated configuration.
+
+The following {server-source-productName} subsystems are not supported by {server-target-productName}:
+
+|===
+|Subsystem Name |Configuration Namespace        |Extension Module
+
+|cmp            |urn:jboss:domain:cmp:*         |org.jboss.as.cmp
+|configadmin    |urn:jboss:domain:configadmin:* |org.jboss.as.configadmin
+|jaxr           |urn:jboss:domain:jaxr:*        |org.jboss.as.jaxr
+|osgi           |urn:jboss:domain:osgi:*        |org.jboss.as.osgi
+|threads        |urn:jboss:domain:threads:*     |org.jboss.as.threads
+|===
+
+NOTE: A subsystem installed in {server-source-productName} by the user, is also considered as unsupported by {server-target-productName}.
+
+The console logs the configuration namespaces, and extension modules, of unsupported subsystems removed from the server configuration being migrated:
+
+[source,options="nowrap"]
+----
+INFO  Unsupported extensions removed: [org.jboss.as.jaxr, org.jboss.as.threads, org.jboss.as.cmp]
+INFO  Unsupported subsystems removed: [urn:jboss:domain:jaxr:1.1, urn:jboss:domain:cmp:1.1, urn:jboss:domain:threads:1.1]
+----

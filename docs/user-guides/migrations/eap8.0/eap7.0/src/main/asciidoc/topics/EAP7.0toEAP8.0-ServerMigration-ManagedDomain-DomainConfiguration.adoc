@@ -1,0 +1,41 @@
+:toc: macro
+:toc-title:
+
+// include abstract
+include::ServerMigration-ManagedDomain-DomainConfiguration.adoc[]
+
+toc::[]
+
+// include doc for each domain task in EAP7_0ToEAP8_0ServerMigrationProvider.java
+
+:leveloffset: +1
+
+include::ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::EAP7.0toEAP8.0-ServerMigration-ServerConfiguration-Subsystem-Update-infinispan.adoc[]
+
+include::EAP7.0toEAP8.0-ServerMigration-ServerConfiguration-Subsystem-Update-jgroups.adoc[]
+
+include::EAP7.0toEAP8.0-ServerMigration-ServerConfiguration-Subsystem-Update-undertow.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-core-management.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-discovery.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-ee-security.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-elytron.adoc[]
+
+include::ServerMigration-ServerConfiguration-AddSocketBindingMulticastAddressExpressions.adoc[]
+
+include::ServerMigration-ServerConfiguration-AddLoadBalancerProfile.adoc[]
+
+include::ServerMigration-ManagedDomain-AddHostExcludes.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1

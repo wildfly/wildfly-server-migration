@@ -1,0 +1,14 @@
+= Update the remoting Subsystem
+
+One of the most relevant features introduced by {server-target-productName} is the new HTTP connector, a connector that is able to replace all legacy remoting protocols and ports, using a single port.
+The HTTP Connector is configured in the *remoting* subsystem and the tool simply updates the subsystem configuration to activate it.
+
+By default, the tool automatically updates the *remoting* subsystem.
+If you prefer, you can set the `subsystem.remoting.update.skip` environment property to `true` to skip automatic update of the *remoting* subsystem configuration.
+
+Upon successful migration of the *remoting* subsystem configuration, you should see the following message in the console:
+
+[source,options="nowrap"]
+----
+ INFO  Subsystem remoting updated.
+----

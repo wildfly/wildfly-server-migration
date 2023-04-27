@@ -1,0 +1,103 @@
+// setup of vars used by this and/or included docs
+:server-source-productName: WildFly 24.0
+:server-source-name: WildFly
+:server-source-version: 24.0.0.Final
+:server-source-baseDir: wildfly-24.0
+
+:server-target-productName: WildFly 26.0
+:server-target-name: WildFly
+:server-target-version: 26.0.0.Final
+:server-target-baseDir: wildfly-26.0
+
+:includesDir: topics
+
+// toc setup
+:toc:
+:numbered:
+
+// include abstract
+include::{includesDir}/ServerMigration.adoc[]
+
+// customize
+The server migration from {server-source-productName} to {server-target-productName} includes:
+
+ * Modules Migration
+ * Standalone Server Migration
+ * Managed Domain Migration
+
+:leveloffset: +1
+
+// --- modules migration
+
+include::{includesDir}/ServerMigration-Modules.adoc[]
+
+// --- standalone server migration
+
+include::{includesDir}/ServerMigration-StandaloneServer.adoc[]
+
+:leveloffset: +1
+
+// ------ standalone server configuration migration
+
+include::{includesDir}/ServerMigration-StandaloneServer-StandaloneServerConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-Subsystem-Add-health.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-Subsystem-Add-metrics.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateCompatibleSecurityRealms.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1
+
+:leveloffset: -1
+
+// --- managed domain migration
+
+include::{includesDir}/ServerMigration-ManagedDomain.adoc[]
+
+// ------ domain configuration
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ManagedDomain-DomainConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1
+
+// ------ host configuration
+
+include::{includesDir}/ServerMigration-ManagedDomain-HostConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateCompatibleSecurityRealms.adoc[]
+
+:leveloffset: -1
+
+:leveloffset: -1
+
+:leveloffset: -1
+

@@ -183,6 +183,46 @@ public class XMLFiles {
         }
     }
 
+    /**
+     * Process the specified XML file.
+     * @param xmlFile the xml file to process
+     * @param processor the xml file content processor
+     * @throws ServerMigrationFailureException
+     */
+    public static void process(Path xmlFile, XMLFileProcessor processor) throws ServerMigrationFailureException {
+        try {
+            byte[] xmlFileBytes = Files.readAllBytes(xmlFile);
+            try (InputStream inputStream = new ByteArrayInputStream(xmlFileBytes)) {
+                process(inputStream, processor);
+            }
+        } catch (IOException e) {
+            throw new ServerMigrationFailureException("XML file processor failed.", e);
+        }
+    }
+
+    private static void process(final InputStream inputStream, XMLFileProcessor processor) throws ServerMigrationFailureException {
+        XMLEventReader xmlEventReader = null;
+        try {
+            xmlEventReader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
+            while (xmlEventReader.hasNext()) {
+                XMLEvent xmlEvent = xmlEventReader.nextEvent();
+                if (xmlEvent.isStartElement()) {
+                    processor.process(xmlEvent.asStartElement(), xmlEventReader);
+                }
+            }
+        } catch (XMLStreamException e) {
+            throw new ServerMigrationFailureException("XML file processing failed", e);
+        } finally {
+            if (xmlEventReader != null) {
+                try {
+                    xmlEventReader.close();
+                } catch (XMLStreamException e) {
+                    // ignore
+                }
+            }
+        }
+    }
+
     private static void skipTillEndElement(XMLEventReader xmlEventReader) throws XMLStreamException {
         int endElementsLeft = 1;
         do {

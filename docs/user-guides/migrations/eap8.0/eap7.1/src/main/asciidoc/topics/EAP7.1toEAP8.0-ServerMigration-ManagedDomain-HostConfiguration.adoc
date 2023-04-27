@@ -1,0 +1,25 @@
+:toc: macro
+:toc-title:
+
+// include abstract
+include::ServerMigration-ManagedDomain-HostConfiguration.adoc[]
+
+toc::[]
+
+// include doc for each host task in EAP7_1ToEAP8_0ServerMigrationProvider.java
+
+:leveloffset: +1
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-core-management.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-elytron.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateCompatibleSecurityRealms.adoc[]
+
+include::ServerMigration-ServerConfiguration-AddApplicationRealmSSLServerIdentity.adoc[]
+
+:leveloffset: -1
