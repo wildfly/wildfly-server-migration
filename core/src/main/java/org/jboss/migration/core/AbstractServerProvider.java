@@ -44,8 +44,10 @@ public abstract class AbstractServerProvider implements ServerProvider {
 
     protected boolean isProviderFor(ProductInfo productInfo) {
         if (productInfo == null) {
+            ServerMigrationLogger.ROOT_LOGGER.debugf("Failed to retrieve Product Info.");
             return false;
         }
+        ServerMigrationLogger.ROOT_LOGGER.debugf("Product Info retrieved... %s", productInfo);
         final String productName = productInfo.getName();
         if (productName == null || !Pattern.matches(getProductNameRegex(), productName)) {
             ServerMigrationLogger.ROOT_LOGGER.debugf("Product name %s doesn't match!", productName);

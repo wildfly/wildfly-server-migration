@@ -17,7 +17,10 @@ package org.jboss.migration.eap;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.Server;
+import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.JBossServer;
+import org.jboss.migration.core.jboss.ManifestProductInfo;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +30,17 @@ import java.nio.file.Path;
  * @author emmartins
  */
 public class EAPServerProvider8_0 extends EAPServerProvider7_4 {
+
+    @Override
+    protected ProductInfo getProductInfo(Path baseDir, MigrationEnvironment migrationEnvironment) throws IllegalArgumentException, ServerMigrationFailureException {
+        final JBossServer.Module module = new JBossServer.Modules(baseDir).getModule("org.jboss.as.product:main");
+        if (module == null) {
+            return null;
+        }
+        final Path manifestPath = module.getModuleDir().resolve("dir").resolve("META-INF").resolve("MANIFEST.MF");
+        final ManifestProductInfo productInfo = ManifestProductInfo.from(manifestPath);
+        return productInfo;
+    }
 
     @Override
     protected String getProductVersionRegex() {

@@ -142,6 +142,18 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-eap7.0-to-eap8.0</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-eap7.1-to-eap8.0</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-eap7.2-to-eap8.0</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>jboss-server-migration-eap7.3-to-eap8.0</artifactId>
         </dependency>
         <dependency>

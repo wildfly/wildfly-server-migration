@@ -61,7 +61,7 @@
             versions, add the artifactId or other qualifier to the property name.
             For example: <version.org.jboss.as.console>
          -->
-        <version.server>27.0.0.Beta1</version.server>
+        <version.server>28.0.1.Final</version.server>
         <version.org.asciidoctor.asciidoctor-maven-plugin>1.5.6</version.org.asciidoctor.asciidoctor-maven-plugin>
 
         <!-- Surefire args -->
@@ -72,7 +72,6 @@
         <linkXRef>false</linkXRef>
         <version.checkstyle>6.8</version.checkstyle>
 
-        <version.junit>4.12</version.junit>
         <version.org.wildfly.checkstyle-config>1.0.5.Final</version.org.wildfly.checkstyle-config>
         <version.org.wildfly.build-tools>1.2.10.Final</version.org.wildfly.build-tools>
         <version.org.wildfly.galleon-plugins>1.0.1.Final</version.org.wildfly.galleon-plugins>
@@ -123,6 +122,9 @@
         <module>migrations/eap7.4/eap7.2</module>
         <module>migrations/eap7.4/eap7.3</module>
         <module>migrations/eap7.4/eap7.4</module>
+        <module>migrations/eap8.0/eap7.0</module>
+        <module>migrations/eap8.0/eap7.1</module>
+        <module>migrations/eap8.0/eap7.2</module>
         <module>migrations/eap8.0/eap7.3</module>
         <module>migrations/eap8.0/eap7.4</module>
         <module>migrations/eap8.0/eap8.0</module>
@@ -484,6 +486,21 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>jboss-server-migration-eap8.0-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.0-to-eap8.0</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.1-to-eap8.0</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.2-to-eap8.0</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -916,6 +933,14 @@
             <dependency>
                 <groupId>org.wildfly</groupId>
                 <artifactId>wildfly-ee-feature-pack-parent</artifactId>
+                <version>${version.server}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-standard-test-bom</artifactId>
                 <version>${version.server}</version>
                 <type>pom</type>
                 <scope>import</scope>

@@ -53,10 +53,12 @@ public class MigrateSubsystemResourceSubtaskBuilder<S> extends ManageableResourc
         } catch (IOException e) {
             throw new ServerMigrationFailureException("Subsystem config "+configName+" migration failed", e);
         }
-        taskContext.getLogger().tracef("Op result: %s", result.asString());
+        taskContext.getLogger().debugf("Migration op result: %s", result.asString());
         final String outcome = result.get(OUTCOME).asString();
         if(!SUCCESS.equals(outcome)) {
-            throw new ServerMigrationFailureException("Subsystem config "+configName+" migration failed: "+result.get("migration-error").asString());
+            final String description = result.hasDefined("migration-error") ? result.get("migration-error").asString()
+                    : result.get("failure-description").asString();
+            throw new ServerMigrationFailureException("Subsystem config "+configName+" migration failed: "+description);
         } else {
             final ServerMigrationTaskResult.Builder resultBuilder = new ServerMigrationTaskResult.Builder().success();
             final List<String> migrateWarnings = new ArrayList<>();

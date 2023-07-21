@@ -173,6 +173,11 @@ public interface JBossExtensions {
             .subsystem(JBossSubsystemNames.JSR77)
             .build();
 
+    Extension KEYCLOAK = Extension.builder()
+            .module(JBossExtensionNames.KEYCLOAK)
+            .subsystem(JBossSubsystemNames.KEYCLOAK)
+            .build();
+
     Extension LOGGING = Extension.builder()
             .module(JBossExtensionNames.LOGGING)
             .subsystem(JBossSubsystemNames.LOGGING)
@@ -261,6 +266,11 @@ public interface JBossExtensions {
     Extension OSGI = Extension.builder()
             .module(JBossExtensionNames.OSGI)
             .subsystem(JBossSubsystemNames.OSGI)
+            .build();
+
+    Extension PICKETLINK = Extension.builder()
+            .module(JBossExtensionNames.PICKETLINK)
+            .subsystem(JBossSubsystemNames.PICKETLINK_FEDERATION)
             .build();
 
     Extension POJO = Extension.builder()

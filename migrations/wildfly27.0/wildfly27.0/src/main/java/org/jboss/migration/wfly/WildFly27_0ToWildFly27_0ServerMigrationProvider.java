@@ -16,6 +16,7 @@
 package org.jboss.migration.wfly;
 
 import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.subsystem.keycloak.MigrateKeycloakSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
@@ -39,6 +40,7 @@ public class WildFly27_0ToWildFly27_0ServerMigrationProvider implements WildFly2
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
                         .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new MigrateKeycloakSubsystem<>())
                         .subtask(new MigrateDeployments<>()))
                 .domain(serverUpdateBuilders.domainBuilder()
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
@@ -46,6 +48,7 @@ public class WildFly27_0ToWildFly27_0ServerMigrationProvider implements WildFly2
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
                                 .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new MigrateKeycloakSubsystem<>())
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())

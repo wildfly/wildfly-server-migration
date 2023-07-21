@@ -19,6 +19,7 @@ package org.jboss.migration.eap7.to.eap7;
 import org.jboss.migration.eap.EAPXPServer8_0;
 import org.jboss.migration.eap.EAPXPServerMigrationProvider8_0;
 import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.subsystem.keycloak.MigrateKeycloakSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
@@ -41,6 +42,7 @@ public class EAPXP8_0ToEAPXP8_0ServerMigrationProvider implements EAPXPServerMig
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
                         .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new MigrateKeycloakSubsystem<>())
                         .subtask(new MigrateDeployments<>()))
                 .domain(serverUpdateBuilders.domainBuilder()
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
@@ -48,6 +50,7 @@ public class EAPXP8_0ToEAPXP8_0ServerMigrationProvider implements EAPXPServerMig
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
                                 .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new MigrateKeycloakSubsystem<>())
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())

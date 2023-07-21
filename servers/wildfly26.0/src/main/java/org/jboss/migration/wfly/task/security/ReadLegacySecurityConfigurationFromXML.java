@@ -103,7 +103,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 .skipPolicy(skipIfDefaultTaskSkipPropertyIsSet())
                 .runnable(context -> {
                     final Logger logger = context.getLogger();
-                    logger.debug("Searching for legacy security XML configuration, not supported by the target server...");
+                    logger.debug("Retrieving legacy security XML configuration...");
                     final LegacySecurityConfiguration legacySecurityConfiguration = processXMLConfiguration(source, targetConfigurationPath, context);
                     ServerMigrationTaskResult taskResult = legacySecurityConfiguration != null ? ServerMigrationTaskResult.SUCCESS : ServerMigrationTaskResult.SKIPPED;
                     if (taskResult.getStatus() == ServerMigrationTaskResult.Status.SKIPPED) {
@@ -200,7 +200,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (securityRealmAttr != null) {
                     final LegacySecuredManagementInterface<S> securedManagementInterface = new LegacySecuredManagementInterface<>(elementLocalName, securityRealmAttr.getValue());
                     legacySecurityConfiguration.getSecuredManagementInterfaces().add(securedManagementInterface);
-                    context.getLogger().debugf("Management Interface %s is secured by legacy security realm %s", securedManagementInterface.getName(), securedManagementInterface.getSecurityRealm());
+                    context.getLogger().warnf("Management Interface %s is secured by legacy security realm %s, and its configuration will be changed to use the target's server Elytron matching functionally configured by default, which may require additional Elytron manual configuration.", securedManagementInterface.getName(), securedManagementInterface.getSecurityRealm());
                 }
                 skipElement(startElement, xmlEventReader);
            } else if (xmlEvent.isEndElement()) {
@@ -242,10 +242,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 } else if (elementLocalName.equals(AUTHORIZATION)) {
                     processElementAuthorization(element, xmlEventReader, securityRealm, context);
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security realm element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    //throw new UnsupportedOperationException("Legacy security realm element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -268,7 +267,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(SSL)) {
                     processElementServerIdentitiesSSL(element, xmlEventReader, serverIdentities, context);
                 } else {
-                    context.getLogger().warnf("Legacy security realm's %s server identity found. Please note that the migration for such server identity is not supported and will be ignored.", elementLocalName);
+                    //context.getLogger().warnf("Legacy security realm's %s server identity found. Please note that the migration for such server identity is not supported and will be ignored.", elementLocalName);
                     skipElement(element, xmlEventReader);
                 }
             } else if (xmlEvent.isEndElement()) {
@@ -288,7 +287,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(KEYSTORE)) {
                     processElementServerIdentitiesSSLKeystore(element, xmlEventReader, serverIdentity, context);
                 } else {
-                    context.getLogger().warnf("Legacy security realm SSL element %s found. Please note that the migration for such element is not available and will be ignored, which may result on an invalid/different migrated SSL configuration.", elementLocalName);
+                    //context.getLogger().warnf("Legacy security realm SSL element %s found. Please note that the migration for such element is not available and will be ignored, which may result on an invalid/different migrated SSL configuration.", elementLocalName);
                     skipElement(element, xmlEventReader);
                 }
             } else if (xmlEvent.isEndElement()) {
@@ -316,7 +315,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
             } else if (attribute.getName().getLocalPart().equals(GENERATE_SELF_SIGNED_CERTIFICATE_HOST)) {
                 keystore.setGenerateSelfSignedCertificateHost(attribute.getValue());
             } else {
-                context.getLogger().debugf("Skipping unexpected attribute of server identities ssl keystore: %s",attribute.getName().getLocalPart());
+                //context.getLogger().debugf("Skipping unexpected attribute of server identities ssl keystore: %s",attribute.getName().getLocalPart());
             }
         }
         skipElement(startElement, xmlEventReader);
@@ -335,10 +334,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 } else if (elementLocalName.equals(PROPERTIES)) {
                     authentication.setProperties(processElementProperties(element, xmlEventReader, context));
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security realm authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    // throw new UnsupportedOperationException("Legacy security realm authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -399,10 +397,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(PROPERTIES)) {
                     authorization.setProperties(processElementProperties(element, xmlEventReader, context));
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security realm authorization's element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    // throw new UnsupportedOperationException("Legacy security realm authorization's element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -482,17 +479,16 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                     processElementSecurityDomainAuthentication(element, xmlEventReader, securityDomain, context);
                 } else if (elementLocalName.equals(AUTHENTICATION_JASPI)) {
                     //processElementSecurityDomainAuthenticationJaspi(element, xmlEventReader, securityDomain, context);
-                    context.getLogger().warnf("Migration of legacy security domain %s's authentication-jaspi%s is not supported and will be ignored.", securityDomain.getName(), (profileName != null ? ", on profile "+profileName+"," : ""));
+                    //context.getLogger().warnf("Migration of legacy security domain %s's authentication-jaspi %s is not supported and will be ignored.", securityDomain.getName(), (profileName != null ? ", on profile "+profileName+"," : ""));
                     skipElement(element, xmlEventReader);
                 } else if (elementLocalName.equals(AUTHORIZATION)) {
                     //processElementSecurityDomainAuthorization(element, xmlEventReader, securityDomain, context);
-                    context.getLogger().warnf("Migration of legacy security domain %s's authorization%s is not supported and will be ignored.", securityDomain.getName(), (profileName != null ? ", on profile "+profileName+"," : ""));
+                    //context.getLogger().warnf("Migration of legacy security domain %s's authorization%s is not supported and will be ignored.", securityDomain.getName(), (profileName != null ? ", on profile "+profileName+"," : ""));
                     skipElement(element, xmlEventReader);
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain element "+elementLocalName+" is not supported, please refer to this specific Migration Task documentation in the Tool's User Guide for more information");
+                    // throw new UnsupportedOperationException("Legacy security domain element "+elementLocalName+" is not supported, please refer to this specific Migration Task documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -519,10 +515,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                         authentication.getLoginModules().add(loginModule);
                     }
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    // throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -540,7 +535,7 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
             return module;
         } else {
             // unsupported login module
-            context.getLogger().warnf("Legacy security domain's login-module with code %s found. Please note that the migration for such element is not available and will be ignored, which may result on an invalid/different migrated security domain configuration.", module.getCode());
+            //context.getLogger().warnf("Legacy security domain's login-module with code %s found. Please note that the migration for such element is not available and will be ignored, which may result on an invalid/different migrated security domain configuration.", module.getCode());
             return null;
         }
     }
@@ -570,10 +565,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(MODULE_OPTION)) {
                     processElementModuleOption(element, xmlEventReader, module, context);
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    // throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -597,10 +591,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(POLICY_MODULE)) {
                     processElementPolicyModule(element, xmlEventReader, authorization, context);
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain authorization element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    //throw new UnsupportedOperationException("Legacy security domain authorization element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -629,10 +622,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 } else if (elementLocalName.equals(AUTH_MODULE)) {
                     processElementAuthModule(element, xmlEventReader, authentication, context);
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    //throw new UnsupportedOperationException("Legacy security domain authentication element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;
@@ -652,10 +644,9 @@ public class ReadLegacySecurityConfigurationFromXML<S extends JBossServer<S>> im
                 if (elementLocalName.equals(LOGIN_MODULE)) {
                     loginModuleStack.getLoginModules().add(processElementLoginModule(element, xmlEventReader, context));
                 } else {
-                    // TODO add user interaction and env property for allowing the migration to proceed by skipping the processing for the unsupported element (i.e. skip parsing)
-                    // skipElement(element, xmlEventReader);
+                    skipElement(element, xmlEventReader);
                     // fail the migration
-                    throw new UnsupportedOperationException("Legacy security domain authentication-jaspi login module stack element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
+                    //throw new UnsupportedOperationException("Legacy security domain authentication-jaspi login module stack element "+elementLocalName+" is not supported, please refer to this specific Migration documentation in the Tool's User Guide for more information");
                 }
             } else if (xmlEvent.isEndElement()) {
                 break;

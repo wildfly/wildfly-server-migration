@@ -50,6 +50,7 @@ public class RemoveLegacySecurityRealmsFromXML<S extends JBossServer<S>> impleme
     private static final String SECURITY_REALMS = "security-realms";
     private static final String SECURITY_REALM = "security-realm";
     private static final String HTTP_INTERFACE = "http-interface";
+    private static final String NATIVE_INTERFACE = "native-interface";
     private static final String REMOTE = "remote";
     private static final String ELYTRON_SUBSYSTEM_XMLNS_PREFIX = "urn:wildfly:elytron:";
 
@@ -73,7 +74,6 @@ public class RemoveLegacySecurityRealmsFromXML<S extends JBossServer<S>> impleme
 
     protected ServerMigrationTaskResult processXMLConfiguration(final JBossServerConfiguration<S> source, final JBossServerConfiguration targetConfigurationPath, final TaskContext context) {
         // setup and run the xml filter
-        final Boolean updated = false;
         ServerMigrationTaskResult.Builder taskResultBuilder = new ServerMigrationTaskResult.Builder().skipped();
         final XMLFileFilter extensionsFilter = (startElement, xmlEventReader, xmlEventWriter, xmlEventFactory) -> {
             final String elementLocalName = startElement.getName().getLocalPart();
@@ -84,7 +84,7 @@ public class RemoveLegacySecurityRealmsFromXML<S extends JBossServer<S>> impleme
                 } else {
                     return XMLFileFilter.Result.ADD_ALL;
                 }
-            } else if (elementLocalName.equals(HTTP_INTERFACE) || elementLocalName.equals(REMOTE)) {
+            } else if (elementLocalName.equals(HTTP_INTERFACE) || elementLocalName.equals(NATIVE_INTERFACE) || elementLocalName.equals(REMOTE)) {
                 try {
                     if (removeSecurityRealmAttribute(startElement, xmlEventReader, xmlEventWriter, xmlEventFactory)) {
                         taskResultBuilder.success();

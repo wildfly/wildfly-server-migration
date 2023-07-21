@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * An abstract JBoss {@link org.jboss.migration.core.Server} impl, which is usable only as migration source.
@@ -342,6 +344,7 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
 
         private final Path modulesDir;
         private final List<Path> layerDirs;
+        private final List<Path> addonDirs;
         private final Path overlayDir;
 
         public Modules(Path serverBaseDir) {
@@ -385,6 +388,19 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                 }
             } else {
                 overlayDir = null;
+            }
+            // add add-ons
+            final Path baseAddonDir = modulesDir.resolve("system").resolve("add-ons");
+            if (Files.exists(baseAddonDir)) {
+                try (Stream<Path> stream = Files.list(baseAddonDir)) {
+                    addonDirs = stream
+                            .filter(Files::isDirectory)
+                            .collect(Collectors.toList());
+                } catch (IOException e) {
+                    throw new ServerMigrationFailureException("failed to read add-ons directory", e);
+                }
+            } else {
+                addonDirs = null;
             }
         }
 
@@ -431,6 +447,14 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                 final Path layerModuleDir = layerDir.resolve(modulePath);
                 if (Files.exists(layerModuleDir)) {
                     return layerModuleDir;
+                }
+            }
+            if (addonDirs != null) {
+                for (Path addonDir : addonDirs) {
+                    final Path addonModuleDir = addonDir.resolve(modulePath);
+                    if (Files.exists(addonModuleDir)) {
+                        return addonModuleDir;
+                    }
                 }
             }
             return modulesDir.resolve(modulePath);

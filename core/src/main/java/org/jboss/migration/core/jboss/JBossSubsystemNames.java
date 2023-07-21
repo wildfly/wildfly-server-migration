@@ -52,6 +52,7 @@ public interface JBossSubsystemNames {
     String JPA = "jpa";
     String JSF = "jsf";
     String JSR77 = "jsr77";
+    String KEYCLOAK = "keycloak";
     String LOGGING = "logging";
     String MAIL = "mail";
     String METRICS = "metrics";
@@ -70,6 +71,7 @@ public interface JBossSubsystemNames {
     String NAMING = "naming";
     String OPENTELEMETRY = "opentelemetry";
     String OSGI = "osgi";
+    String PICKETLINK_FEDERATION = "picketlink-federation";
     String POJO = "pojo";
     String REMOTING = "remoting";
     String REQUEST_CONTROLLER = "request-controller";

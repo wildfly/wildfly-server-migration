@@ -20,6 +20,7 @@ import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
 import org.jboss.dmr.Property;
+import org.jboss.logging.Logger;
 import org.jboss.migration.core.env.TaskEnvironment;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
@@ -93,7 +94,12 @@ public class UpdateProtocols<S> extends UpdateSubsystemResourceSubtaskBuilder<S>
             context.getLogger().debugf("No protocols removed or added.");
             return ServerMigrationTaskResult.SKIPPED;
         }
+
         serverConfiguration.executeManagementOperation(compositeOperationBuilder.build().getOperation());
+
+        final Logger logger = context.getLogger();
+        logger.warnf("Configuration of JGroups protocols has been changed to match the default protocols of the target server. Please note that further manual configuration may be needed if the legacy configuration being used was not the source server's default configuration!");
+
         return new ServerMigrationTaskResult.Builder()
                 .success()
                 .addAttribute("protocols-removed", protocolsRemoved)
@@ -117,8 +123,12 @@ public class UpdateProtocols<S> extends UpdateSubsystemResourceSubtaskBuilder<S>
         }
 
         public void add(String protocol) {
-            taskContext.getLogger().debug("Adding protocol "+protocol);
-            targetProtocols.add(new Property(protocol, new ModelNode()));
+            add(protocol, new ModelNode());
+        }
+
+        public void add(String protocol, final ModelNode protocolValue) {
+            taskContext.getLogger().debug("Adding protocol "+protocol+" with value: "+protocolValue);
+            targetProtocols.add(new Property(protocol, protocolValue));
         }
 
         public ModelNode get(String protocol) {
@@ -162,6 +172,10 @@ public class UpdateProtocols<S> extends UpdateSubsystemResourceSubtaskBuilder<S>
                 }
             }
             return false;
+        }
+
+        public String getName() {
+            return name;
         }
 
         Set<String> getProtocolsAdded() {

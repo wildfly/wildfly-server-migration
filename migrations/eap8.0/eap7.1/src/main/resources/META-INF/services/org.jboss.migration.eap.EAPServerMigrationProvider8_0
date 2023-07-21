@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-org.jboss.migration.eap7.to.eap7.EAP7_1ToEAP7_4ServerMigrationProvider
+org.jboss.migration.eap7.to.eap8.EAP7_1ToEAP8_0ServerMigrationProvider
