@@ -59,7 +59,6 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
         public static final String SECURITY_ENABLED = "security-enabled";
         public static final String APPLICATION_SECURITY_DOMAIN = "application-security-domain";
         public static final String DEFAULT_SECURITY_DOMAIN = "default-security-domain";
-        public static final String REALM = "realm";
         public static final String SECURITY = "security";
         public static final String CLIENT = "client";
         public static final String IDENTITY = "identity";
