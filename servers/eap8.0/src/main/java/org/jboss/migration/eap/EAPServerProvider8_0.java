@@ -55,23 +55,31 @@ public class EAPServerProvider8_0 extends EAPServerProvider7_4 {
 
     @Override
     protected String getProductVersionRegex() {
-        return "8.0\\..*";
+        return "8\\.0.*";
     }
 
     @Override
     protected Server constructServer(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        return isXp(baseDir) ? new EAPXPServer8_0(migrationName, new ProductInfo("JBoss EAP XP", productInfo.getVersion()), baseDir, migrationEnvironment) :  new EAPServer8_0(migrationName, productInfo, baseDir, migrationEnvironment);
+        final ManifestProductInfo xpManifestProductInfo = getXpManifestProductInfo(baseDir);
+        return xpManifestProductInfo != null ? new EAPXPServer8_0(migrationName, new ProductInfo("JBoss EAP XP", xpManifestProductInfo.getVersion()), baseDir, migrationEnvironment) :  new EAPServer8_0(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 
-    protected boolean isXp(Path baseDir) {
-        if (Files.exists(baseDir.resolve(".installation").resolve("jboss-eap-xp-5.0.conf"))) {
-            return true;
+    protected ManifestProductInfo getXpManifestProductInfo(Path baseDir) {
+        final JBossServer.Module module = new JBossServer.Modules(baseDir).getModule("org.jboss.eap.expansion.pack:main");
+        if (module == null) {
+            return null;
         }
-        // fallback for internal XP builds
-        if (Files.isDirectory(baseDir.resolve("modules").resolve("system").resolve("layers").resolve("microprofile").resolve("org").resolve("wildfly").resolve("extension").resolve("microprofile"))) {
-            return true;
+        try {
+            Path moduleJar = Files.list(module.getModuleDir()).filter(path -> path.toString().endsWith(".jar")).findFirst().get();
+            if (moduleJar == null || !Files.isRegularFile(moduleJar)) {
+                return null;
+            }
+            try (JarInputStream jarStream = new JarInputStream(Files.newInputStream(moduleJar))) {
+                return ManifestProductInfo.from(jarStream.getManifest(), "Implementation-Title", "Implementation-Version");
+            }
+        } catch (IOException e) {
+            throw new ServerMigrationFailureException(e);
         }
-        return false;
     }
 
     @Override

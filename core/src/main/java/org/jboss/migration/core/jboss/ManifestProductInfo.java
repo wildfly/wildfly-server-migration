@@ -34,17 +34,29 @@ public class ManifestProductInfo extends ProductInfo {
     }
 
     /**
-     * Retrieves the product info from the specified manifest.
+     * Retrieves the product info from the specified manifest, with default attr names "JBoss-Product-Release-Name","JBoss-Product-Release-Version".
      * @param manifest the manifest file
      * @return the product info from the specified manifest inputstream
      * @throws ServerMigrationFailureException if there is an error reading the manifest input stream
      */
     public static ManifestProductInfo from(Manifest manifest) throws ServerMigrationFailureException {
-        final String productName = manifest.getMainAttributes().getValue("JBoss-Product-Release-Name");
+        return from(manifest, "JBoss-Product-Release-Name","JBoss-Product-Release-Version");
+    }
+
+    /**
+     * Retrieves the product info from the specified manifest, from attributes with the specified prefix.
+     * @param manifest the manifest file
+     * @param productNameAttr the product name's attribute name
+     * @param productVersionAttr the product version's attribute name
+     * @return the product info from the specified manifest inputstream
+     * @throws ServerMigrationFailureException if there is an error reading the manifest input stream
+     */
+    public static ManifestProductInfo from(Manifest manifest, String productNameAttr, String productVersionAttr) throws ServerMigrationFailureException {
+        final String productName = manifest.getMainAttributes().getValue(productNameAttr);
         if (productName == null) {
             throw new IllegalArgumentException();
         }
-        final String productVersion = manifest.getMainAttributes().getValue("JBoss-Product-Release-Version");
+        final String productVersion = manifest.getMainAttributes().getValue(productVersionAttr);
         if (productVersion == null) {
             throw new IllegalArgumentException();
         }
