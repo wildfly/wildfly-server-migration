@@ -383,31 +383,3 @@ This standard distribution of the JBoss Server Migration Tool includes support f
 * link:migrations/eap7.1-to-eap7.4/index.html[JBoss EAP 7.1 to JBoss EAP 7.4]
 * link:migrations/eap7.2-to-eap7.4/index.html[JBoss EAP 7.2 to JBoss EAP 7.4]
 * link:migrations/eap7.3-to-eap7.4/index.html[JBoss EAP 7.3 to JBoss EAP 7.4]
-
-* link:migrations/wildfly14.0-to-wildfly26.0/index.html[WildFly 14.0 to WildFly 26.0]
-* link:migrations/wildfly15.0-to-wildfly26.0/index.html[WildFly 15.0 to WildFly 26.0]
-* link:migrations/wildfly16.0-to-wildfly26.0/index.html[WildFly 16.0 to WildFly 26.0]
-* link:migrations/wildfly17.0-to-wildfly26.0/index.html[WildFly 17.0 to WildFly 26.0]
-* link:migrations/wildfly18.0-to-wildfly26.0/index.html[WildFly 18.0 to WildFly 26.0]
-* link:migrations/wildfly19.1-to-wildfly26.0/index.html[WildFly 19.1 to WildFly 26.0]
-* link:migrations/wildfly20.0-to-wildfly26.0/index.html[WildFly 20.0 to WildFly 26.0]
-* link:migrations/wildfly21.0-to-wildfly26.0/index.html[WildFly 21.0 to WildFly 26.0]
-* link:migrations/wildfly22.0-to-wildfly26.0/index.html[WildFly 22.0 to WildFly 26.0]
-* link:migrations/wildfly23.0-to-wildfly26.0/index.html[WildFly 23.0 to WildFly 26.0]
-* link:migrations/wildfly24.0-to-wildfly26.0/index.html[WildFly 24.0 to WildFly 26.0]
-* link:migrations/wildfly25.0-to-wildfly26.0/index.html[WildFly 25.0 to WildFly 26.0]
-
-////
-// disabled due to https://issues.redhat.com/browse/WFLY-19100
-* link:migrations/wildfly21.0-to-wildfly31.0/index.html[WildFly 21.0 to WildFly 31.0]
-* link:migrations/wildfly22.0-to-wildfly31.0/index.html[WildFly 22.0 to WildFly 31.0]
-* link:migrations/wildfly23.0-to-wildfly31.0/index.html[WildFly 23.0 to WildFly 31.0]
-* link:migrations/wildfly24.0-to-wildfly31.0/index.html[WildFly 24.0 to WildFly 31.0]
-* link:migrations/wildfly25.0-to-wildfly31.0/index.html[WildFly 25.0 to WildFly 31.0]
-////
-* link:migrations/wildfly26.0-to-wildfly31.0/index.html[WildFly 26.0 to WildFly 31.0]
-* link:migrations/wildfly27.0-to-wildfly31.0/index.html[WildFly 27.0 to WildFly 31.0]
-* link:migrations/wildfly28.0-to-wildfly31.0/index.html[WildFly 28.0 to WildFly 31.0]
-* link:migrations/wildfly29.0-to-wildfly31.0/index.html[WildFly 29.0 to WildFly 31.0]
-* link:migrations/wildfly30.0-to-wildfly31.0/index.html[WildFly 30.0 to WildFly 31.0]
-* link:migrations/wildfly31.0-to-wildfly31.0/index.html[WildFly 31.0 to WildFly 31.0]
