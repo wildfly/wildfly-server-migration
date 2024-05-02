@@ -1,5 +1,0 @@
-:subsystem-migrate-legacySubsystemName: picketlink-federation
-:subsystem-migrate-legacyExtensionName: org.wildfly.extension.picketlink
-:subsystem-migrate-replacementSubsystemName: keycloak-saml
-
-include::ServerMigration-ServerConfiguration-Subsystem-Migrate.adoc[]
