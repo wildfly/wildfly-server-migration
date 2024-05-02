@@ -1,0 +1,15 @@
+= Migrate Legacy Security Realms
+
+{server-target-productName} does not supports the legacy Security Realms framework, and the tool migrates any usage of such resources to instead use the default {server-target-productName} Elytron replacements.
+
+Please note that further manual Elytron configuration may be needed if the legacy security realm(s) being used were not the {server-source-productName}'s defaults!
+
+The console logs all configuration resources migrated to the default {server-target-productName} Elytron replacements.
+[source,options="nowrap"]
+----
+ INFO  Legacy security XML configuration retrieved.
+ WARN  Migrated Remoting subsystem's http connector resource /subsystem/remoting/http-connector/http-remoting-connector using a legacy security-realm, to Elytron's default application SASL Authentication Factory migration-defaultApplicationSaslAuthenticationFactory. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!
+ WARN  Migrated Undertow subsystem https-listener resource /subsystem/undertow/server/default-server/https-listener/https using a legacy security-realm, to Elytron's default TLS ServerSSLContext migration-defaultTLSServerSSLContext. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!
+ WARN  Migrated Undertow subsystem http-invoker resource /subsystem/undertow/server/default-server/host/default-host/setting/http-invoker using a legacy security-realm, to Elytron's default Application HTTP AuthenticationFactory migration-defaultApplicationHttpAuthenticationFactory. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!
+ INFO  Legacy security realms migrated to Elytron.
+----
