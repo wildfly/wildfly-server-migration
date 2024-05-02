@@ -426,6 +426,12 @@
             <artifactId>jboss-server-migration-wildfly31.0-to-wildfly31.0</artifactId>
         </dependency>
 
+        <!-- wfly 32.0 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-wildfly32.0-server</artifactId>
+        </dependency>
+
         <!-- EXTERNAL DEPENDENCIES -->
 
         <dependency>
