@@ -36,6 +36,7 @@ public interface JBossExtensionNames {
     String EE_SECURITY = "org.wildfly.extension.ee-security";
     String EJB3 = "org.jboss.as.ejb3";
     String ELYTRON = "org.wildfly.extension.elytron";
+    String ELYTRON_JAAS_REALM = "org.wildfly.extension.elytron.jaas-realm";
     String ELYTRON_OIDC_CLIENT = "org.wildfly.extension.elytron-oidc-client";
     String HEALTH = "org.wildfly.extension.health";
     String IIOP_OPENJDK = "org.wildfly.iiop-openjdk";
@@ -71,6 +72,7 @@ public interface JBossExtensionNames {
     String MICROPROFILE_REACTIVE_STREAMS_OPERATORS_SMALLRYE = "org.wildfly.extension.microprofile.reactive-streams-operators-smallrye";
     String MICROPROFILE_TELEMETRY = "org.wildfly.extension.microprofile.telemetry";
     String MODCLUSTER = "org.jboss.as.modcluster";
+    String MVC_KRAZO = "org.wildfly.extension.mvc-krazo";
     String NAMING = "org.jboss.as.naming";
     String OPENTELEMETRY = "org.wildfly.extension.opentelemetry";
     String OSGI = "org.jboss.as.osgi";

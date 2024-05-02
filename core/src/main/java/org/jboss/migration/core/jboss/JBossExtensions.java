@@ -103,6 +103,10 @@ public interface JBossExtensions {
             .subsystem(Subsystem.builder().name(JBossSubsystemNames.ELYTRON).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.ELYTRON))
             .build();
 
+    Extension ELYTRON_JAAS_REALM = Extension.builder()
+            .module(JBossExtensionNames.ELYTRON_JAAS_REALM)
+            .build();
+
     Extension ELYTRON_OIDC_CLIENT = Extension.builder()
             .module(JBossExtensionNames.ELYTRON_OIDC_CLIENT)
             .subsystem(Subsystem.builder().name(JBossSubsystemNames.ELYTRON_OIDC_CLIENT).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.ELYTRON_OIDC_CLIENT))
@@ -271,6 +275,11 @@ public interface JBossExtensions {
     Extension MODCLUSTER = Extension.builder()
             .module(JBossExtensionNames.MODCLUSTER)
             .subsystem(JBossSubsystemNames.MODCLUSTER)
+            .build();
+
+    Extension MVC_KRAZO = Extension.builder()
+            .module(JBossExtensionNames.MVC_KRAZO)
+            .subsystem(JBossSubsystemNames.MVC_KRAZO)
             .build();
 
     Extension NAMING = Extension.builder()

@@ -73,6 +73,7 @@ public interface JBossSubsystemNames {
     String MICROPROFILE_TELEMETRY = "microprofile-telemetry";
 
     String MODCLUSTER = "modcluster";
+    String MVC_KRAZO = "mvc-krazo";
     String NAMING = "naming";
     String OPENTELEMETRY = "opentelemetry";
     String OSGI = "osgi";
