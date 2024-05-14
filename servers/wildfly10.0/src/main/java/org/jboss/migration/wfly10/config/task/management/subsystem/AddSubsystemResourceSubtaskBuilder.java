@@ -21,6 +21,7 @@ import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.task.ServerMigrationTaskName;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
+import org.jboss.migration.wfly10.config.management.ProfileResource;
 import org.jboss.migration.wfly10.config.management.SubsystemResource;
 import org.jboss.migration.wfly10.config.task.management.resource.ManageableResourceBuildParameters;
 import org.jboss.migration.wfly10.config.task.management.resource.ManageableResourceLeafTask;
@@ -38,9 +39,18 @@ public class AddSubsystemResourceSubtaskBuilder<S> extends ManageableResourceLea
         nameBuilder(parameters -> new ServerMigrationTaskName.Builder("subsystem."+subsystem+".add-config").addAttribute("name", parameters.getResource().getResourceAbsoluteName()).build());
         runBuilder(params -> taskContext -> {
             SubsystemResource.Parent parent = params.getResource();
+            // skip if subsystem already exists in current "profile"
             if (parent.hasSubsystemResource(subsystem)) {
                 taskContext.getLogger().debugf("Skipped adding subsystem config %s, already exists.", parent.getSubsystemResourceAbsoluteName(subsystem));
                 return ServerMigrationTaskResult.SKIPPED;
+            }
+            // skip if parent is a profile that includes another profile, we only add configurations to leaf profiles (prevents CMTOOL-368)
+            if (parent.getResourceType() == ProfileResource.RESOURCE_TYPE) {
+                final String includes = parent.getResourceConfiguration().get("includes").asStringOrNull();
+                if (includes != null)  {
+                    taskContext.getLogger().warnf("Subsystem to be added on profile %s, which includes profile(s) %s, skipping...", parent.getResourceName(), includes);
+                    return ServerMigrationTaskResult.SKIPPED;
+                }
             }
             final String configName = parent.getSubsystemResourceAbsoluteName(subsystem);
             taskContext.getLogger().debugf("Adding subsystem config %s...", configName);
