@@ -73,7 +73,7 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
                 ServerMigrationTaskResult taskResult = ServerMigrationTaskResult.SKIPPED;
                 final SubsystemResource subsystemResource = params.getResource();
                 final LegacySecurityConfiguration legacySecurityConfiguration = legacySecurityConfigurations.getSecurityConfigurations().get(subsystemResource.getServerConfiguration().getConfigurationPath().getPath().toString());
-                if (legacySecurityConfiguration != null) {
+                if (legacySecurityConfiguration != null && legacySecurityConfiguration.requiresMigration()) {
                     if (migrateSubsystemEJB3(legacySecurityConfiguration, subsystemResource, context)) {
                         taskResult = ServerMigrationTaskResult.SUCCESS;
                     }
