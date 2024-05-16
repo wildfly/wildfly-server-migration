@@ -92,7 +92,7 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
             final ManageableResourceTaskRunnableBuilder<S, SubsystemResource> runnableBuilder = params -> context -> {
                 final SubsystemResource subsystemResource = params.getResource();
                 final LegacySecurityConfiguration legacySecurityConfiguration = legacySecurityConfigurations.getSecurityConfigurations().get(subsystemResource.getServerConfiguration().getConfigurationPath().getPath().toString());
-                if (legacySecurityConfiguration == null) {
+                if (legacySecurityConfiguration == null || !legacySecurityConfiguration.requiresMigration()) {
                     return ServerMigrationTaskResult.SKIPPED;
                 }
                 migrateSecurityRealms(legacySecurityConfiguration, subsystemResource, context);
