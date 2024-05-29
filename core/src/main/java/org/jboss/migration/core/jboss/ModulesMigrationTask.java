@@ -123,13 +123,17 @@ public class ModulesMigrationTask implements ServerMigrationTask {
                 context.getLogger().debugf("Skipping module %s migration, it's excluded by environment.", moduleIdentifier);
                 return;
             }
-            final JBossServer.Module sourceModule = sourceModules.getModule(moduleIdentifier);
-            if (sourceModule == null) {
-                throw new IllegalStateException("Migration of module "+moduleIdentifier+" required, but module not found in source server.");
+            if (targetModules.isInternalModule(moduleIdentifier)) {
+                context.getLogger().debugf("Skipping module %s migration, it's an internal target server's module.", moduleIdentifier);
+                return;
             }
             if (targetModules.getModule(moduleIdentifier) != null) {
                 context.getLogger().debugf("Skipping module %s migration, already exists in target.", moduleIdentifier, reason);
                 return;
+            }
+            final JBossServer.Module sourceModule = sourceModules.getModule(moduleIdentifier);
+            if (sourceModule == null) {
+                throw new IllegalStateException("Migration of module "+moduleIdentifier+" required, but module not found in source server.");
             }
             final ServerMigrationTaskName taskName = new ServerMigrationTaskName.Builder(context.getTaskName().getName()+".migrate-module").addAttribute("id", moduleIdentifier.toString()).build();
             final ServerMigrationTask subtask = new ServerMigrationTask() {

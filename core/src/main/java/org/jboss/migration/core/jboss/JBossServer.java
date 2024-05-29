@@ -347,6 +347,14 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         private final List<Path> addonDirs;
         private final Path overlayDir;
 
+        private static final ModuleIdentifier[] INTERNAL_MODULES = {
+                ModuleIdentifier.fromString("java.desktop"),
+                ModuleIdentifier.fromString("java.logging"),
+                ModuleIdentifier.fromString("java.sql"),
+                ModuleIdentifier.fromString("java.xml"),
+                ModuleIdentifier.fromString("org.jboss.modules")
+        };
+
         public Modules(Path serverBaseDir) {
             this.modulesDir = serverBaseDir.resolve("modules");
             this.layerDirs = new ArrayList<>();
@@ -458,6 +466,15 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                 }
             }
             return modulesDir.resolve(modulePath);
+        }
+
+        public boolean isInternalModule(ModuleIdentifier moduleIdentifier) {
+            for (ModuleIdentifier internalModuleIdentifier : INTERNAL_MODULES) {
+                if (internalModuleIdentifier.equals(moduleIdentifier)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
