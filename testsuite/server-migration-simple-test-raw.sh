@@ -33,7 +33,7 @@ echo "### Target Server dist directory: $TARGET_DIST_DIR"
 
 echo "### Preparing JBoss Server Migration Tool binary..."
 rm -Rf $TOOL_DIR
-unzip $TEST_DIR/../dist/standalone/target/jboss-server-migration-*.zip -d $TEST_DIR
+unzip $TEST_DIR/../dist/standalone/target/jboss*server-migration*.zip -d $TEST_DIR
 
 echo "### Executing the migration..."
 $TOOL_DIR/jboss-server-migration.sh -n -s $SOURCE_DIST_DIR -t $TARGET_DIST_DIR  -Djboss.server.migration.modules.excludes=""

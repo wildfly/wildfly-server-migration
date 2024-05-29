@@ -33,7 +33,7 @@ echo "### Target Server dist directory: $TARGET_DIST_DIR"
 
 echo "### Preparing JBoss Server Migration Tool binary..."
 rm -Rf $TOOL_DIR
-unzip $TEST_DIR/../dist/standalone/target/jboss-server-migration-*.zip -d $TEST_DIR
+unzip $TEST_DIR/../dist/standalone/target/jboss*server-migration*.zip -d $TEST_DIR
 
 SOURCE_DIST_CMTOOL_DIR=$SOURCE_DIST_DIR/cmtool
 SOURCE_DIST_CMTOOL_MODULES_SYSTEM_DIR=$SOURCE_DIST_DIR/modules/system/layers/base/cmtool
