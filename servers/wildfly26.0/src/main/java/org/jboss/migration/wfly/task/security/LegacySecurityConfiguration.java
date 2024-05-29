@@ -28,6 +28,7 @@ public class LegacySecurityConfiguration {
 
     public static final String DEFAULT_ELYTRON_APPLICATION_DOMAIN_NAME = "migration-defaultApplicationDomain";
     public static final String DEFAULT_ELYTRON_APPLICATION_HTTP_AUTHENTICATION_FACTORY_NAME = "migration-defaultApplicationHttpAuthenticationFactory";
+    public static final String DEFAULT_ELYTRON_APPLICATION_SASL_AUTHENTICATION_FACTORY_NAME = "migration-defaultApplicationSaslAuthenticationFactory";
 
     private final JBossServerConfiguration targetConfiguration;
     private final Map<String, LegacySecurityRealm> legacySecurityRealms = new HashMap<>();
@@ -92,7 +93,7 @@ public class LegacySecurityConfiguration {
     }
 
     public String getDefaultElytronApplicationSaslAuthenticationFactoryName() {
-        return "migration-defaultApplicationSaslAuthenticationFactory";
+        return DEFAULT_ELYTRON_APPLICATION_SASL_AUTHENTICATION_FACTORY_NAME;
     }
 
     public String getDefaultElytronManagementSaslAuthenticationFactoryName() {
