@@ -54,17 +54,25 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
 
         private static final String SUBTASK_NAME = TASK_NAME + ".update-subsystems";
 
-        public static final String SECURITY_DOMAIN = "security-domain";
-
         public static final String SECURITY_ENABLED = "security-enabled";
         public static final String APPLICATION_SECURITY_DOMAIN = "application-security-domain";
         public static final String DEFAULT_SECURITY_DOMAIN = "default-security-domain";
-        public static final String REALM = "realm";
         public static final String SECURITY = "security";
         public static final String CLIENT = "client";
         public static final String IDENTITY = "identity";
         public static final String ELYTRON = "elytron";
         public static final String ELYTRON_DOMAIN = "elytron-domain";
+        public static final String DATA_SOURCE = "data-source";
+        public static final String XA_DATA_SOURCE = "xa-data-source";
+        public static final String SECURITY_DOMAIN = "security-domain";
+        public static final String RESOURCE_ADAPTERS = "resource-adapters";
+        public static final String RESOURCE_ADAPTER = "resource-adapter";
+        public static final String CONNECTION_DEFINITIONS = "connection-definitions";
+        public static final String CONNECTION_DEFINITION = "connection-definition";
+        public static final String SECURITY_DOMAIN_AND_APPLICATION = "security-domain-and-application";
+        public static final String ELYTRON_ENABLED = "elytron-enabled";
+        public static final String RECOVERY_SECURITY_DOMAIN = "recovery-security-domain";
+        public static final String RECOVERY_ELYTRON_ENABLED = "recovery-elytron-enabled";
 
         protected UpdateSubsystems(final LegacySecurityConfigurations legacySecurityConfigurations) {
             name(SUBTASK_NAME);
@@ -84,6 +92,12 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
                         taskResult = ServerMigrationTaskResult.SUCCESS;
                     }
                     if (migrateSubsystemIIOP(legacySecurityConfiguration, subsystemResource, context)) {
+                        taskResult = ServerMigrationTaskResult.SUCCESS;
+                    }
+                    if (migrateSubsystemDatasources(legacySecurityConfiguration, subsystemResource, context)) {
+                        taskResult = ServerMigrationTaskResult.SUCCESS;
+                    }
+                    if (migrateSubsystemResourceAdapters(legacySecurityConfiguration, subsystemResource, context)) {
                         taskResult = ServerMigrationTaskResult.SUCCESS;
                     }
                 }
@@ -174,6 +188,114 @@ public class MigrateLegacySecurityDomainsToElytron<S> extends ManageableServerCo
             }
             if (requiresUpdate) {
                 subsystemResource.getServerConfiguration().executeManagementOperation(compositeOperationBuilder.build().getOperation());
+            }
+            return requiresUpdate;
+        }
+
+        protected boolean migrateSubsystemDatasources(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, TaskContext taskContext) {
+            taskContext.getLogger().debugf("Looking for datasources subsystem resources using a legacy security-domain...");
+            final Operations.CompositeOperationBuilder compositeOperationBuilder = Operations.CompositeOperationBuilder.create();
+            boolean requiresUpdate = false;
+            final SubsystemResource datasourcesSubsystemResource = subsystemResource.getParentResource().getSubsystemResource(JBossSubsystemNames.DATASOURCES);
+            if (datasourcesSubsystemResource != null) {
+                final ModelNode subsystemConfig = datasourcesSubsystemResource.getResourceConfiguration();
+                if (subsystemConfig.hasDefined(DATA_SOURCE)) {
+                    for (Property dataSourceProperty : subsystemConfig.get(DATA_SOURCE).asPropertyList()) {
+                        final String dataSourceName = dataSourceProperty.getName();
+                        final ModelNode dataSourceConfig = dataSourceProperty.getValue();
+                        requiresUpdate |= migrateSecurityDomainInDatasource(datasourcesSubsystemResource.getResourcePathAddress().append(DATA_SOURCE, dataSourceName), dataSourceConfig, compositeOperationBuilder, taskContext);
+                    }
+                }
+                if (subsystemConfig.hasDefined(XA_DATA_SOURCE)) {
+                    for (Property xaDataSourceProperty : subsystemConfig.get(XA_DATA_SOURCE).asPropertyList()) {
+                        final String xaDataSourceName = xaDataSourceProperty.getName();
+                        final ModelNode xaDataSourceConfig = xaDataSourceProperty.getValue();
+                        requiresUpdate |= migrateSecurityDomainInDatasource(datasourcesSubsystemResource.getResourcePathAddress().append(XA_DATA_SOURCE, xaDataSourceName), xaDataSourceConfig, compositeOperationBuilder, taskContext);
+                    }
+                }
+            }
+            if (requiresUpdate) {
+                subsystemResource.getServerConfiguration().executeManagementOperation(compositeOperationBuilder.build().getOperation());
+            }
+            return requiresUpdate;
+        }
+
+        private boolean migrateSecurityDomainInDatasource(PathAddress datasourceAddress, ModelNode dataSourceConfig, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
+            boolean requiresUpdate = false;
+            if (dataSourceConfig.hasDefined(SECURITY_DOMAIN)) {
+                final String securityDomain = dataSourceConfig.get(SECURITY_DOMAIN).asString();
+                taskContext.getLogger().debugf("Found resource %s using the legacy security domain %s.", datasourceAddress.toPathStyleString(), securityDomain);
+                compositeOperationBuilder.addStep(getUndefineAttributeOperation(datasourceAddress, SECURITY_DOMAIN));
+                compositeOperationBuilder.addStep(getWriteAttributeOperation(datasourceAddress, ELYTRON_ENABLED, ModelNode.TRUE));
+                taskContext.getLogger().warnf("Undefined legacy security-domain %s attribute of data source resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication context for it!", securityDomain, datasourceAddress.toPathStyleString());
+                requiresUpdate = true;
+            }
+            if (dataSourceConfig.hasDefined(RECOVERY_SECURITY_DOMAIN)) {
+                // this applies to xa-data-source only
+                final String recoverySecurityDomain = dataSourceConfig.get(RECOVERY_SECURITY_DOMAIN).asString();
+                taskContext.getLogger().debugf("Found resource %s using the legacy recovery security domain %s.", datasourceAddress.toPathStyleString(), recoverySecurityDomain);
+                compositeOperationBuilder.addStep(getUndefineAttributeOperation(datasourceAddress, RECOVERY_SECURITY_DOMAIN));
+                compositeOperationBuilder.addStep(getWriteAttributeOperation(datasourceAddress, RECOVERY_ELYTRON_ENABLED, ModelNode.TRUE));
+                taskContext.getLogger().warnf("Undefined legacy recovery-security-domain %s attribute of data source resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication context for it!", recoverySecurityDomain, datasourceAddress.toPathStyleString());
+                requiresUpdate = true;
+            }
+            return requiresUpdate;
+        }
+
+        protected boolean migrateSubsystemResourceAdapters(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, TaskContext taskContext) {
+            taskContext.getLogger().debugf("Looking for resource-adapters subsystem resources using a legacy security-domain...");
+            final Operations.CompositeOperationBuilder compositeOperationBuilder = Operations.CompositeOperationBuilder.create();
+            boolean requiresUpdate = false;
+            final SubsystemResource raSubsystemResource = subsystemResource.getParentResource().getSubsystemResource(JBossSubsystemNames.RESOURCE_ADAPTERS);
+            if (raSubsystemResource != null) {
+                final ModelNode subsystemConfig = raSubsystemResource.getResourceConfiguration();
+                if (subsystemConfig.hasDefined(RESOURCE_ADAPTERS)) {
+                    for (Property raProperty : subsystemConfig.get(RESOURCE_ADAPTERS).asPropertyList()) {
+                        final String raName = raProperty.getName();
+                        final ModelNode raConfig = raProperty.getValue();
+                        final PathAddress raAddress = raSubsystemResource.getResourcePathAddress().append(RESOURCE_ADAPTER, raName);
+                        requiresUpdate |= migrateSecurityDomainInConnectionDefinition(raAddress, raConfig, compositeOperationBuilder, taskContext);
+                    }
+                }
+            }
+            if (requiresUpdate) {
+                subsystemResource.getServerConfiguration().executeManagementOperation(compositeOperationBuilder.build().getOperation());
+            }
+            return requiresUpdate;
+        }
+
+        private boolean migrateSecurityDomainInConnectionDefinition(PathAddress parentResourceAddress, ModelNode parentResourceConfig, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
+            boolean requiresUpdate = false;
+            if (parentResourceConfig.hasDefined(CONNECTION_DEFINITIONS)) {
+                for (Property connectionDefinitionProperty : parentResourceConfig.get(CONNECTION_DEFINITIONS).asPropertyList()) {
+                    final String connectionDefinitionName = connectionDefinitionProperty.getName();
+                    final ModelNode connectionDefinitionConfig = connectionDefinitionProperty.getValue();
+                    final PathAddress connectionDefinitionAddress = PathAddress.pathAddress(parentResourceAddress).append(CONNECTION_DEFINITION, connectionDefinitionName);
+                    if (connectionDefinitionConfig.hasDefined(SECURITY_DOMAIN)) {
+                        final String securityDomain = connectionDefinitionConfig.get(SECURITY_DOMAIN).asString();
+                        taskContext.getLogger().debugf("Found resource-adapter resource %s using the legacy security domain %s.", connectionDefinitionAddress.toPathStyleString(), securityDomain);
+                        compositeOperationBuilder.addStep(getUndefineAttributeOperation(connectionDefinitionAddress, SECURITY_DOMAIN));
+                        compositeOperationBuilder.addStep(getWriteAttributeOperation(connectionDefinitionAddress, ELYTRON_ENABLED, ModelNode.TRUE));
+                        taskContext.getLogger().warnf("Undefined legacy security-domain %s attribute of resource-adapter resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication context for it!", securityDomain, connectionDefinitionAddress.toPathStyleString());
+                        requiresUpdate = true;
+                    }
+                    if (connectionDefinitionConfig.hasDefined(SECURITY_DOMAIN_AND_APPLICATION)) {
+                        final String securityDomain = connectionDefinitionConfig.get(SECURITY_DOMAIN_AND_APPLICATION).asString();
+                        taskContext.getLogger().debugf("Found resource-adapter resource %s using the legacy security-domain-and-application %s.", connectionDefinitionAddress.toPathStyleString(), securityDomain);
+                        compositeOperationBuilder.addStep(getUndefineAttributeOperation(connectionDefinitionAddress, SECURITY_DOMAIN_AND_APPLICATION));
+                        compositeOperationBuilder.addStep(getWriteAttributeOperation(connectionDefinitionAddress, ELYTRON_ENABLED, ModelNode.TRUE));
+                        taskContext.getLogger().warnf("Undefined legacy security-domain-and-application %s attribute of resource-adapter resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication-context-and-application for it!", securityDomain, connectionDefinitionAddress.toPathStyleString());
+                        requiresUpdate = true;
+                    }
+                    if (connectionDefinitionConfig.hasDefined(RECOVERY_SECURITY_DOMAIN)) {
+                        final String securityDomain = connectionDefinitionConfig.get(RECOVERY_SECURITY_DOMAIN).asString();
+                        taskContext.getLogger().debugf("Found resource-adapter resource %s using the legacy recovery security domain %s.", connectionDefinitionAddress.toPathStyleString(), securityDomain);
+                        compositeOperationBuilder.addStep(getUndefineAttributeOperation(connectionDefinitionAddress, RECOVERY_SECURITY_DOMAIN));
+                        compositeOperationBuilder.addStep(getWriteAttributeOperation(connectionDefinitionAddress, ELYTRON_ENABLED, ModelNode.TRUE));
+                        taskContext.getLogger().warnf("Undefined legacy recovery security domain %s attribute of resource-adapter resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication context for it!", securityDomain, connectionDefinitionAddress.toPathStyleString());
+                        requiresUpdate = true;
+                    }
+                }
             }
             return requiresUpdate;
         }
