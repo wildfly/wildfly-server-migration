@@ -46,12 +46,15 @@ import org.jboss.migration.wfly11.task.subsystem.elytron.SecurityDomainAddOperat
 import org.jboss.migration.wfly11.task.subsystem.elytron.ServerSSLContextAddOperation;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DOMAIN_CONTROLLER;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FILTER;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HANDLER;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HTTP_AUTHENTICATION_FACTORY;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HTTP_INTERFACE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HTTP_UPGRADE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NAME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.NATIVE_INTERFACE;
+import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REALM;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.REMOTE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SASL_AUTHENTICATION_FACTORY;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.SECURITY_REALM;
@@ -85,6 +88,13 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
         private static final String HTTP_INVOKER = "http-invoker";
         private static final String HTTPS_LISTENER = "https-listener";
         private static final String HTTP_CONNECTOR = "http-connector";
+        private static final String SERVER_SSL_CONTEXT = "server-ssl-context";
+        private static final String SERVER_REQUIRES_SSL = "server-requires-ssl";
+        private static final String SSL_SOCKET_BINDING = "ssl-socket-binding";
+        private static final String REMOTE_OUTBOUND_CONNECTION = "remote-outbound-connection";
+        private static final String CONFIGURATION = "configuration";
+        private static final String MOD_CLUSTER = "mod-cluster";
+        private static final String REVERSE_PROXY = "reverse-proxy";
 
         protected MigrateToElytron(final LegacySecurityConfigurations legacySecurityConfigurations) {
             name(SUBTASK_NAME);
@@ -127,6 +137,7 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
             addDefaultTLS(legacySecurityConfiguration, subsystemResource, compositeOperationBuilder, taskContext);
             migrateRemotingSubsystem(legacySecurityConfiguration, subsystemResource, compositeOperationBuilder, taskContext);
             migrateUndertowSubsystem(legacySecurityConfiguration, subsystemResource, compositeOperationBuilder, taskContext);
+            migrateIiopSubsystem(legacySecurityConfiguration, subsystemResource, compositeOperationBuilder, taskContext);
         }
 
         protected void addDefaultApplicationRealm(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
@@ -257,12 +268,26 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
                         final String remotingHttpConnectorName = remotingHttpConnectorProperty.getName();
                         final ModelNode remotingHttpConnectorConfig = remotingHttpConnectorProperty.getValue();
                         if (remotingHttpConnectorConfig.hasDefined(SECURITY_REALM)) {
-                            // we found a http connector using the legacy security-real, update it to use the created Elytron's sasl factory
+                            // we found a http connector using the legacy security-realm, update it to use the created Elytron's sasl factory
                             logger.debugf("Remoting subsystem's http connector resource using a legacy security-realm found.");
                             final PathAddress remotingConnectorAddress = remotingSubsystemResource.getResourcePathAddress().append(HTTP_CONNECTOR, remotingHttpConnectorName);
                             compositeOperationBuilder.addStep(getUndefineAttributeOperation(remotingConnectorAddress, SECURITY_REALM));
                             compositeOperationBuilder.addStep(getWriteAttributeOperation(remotingConnectorAddress, SASL_AUTHENTICATION_FACTORY, legacySecurityConfiguration.getDefaultElytronApplicationSaslAuthenticationFactoryName()));
                             logger.warnf("Migrated Remoting subsystem's http connector resource %s using a legacy security-realm, to Elytron's default application SASL Authentication Factory %s. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!", remotingConnectorAddress.toPathStyleString(), legacySecurityConfiguration.getDefaultElytronApplicationSaslAuthenticationFactoryName());
+                        }
+                    }
+                }
+                if (remotingSubsystemConfig.hasDefined(REMOTE_OUTBOUND_CONNECTION)) {
+                    for (Property remoteOutboundConnectionProperty : remotingSubsystemConfig.get(REMOTE_OUTBOUND_CONNECTION).asPropertyList()) {
+                        final String remoteOutboundConnectionName = remoteOutboundConnectionProperty.getName();
+                        final ModelNode remoteOutboundConnectionConfig = remoteOutboundConnectionProperty.getValue();
+                        if (remoteOutboundConnectionConfig.hasDefined(SECURITY_REALM)) {
+                            // we found a remote outbound connection using the legacy security-realm, update it to use the created Elytron's authentication context
+                            final String securityRealm = remoteOutboundConnectionConfig.get(SECURITY_REALM).asString();
+                            logger.debugf("Remoting subsystem's remote outbound connection resource using a legacy security-realm %s found.", securityRealm);
+                            final PathAddress remotingConnectorAddress = remotingSubsystemResource.getResourcePathAddress().append(HTTP_CONNECTOR, remoteOutboundConnectionName);
+                            compositeOperationBuilder.addStep(getUndefineAttributeOperation(remotingConnectorAddress, SECURITY_REALM));
+                            logger.warnf("Undefined the legacy security-realm %s attribute of Remoting subsystem's remote outbound connection resource %s. Please note that further manual Elytron configuration is needed to define appropriate authentication context for it!", remoteOutboundConnectionName, securityRealm);
                         }
                     }
                 }
@@ -309,6 +334,56 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
                             }
                         }
                     }
+                    if (undertowSubsystemConfig.hasDefined(CONFIGURATION, FILTER, MOD_CLUSTER)) {
+                        for (Property modClusterFilterProperty : undertowSubsystemConfig.get(CONFIGURATION).get(FILTER).get(MOD_CLUSTER).asPropertyList()) {
+                            final String modClusterName = modClusterFilterProperty.getName();
+                            final ModelNode modClusterConfig = modClusterFilterProperty.getValue();
+                            if (modClusterConfig.hasDefined(SECURITY_REALM)) {
+                                logger.debugf("Undertow subsystem's mod-cluster filter configuration resource using a legacy security-realm found.");
+                                final PathAddress pathAddress = undertowSubsystemResource.getResourcePathAddress().append(CONFIGURATION, FILTER).append(MOD_CLUSTER, modClusterName);
+                                compositeOperationBuilder.addStep(getUndefineAttributeOperation(pathAddress, SECURITY_REALM));
+                                compositeOperationBuilder.addStep(getWriteAttributeOperation(pathAddress, SSL_CONTEXT, legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName()));
+                                logger.warnf("Migrated Undertow subsystem's mod-cluster filter configuration resource %s using a legacy security-realm, to Elytron's default TLS ServerSSLContext %s. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!", pathAddress.toPathStyleString(), legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName());
+                            }
+                        }
+                    }
+                    if (undertowSubsystemConfig.hasDefined(CONFIGURATION, HANDLER, REVERSE_PROXY)) {
+                        for (Property reverseProxyProperty : undertowSubsystemConfig.get(CONFIGURATION).get(HANDLER).get(REVERSE_PROXY).asPropertyList()) {
+                            final String reverseProxyName = reverseProxyProperty.getName();
+                            final ModelNode reverseProxyConfig = reverseProxyProperty.getValue();
+                            if (reverseProxyConfig.hasDefined(HOST)) {
+                                for (Property hostProperty : reverseProxyConfig.get(HOST).asPropertyList()) {
+                                    final String hostName = hostProperty.getName();
+                                    final ModelNode hostConfig = hostProperty.getValue();
+                                    if (hostConfig.hasDefined(SECURITY_REALM)) {
+                                        logger.debugf("Undertow subsystem's reverse-proxy handler configuration resource using a legacy security-realm found.");
+                                        final PathAddress pathAddress = undertowSubsystemResource.getResourcePathAddress().append(CONFIGURATION, HANDLER).append(REVERSE_PROXY, reverseProxyName).append(HOST, hostName);
+                                        compositeOperationBuilder.addStep(getUndefineAttributeOperation(pathAddress, SECURITY_REALM));
+                                        compositeOperationBuilder.addStep(getWriteAttributeOperation(pathAddress, SSL_CONTEXT, legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName()));
+                                        logger.warnf("Migrated Undertow subsystem's reverse-proxy handler configuration resource %s using a legacy security-realm, to Elytron's default TLS ServerSSLContext %s. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!", pathAddress.toPathStyleString(), legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void migrateIiopSubsystem(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
+            final Logger logger = taskContext.getLogger();
+            // replace any iiop-openjdk usage of the legacy security realm, with the created elytron ssl context
+            logger.debugf("Looking for iiop-openjdk subsystem resources using a legacy realm...");
+            final SubsystemResource iiopSubsystemResource = subsystemResource.getParentResource().getSubsystemResource(JBossSubsystemNames.IIOP_OPENJDK);
+            if (iiopSubsystemResource != null) {
+                if (iiopSubsystemResource.getResourceConfiguration().hasDefined(REALM)) {
+                    final String realm = iiopSubsystemResource.getResourceConfiguration().get(REALM).asString();
+                    logger.debugf("The iiop-openjdk subsystem resource using a legacy realm %s found.", realm);
+                    compositeOperationBuilder.addStep(getUndefineAttributeOperation(iiopSubsystemResource.getResourcePathAddress(), REALM));
+                    compositeOperationBuilder.addStep(getWriteAttributeOperation(iiopSubsystemResource.getResourcePathAddress(), SERVER_SSL_CONTEXT, legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName()));
+                    compositeOperationBuilder.addStep(getWriteAttributeOperation(iiopSubsystemResource.getResourcePathAddress(), SERVER_REQUIRES_SSL, ModelNode.TRUE));
+                    compositeOperationBuilder.addStep(getWriteAttributeOperation(iiopSubsystemResource.getResourcePathAddress(), SSL_SOCKET_BINDING, "iiop-ssl"));  // FIXME check if there is any iiop-ssl socket binding
+                    logger.warnf("Migrated iiop-openjdk subsystem resource using a legacy realm %s, to Elytron's default TLS ServerSSLContext %s. Please note that further manual Elytron configuration may be needed if the legacy security realm being used was not the source server's default Application Realm configuration!", realm, legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName());
                 }
             }
         }
