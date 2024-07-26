@@ -84,7 +84,7 @@ Upon execution, the tool scans the specified source and target server base direc
 
 Retrieving servers...
 INFO  SOURCE server name: WildFly Full, version: 26.0.0.Final.
-INFO  TARGET server name: WildFly Full, version: 33.0.0.Final-SNAPSHOT.
+INFO  TARGET server name: WildFly Full, version: 33.0.0.Final.
 ----
 
 This is a fully automated process. The tool execution will fail if a server is not recognized or if the target server does not support migration from the specified source server.
