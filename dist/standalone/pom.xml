@@ -337,50 +337,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>jboss-server-migration-wildfly32.0-server</artifactId>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly22.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly23.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly24.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly25.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly26.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly27.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly28.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly29.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly30.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly31.0-to-wildfly32.0</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly32.0-to-wildfly32.0</artifactId>
-        </dependency>
 
         <!-- wfly 33.0 -->
         <dependency>
