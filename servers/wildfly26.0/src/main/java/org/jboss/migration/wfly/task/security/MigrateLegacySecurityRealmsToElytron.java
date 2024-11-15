@@ -45,6 +45,10 @@ import org.jboss.migration.wfly11.task.subsystem.elytron.SaslAuthenticationFacto
 import org.jboss.migration.wfly11.task.subsystem.elytron.SecurityDomainAddOperation;
 import org.jboss.migration.wfly11.task.subsystem.elytron.ServerSSLContextAddOperation;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.DOMAIN_CONTROLLER;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HOST;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.HTTP_AUTHENTICATION_FACTORY;
@@ -69,12 +73,37 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
 
     private static final String TASK_NAME = "security.migrate-legacy-security-realms-to-elytron";
 
+    private static final String MIGRATION_APPLICATION_USERS_PROPERTIES_FILENAME = "migration-application-users.properties";
+    private static final String MIGRATION_APPLICATION_ROLES_PROPERTIES_FILENAME = "migration-application-roles.properties";
+    private static final String MIGRATION_MGMT_USERS_PROPERTIES_FILENAME = "migration-mgmt-users.properties";
+    private static final String MIGRATION_MGMT_GROUPS_PROPERTIES_FILENAME = "migration-mgmt-groups.properties";
+
     public MigrateLegacySecurityRealmsToElytron(LegacySecurityConfigurations legacySecurityConfigurations) {
         name(TASK_NAME);
         skipPolicy(TaskSkipPolicy.skipIfDefaultTaskSkipPropertyIsSet());
-        beforeRun(context -> context.getLogger().debugf("Migrating legacy security realms to Elytron..."));
+        beforeRun(context -> {
+            context.getLogger().debugf("Migrating legacy security realms to Elytron...");
+            legacySecurityConfigurations.getSecurityConfigurations().forEach(
+                    (serverConfigurationPath, legacySecurityConfiguration) -> {
+                        final Path configurationDir = legacySecurityConfiguration.getTargetConfiguration().getConfigurationDir();
+                        createEmptyFile(configurationDir.resolve(MIGRATION_APPLICATION_USERS_PROPERTIES_FILENAME));
+                        createEmptyFile(configurationDir.resolve(MIGRATION_APPLICATION_ROLES_PROPERTIES_FILENAME));
+                        createEmptyFile(configurationDir.resolve(MIGRATION_MGMT_USERS_PROPERTIES_FILENAME));
+                        createEmptyFile(configurationDir.resolve(MIGRATION_MGMT_GROUPS_PROPERTIES_FILENAME));
+                    });
+        });
         subtasks(ManageableServerConfigurationCompositeSubtasks.of(new MigrateToElytron<>(legacySecurityConfigurations), new UpdateManagementInterfaces<>(legacySecurityConfigurations)));
         afterRun(context -> context.getLogger().debugf("Legacy security realms migrated to Elytron."));
+    }
+
+    private void createEmptyFile(final Path propertyFile) {
+        if (!Files.isRegularFile(propertyFile)) {
+            try {
+                Files.createFile(propertyFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public static class MigrateToElytron<S> extends ManageableServerConfigurationLeafTask.Builder<S> {
@@ -132,11 +161,11 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
         protected void addDefaultApplicationRealm(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityRealmName = legacySecurityConfiguration.getDefaultElytronApplicationRealmName();
             final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
-            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("application-users.properties")
+            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties(MIGRATION_APPLICATION_USERS_PROPERTIES_FILENAME)
                     .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
                     .digestRealmName(securityRealmName)
             );
-            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("application-roles.properties")
+            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties(MIGRATION_APPLICATION_ROLES_PROPERTIES_FILENAME)
                     .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
             );
             compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
@@ -145,11 +174,11 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
         protected void addDefaultManagementRealm(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityRealmName = legacySecurityConfiguration.getDefaultElytronManagementRealmName();
             final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
-            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("mgmt-users.properties")
+            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties(MIGRATION_MGMT_USERS_PROPERTIES_FILENAME)
                     .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
                     .digestRealmName(securityRealmName)
             );
-            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("mgmt-groups.properties")
+            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties(MIGRATION_MGMT_GROUPS_PROPERTIES_FILENAME)
                     .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
             );
             compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
