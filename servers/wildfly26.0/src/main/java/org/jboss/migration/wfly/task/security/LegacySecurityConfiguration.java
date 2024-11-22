@@ -26,9 +26,9 @@ import java.util.Set;
 
 public class LegacySecurityConfiguration {
 
-    public static final String DEFAULT_ELYTRON_APPLICATION_DOMAIN_NAME = "migration-defaultApplicationDomain";
-    public static final String DEFAULT_ELYTRON_APPLICATION_HTTP_AUTHENTICATION_FACTORY_NAME = "migration-defaultApplicationHttpAuthenticationFactory";
-    public static final String DEFAULT_ELYTRON_APPLICATION_SASL_AUTHENTICATION_FACTORY_NAME = "migration-defaultApplicationSaslAuthenticationFactory";
+    public static final String DEFAULT_ELYTRON_APPLICATION_DOMAIN_NAME = "ApplicationDomain";
+    public static final String DEFAULT_ELYTRON_APPLICATION_HTTP_AUTHENTICATION_FACTORY_NAME = "application-http-authentication";
+    public static final String DEFAULT_ELYTRON_APPLICATION_SASL_AUTHENTICATION_FACTORY_NAME = "application-sasl-authentication";
 
     private final JBossServerConfiguration targetConfiguration;
     private final Map<String, LegacySecurityRealm> legacySecurityRealms = new HashMap<>();
@@ -69,11 +69,11 @@ public class LegacySecurityConfiguration {
     }
 
     public String getDefaultElytronApplicationRealmName() {
-        return "migration-defaultApplicationRealm";
+        return "ApplicationRealm";
     }
 
     public String getDefaultElytronManagementRealmName() {
-        return "migration-defaultManagementRealm";
+        return "ManagementRealm";
     }
 
     public String getDefaultElytronApplicationDomainName() {
@@ -81,7 +81,7 @@ public class LegacySecurityConfiguration {
     }
 
     public String getDefaultElytronManagementDomainName() {
-        return "migration-defaultManagementDomain";
+        return "ManagementDomain";
     }
 
     public String getDefaultElytronApplicationHttpAuthenticationFactoryName() {
@@ -89,7 +89,7 @@ public class LegacySecurityConfiguration {
     }
 
     public String getDefaultElytronManagementHttpAuthenticationFactoryName() {
-        return "migration-defaultManagementHttpAuthenticationFactory";
+        return "management-http-authentication";
     }
 
     public String getDefaultElytronApplicationSaslAuthenticationFactoryName() {
@@ -97,19 +97,19 @@ public class LegacySecurityConfiguration {
     }
 
     public String getDefaultElytronManagementSaslAuthenticationFactoryName() {
-        return "migration-defaultManagementSaslAuthenticationFactory";
+        return "management-sasl-authentication";
     }
 
     public String getDefaultElytronTLSKeyStoreName() {
-        return "migration-defaultTLSKeyStore";
+        return "applicationKS";
     }
 
     public String getDefaultElytronTLSKeyManagerName() {
-        return "migration-defaultTLSKeyManager";
+        return "applicationKM";
     }
 
     public String getDefaultElytronTLSServerSSLContextName() {
-        return "migration-defaultTLSServerSSLContext";
+        return "applicationSSC";
     }
 
     @Override

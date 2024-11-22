@@ -131,104 +131,133 @@ public class MigrateLegacySecurityRealmsToElytron<S> extends ManageableServerCon
 
         protected void addDefaultApplicationRealm(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityRealmName = legacySecurityConfiguration.getDefaultElytronApplicationRealmName();
-            final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
-            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("application-users.properties")
-                    .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
-                    .digestRealmName(securityRealmName)
-            );
-            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("application-roles.properties")
-                    .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
-            );
-            compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
+            if (! subsystemResource.getResourceConfiguration().hasDefined("properties-realm", securityRealmName)) {
+                final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
+                propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("application-users.properties")
+                        .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
+                        .digestRealmName(securityRealmName)
+                );
+                propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("application-roles.properties")
+                        .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
+                );
+                compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
+            }
         }
 
         protected void addDefaultManagementRealm(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityRealmName = legacySecurityConfiguration.getDefaultElytronManagementRealmName();
-            final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
-            propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("mgmt-users.properties")
-                    .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
-                    .digestRealmName(securityRealmName)
-            );
-            propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("mgmt-groups.properties")
-                    .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
-            );
-            compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
+            if (! subsystemResource.getResourceConfiguration().hasDefined("properties-realm", securityRealmName)) {
+                final PropertiesRealmAddOperation propertiesRealmAddOperation = new PropertiesRealmAddOperation(subsystemResource.getResourcePathAddress(), securityRealmName);
+                propertiesRealmAddOperation.usersProperties(new PropertiesRealmAddOperation.Properties("mgmt-users.properties")
+                        .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
+                        .digestRealmName(securityRealmName)
+                );
+                propertiesRealmAddOperation.groupsProperties(new PropertiesRealmAddOperation.Properties("mgmt-groups.properties")
+                        .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
+                );
+                compositeOperationBuilder.addStep(propertiesRealmAddOperation.toModelNode());
+            }
         }
 
         protected void addDefaultApplicationDomain(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityDomainName = legacySecurityConfiguration.getDefaultElytronApplicationDomainName();
-            final SecurityDomainAddOperation securityDomainAddOperation = new SecurityDomainAddOperation(subsystemResource.getResourcePathAddress(),securityDomainName)
-                    .permissionMapper("default-permission-mapper")
-                    .defaultRealm(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())
-                    .addRealm(new SecurityDomainAddOperation.Realm(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())
-                            .roleDecoder( "groups-to-roles"))
-                    .addRealm(new SecurityDomainAddOperation.Realm("local"));
-            compositeOperationBuilder.addStep(securityDomainAddOperation.toModelNode());
+            if (! subsystemResource.getResourceConfiguration().hasDefined("security-domain", securityDomainName)) {
+                final SecurityDomainAddOperation securityDomainAddOperation = new SecurityDomainAddOperation(subsystemResource.getResourcePathAddress(),securityDomainName)
+                        .permissionMapper("default-permission-mapper")
+                        .defaultRealm(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())
+                        .addRealm(new SecurityDomainAddOperation.Realm(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())
+                                .roleDecoder( "groups-to-roles"))
+                        .addRealm(new SecurityDomainAddOperation.Realm("local"));
+                compositeOperationBuilder.addStep(securityDomainAddOperation.toModelNode());
+            }
         }
 
         protected void addDefaultManagementDomain(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             final String securityDomainName = legacySecurityConfiguration.getDefaultElytronManagementDomainName();
-            final SecurityDomainAddOperation securityDomainAddOperation = new SecurityDomainAddOperation(subsystemResource.getResourcePathAddress(),securityDomainName)
-                    .permissionMapper("default-permission-mapper")
-                    .defaultRealm(legacySecurityConfiguration.getDefaultElytronManagementRealmName())
-                    .addRealm(new SecurityDomainAddOperation.Realm(legacySecurityConfiguration.getDefaultElytronManagementRealmName())
-                            .roleDecoder( "groups-to-roles"))
-                    .addRealm(new SecurityDomainAddOperation.Realm("local").roleMapper("super-user-mapper"));
-            compositeOperationBuilder.addStep(securityDomainAddOperation.toModelNode());
+            if (! subsystemResource.getResourceConfiguration().hasDefined("security-domain", securityDomainName)) {
+                final SecurityDomainAddOperation securityDomainAddOperation = new SecurityDomainAddOperation(subsystemResource.getResourcePathAddress(),securityDomainName)
+                        .permissionMapper("default-permission-mapper")
+                        .defaultRealm(legacySecurityConfiguration.getDefaultElytronManagementRealmName())
+                        .addRealm(new SecurityDomainAddOperation.Realm(legacySecurityConfiguration.getDefaultElytronManagementRealmName())
+                                .roleDecoder( "groups-to-roles"))
+                        .addRealm(new SecurityDomainAddOperation.Realm("local").roleMapper("super-user-mapper"));
+                compositeOperationBuilder.addStep(securityDomainAddOperation.toModelNode());
+            }
         }
 
         protected void addDefaultApplicationHttpAuthenticationFactory(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
-            compositeOperationBuilder.addStep(new HttpAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronApplicationHttpAuthenticationFactoryName())
-                    .securityDomain(legacySecurityConfiguration.getDefaultElytronApplicationDomainName())
-                    .httpServerMechanismFactory("global")
-                    .addMechanismConfiguration(new MechanismConfiguration("BASIC").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())))
-                    .toModelNode());
+            final String name = legacySecurityConfiguration.getDefaultElytronApplicationHttpAuthenticationFactoryName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("http-authentication-factory", name)) {
+                compositeOperationBuilder.addStep(new HttpAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), name)
+                        .securityDomain(legacySecurityConfiguration.getDefaultElytronApplicationDomainName())
+                        .httpServerMechanismFactory("global")
+                        .addMechanismConfiguration(new MechanismConfiguration("BASIC").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())))
+                        .toModelNode());
+            }
         }
 
         protected void addDefaultManagementHttpAuthenticationFactory(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
-            compositeOperationBuilder.addStep(new HttpAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronManagementHttpAuthenticationFactoryName())
-                    .securityDomain(legacySecurityConfiguration.getDefaultElytronManagementDomainName())
-                    .httpServerMechanismFactory("global")
-                    .addMechanismConfiguration(new MechanismConfiguration("DIGEST").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronManagementRealmName())))
-                    .toModelNode());
+            final String name = legacySecurityConfiguration.getDefaultElytronManagementHttpAuthenticationFactoryName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("http-authentication-factory", name)) {
+                compositeOperationBuilder.addStep(new HttpAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), name)
+                        .securityDomain(legacySecurityConfiguration.getDefaultElytronManagementDomainName())
+                        .httpServerMechanismFactory("global")
+                        .addMechanismConfiguration(new MechanismConfiguration("DIGEST").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronManagementRealmName())))
+                        .toModelNode());
+            }
         }
 
         protected void addDefaultApplicationSaslAuthenticationFactory(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
-            compositeOperationBuilder.addStep(new SaslAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronApplicationSaslAuthenticationFactoryName())
-                    .securityDomain(legacySecurityConfiguration.getDefaultElytronApplicationDomainName())
-                    .saslServerFactory("configured")
-                    .addMechanismConfiguration(new MechanismConfiguration("JBOSS-LOCAL-USER").realmMapper("local"))
-                    .addMechanismConfiguration(new MechanismConfiguration("DIGEST-MD5").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())))
-                    .toModelNode());
+            final String name = legacySecurityConfiguration.getDefaultElytronApplicationSaslAuthenticationFactoryName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("sasl-authentication-factory", name)) {
+                compositeOperationBuilder.addStep(new SaslAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), name)
+                        .securityDomain(legacySecurityConfiguration.getDefaultElytronApplicationDomainName())
+                        .saslServerFactory("configured")
+                        .addMechanismConfiguration(new MechanismConfiguration("JBOSS-LOCAL-USER").realmMapper("local"))
+                        .addMechanismConfiguration(new MechanismConfiguration("DIGEST-MD5").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronApplicationRealmName())))
+                        .toModelNode());
+            }
         }
 
         protected void addDefaultManagementSaslAuthenticationFactory(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
-            compositeOperationBuilder.addStep(new SaslAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronManagementSaslAuthenticationFactoryName())
-                    .securityDomain(legacySecurityConfiguration.getDefaultElytronManagementDomainName())
-                    .saslServerFactory("configured")
-                    .addMechanismConfiguration(new MechanismConfiguration("JBOSS-LOCAL-USER").realmMapper("local"))
-                    .addMechanismConfiguration(new MechanismConfiguration("DIGEST-MD5").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronManagementRealmName())))
-                    .toModelNode());
+            final String name = legacySecurityConfiguration.getDefaultElytronManagementSaslAuthenticationFactoryName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("sasl-authentication-factory", name)) {
+                compositeOperationBuilder.addStep(new SaslAuthenticationFactoryAddOperation(subsystemResource.getResourcePathAddress(), name)
+                        .securityDomain(legacySecurityConfiguration.getDefaultElytronManagementDomainName())
+                        .saslServerFactory("configured")
+                        .addMechanismConfiguration(new MechanismConfiguration("JBOSS-LOCAL-USER").realmMapper("local"))
+                        .addMechanismConfiguration(new MechanismConfiguration("DIGEST-MD5").addMechanismRealmConfiguration(new MechanismRealmConfiguration(legacySecurityConfiguration.getDefaultElytronManagementRealmName())))
+                        .toModelNode());
+            }
         }
 
         protected void addDefaultTLS(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
             // add key-store
-            compositeOperationBuilder.addStep(new KeystoreAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronTLSKeyStoreName())
-                    .keystorePassword("password")
-                    .path("application.keystore")
-                    .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
-                    .type("JKS")
-                    .toModelNode());
+            final String keyStoreName = legacySecurityConfiguration.getDefaultElytronTLSKeyStoreName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("key-store", keyStoreName)) {
+                compositeOperationBuilder.addStep(new KeystoreAddOperation(subsystemResource.getResourcePathAddress(), keyStoreName)
+                        .keystorePassword("password")
+                        .path("application.keystore")
+                        .relativeTo(subsystemResource.getServerConfiguration().getConfigurationType() == StandaloneServerConfiguration.RESOURCE_TYPE ? "jboss.server.config.dir" : "jboss.domain.config.dir")
+                        .type("JKS")
+                        .toModelNode());
+            }
             // add key-manager
-            compositeOperationBuilder.addStep(new KeyManagerAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronTLSKeyManagerName())
-                    .keystore(legacySecurityConfiguration.getDefaultElytronTLSKeyStoreName())
-                    .generateSelfSignedCertificateHost(true)
-                    .keyPassword("password")
-                    .toModelNode());
+            final String keyManagerName = legacySecurityConfiguration.getDefaultElytronTLSKeyManagerName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("key-manager", keyManagerName)) {
+                compositeOperationBuilder.addStep(new KeyManagerAddOperation(subsystemResource.getResourcePathAddress(), keyManagerName)
+                        .keystore(legacySecurityConfiguration.getDefaultElytronTLSKeyStoreName())
+                        .generateSelfSignedCertificateHost(true)
+                        .keyPassword("password")
+                        .toModelNode());
+            }
             // add ssl server context
-            compositeOperationBuilder.addStep(new ServerSSLContextAddOperation(subsystemResource.getResourcePathAddress(), legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName())
-                    .keyManager(legacySecurityConfiguration.getDefaultElytronTLSKeyManagerName())
-                    .toModelNode());
+            final String serverSSLContextName = legacySecurityConfiguration.getDefaultElytronTLSServerSSLContextName();
+            if (! subsystemResource.getResourceConfiguration().hasDefined("server-ssl-context", serverSSLContextName)) {
+                compositeOperationBuilder.addStep(new ServerSSLContextAddOperation(subsystemResource.getResourcePathAddress(), serverSSLContextName)
+                        .keyManager(legacySecurityConfiguration.getDefaultElytronTLSKeyManagerName())
+                        .toModelNode());
+            }
         }
 
         protected void migrateRemotingSubsystem(LegacySecurityConfiguration legacySecurityConfiguration, SubsystemResource subsystemResource, Operations.CompositeOperationBuilder compositeOperationBuilder, TaskContext taskContext) {
