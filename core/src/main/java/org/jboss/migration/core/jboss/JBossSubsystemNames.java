@@ -43,6 +43,7 @@ public interface JBossSubsystemNames {
     String INFINISPAN = "infinispan";
     String IO = "io";
     String JACORB = "jacorb";
+    String JAKARTA_DATA = "jakarta-data";
     String JAXR = "jaxr";
     String JAXRS = "jaxrs";
     String JCA = "jca";

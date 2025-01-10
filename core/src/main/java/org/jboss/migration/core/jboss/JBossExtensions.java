@@ -137,6 +137,11 @@ public interface JBossExtensions {
             .subsystem(JBossSubsystemNames.JACORB)
             .build();
 
+    Extension JAKARTA_DATA = Extension.builder()
+            .module(JBossExtensionNames.JAKARTA_DATA)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.JAKARTA_DATA).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.JAKARTA_DATA))
+            .build();
+
     Extension JAXR = Extension.builder()
             .module(JBossExtensionNames.JAXR)
             .subsystem(JBossSubsystemNames.JAXR)

@@ -43,6 +43,7 @@ public interface JBossExtensionNames {
     String INFINISPAN = "org.jboss.as.clustering.infinispan";
     String IO = "org.wildfly.extension.io";
     String JACORB = "org.jboss.as.jacorb";
+    String JAKARTA_DATA = "org.wildfly.extension.jakarta.data";
     String JAXR = "org.jboss.as.jaxr";
     String JAXRS = "org.jboss.as.jaxrs";
     String JDR = "org.jboss.as.jdr";
