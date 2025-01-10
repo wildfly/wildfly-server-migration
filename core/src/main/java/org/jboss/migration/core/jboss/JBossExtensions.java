@@ -38,12 +38,12 @@ public interface JBossExtensions {
 
     Extension CLUSTERING_EJB = Extension.builder()
             .module(JBossExtensionNames.CLUSTERING_EJB)
-            .subsystem(JBossSubsystemNames.DISTRIBUTABLE_EJB)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.DISTRIBUTABLE_EJB).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.DISTRIBUTABLE_EJB))
             .build();
 
     Extension CLUSTERING_WEB = Extension.builder()
             .module(JBossExtensionNames.CLUSTERING_WEB)
-            .subsystem(JBossSubsystemNames.DISTRIBUTABLE_WEB)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.DISTRIBUTABLE_WEB).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.DISTRIBUTABLE_WEB))
             .build();
 
     Extension CMP = Extension.builder()
@@ -284,7 +284,7 @@ public interface JBossExtensions {
 
     Extension MVC_KRAZO = Extension.builder()
             .module(JBossExtensionNames.MVC_KRAZO)
-            .subsystem(JBossSubsystemNames.MVC_KRAZO)
+            .subsystem(Subsystem.builder().name(JBossSubsystemNames.MVC_KRAZO).namespaceWithoutVersion("urn:wildfly:"+JBossSubsystemNames.MVC_KRAZO))
             .build();
 
     Extension NAMING = Extension.builder()
