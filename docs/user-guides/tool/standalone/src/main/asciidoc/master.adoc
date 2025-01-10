@@ -371,18 +371,6 @@ This standard distribution of the JBoss Server Migration Tool includes support f
 * link:migrations/wildfly34.0-to-wildfly35.0/index.html[WildFly 34.0 to WildFly 35.0]
 * link:migrations/wildfly35.0-to-wildfly35.0/index.html[WildFly 35.0 to WildFly 35.0]
 
-* link:migrations/wildfly24.0-to-wildfly34.0/index.html[WildFly 24.0 to WildFly 34.0]
-* link:migrations/wildfly25.0-to-wildfly34.0/index.html[WildFly 25.0 to WildFly 34.0]
-* link:migrations/wildfly26.0-to-wildfly34.0/index.html[WildFly 26.0 to WildFly 34.0]
-* link:migrations/wildfly27.0-to-wildfly34.0/index.html[WildFly 27.0 to WildFly 34.0]
-* link:migrations/wildfly28.0-to-wildfly34.0/index.html[WildFly 28.0 to WildFly 34.0]
-* link:migrations/wildfly29.0-to-wildfly34.0/index.html[WildFly 29.0 to WildFly 34.0]
-* link:migrations/wildfly30.0-to-wildfly34.0/index.html[WildFly 30.0 to WildFly 34.0]
-* link:migrations/wildfly31.0-to-wildfly34.0/index.html[WildFly 31.0 to WildFly 34.0]
-* link:migrations/wildfly32.0-to-wildfly34.0/index.html[WildFly 32.0 to WildFly 34.0]
-* link:migrations/wildfly33.0-to-wildfly34.0/index.html[WildFly 33.0 to WildFly 34.0]
-* link:migrations/wildfly34.0-to-wildfly34.0/index.html[WildFly 34.0 to WildFly 34.0]
-
 * link:migrations/eap7.0-to-eap8.0/index.html[JBoss EAP 7.0 to JBoss EAP 8.0]
 * link:migrations/eap7.1-to-eap8.0/index.html[JBoss EAP 7.1 to JBoss EAP 8.0]
 * link:migrations/eap7.2-to-eap8.0/index.html[JBoss EAP 7.2 to JBoss EAP 8.0]
