@@ -1,0 +1,37 @@
+:toc: macro
+:toc-title:
+
+// include abstract
+include::ServerMigration-StandaloneServer-StandaloneServerConfiguration.adoc[]
+
+toc::[]
+
+// include doc for each standalone task in EAP7_3ToEAP8_1ServerMigrationProvider.java
+
+:leveloffset: +1
+
+include::EAP7.3toEAP8.1-ServerMigration-ServerConfiguration-MigrateJBossDomainProperties.adoc[]
+
+include::ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::EAP7.3toEAP8.1-ServerMigration-StandaloneServer-StandaloneServerConfiguration-MigrateLegacySecurityRealms.adoc[]
+
+include::EAP7.3toEAP8.1-ServerMigration-StandaloneServer-StandaloneServerConfiguration-MigrateLegacySecurityDomains.adoc[]
+
+include::EAP7.3toEAP8.1-ServerMigration-ServerConfiguration-Subsystem-Migrate-keycloak.adoc[]
+
+include::EAP7.3toEAP8.1-ServerMigration-ServerConfiguration-Subsystem-Migrate-picketlink.adoc[]
+
+include::EAP7.3toEAP8.1-ServerMigration-ServerConfiguration-Subsystem-Update-jgroups.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-health.adoc[]
+
+include::ServerMigration-ServerConfiguration-Subsystem-Add-metrics.adoc[]
+
+include::ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1
