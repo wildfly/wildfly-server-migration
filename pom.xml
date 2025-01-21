@@ -94,6 +94,13 @@
         <module>docs/user-guides/migrations/eap8.0/eap7.3</module>
         <module>docs/user-guides/migrations/eap8.0/eap7.4</module>
         <module>docs/user-guides/migrations/eap8.0/eap8.0</module>
+        <module>docs/user-guides/migrations/eap8.1/eap7.0</module>
+        <module>docs/user-guides/migrations/eap8.1/eap7.1</module>
+        <module>docs/user-guides/migrations/eap8.1/eap7.2</module>
+        <module>docs/user-guides/migrations/eap8.1/eap7.3</module>
+        <module>docs/user-guides/migrations/eap8.1/eap7.4</module>
+        <module>docs/user-guides/migrations/eap8.1/eap8.0</module>
+        <module>docs/user-guides/migrations/eap8.1/eap8.1</module>
         <module>docs/user-guides/migrations/wildfly35.0/wildfly25.0</module>
         <module>docs/user-guides/migrations/wildfly35.0/wildfly26.0</module>
         <module>docs/user-guides/migrations/wildfly35.0/wildfly27.0</module>
@@ -119,6 +126,13 @@
         <module>migrations/eap8.0/eap7.3</module>
         <module>migrations/eap8.0/eap7.4</module>
         <module>migrations/eap8.0/eap8.0</module>
+        <module>migrations/eap8.1/eap7.0</module>
+        <module>migrations/eap8.1/eap7.1</module>
+        <module>migrations/eap8.1/eap7.2</module>
+        <module>migrations/eap8.1/eap7.3</module>
+        <module>migrations/eap8.1/eap7.4</module>
+        <module>migrations/eap8.1/eap8.0</module>
+        <module>migrations/eap8.1/eap8.1</module>
         <module>migrations/wildfly35.0/wildfly25.0</module>
         <module>migrations/wildfly35.0/wildfly26.0</module>
         <module>migrations/wildfly35.0/wildfly27.0</module>
@@ -137,6 +151,7 @@
         <module>servers/eap7.3</module>
         <module>servers/eap7.4</module>
         <module>servers/eap8.0</module>
+        <module>servers/eap8.1</module>
         <module>servers/wildfly8.2</module>
         <module>servers/wildfly9.0</module>
         <module>servers/wildfly10.0</module>
@@ -534,6 +549,84 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>jboss-server-migration-eap8.0-to-eap8.0-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- EAP 8.1 -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap8.1-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.0-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.1-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.2-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.3-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.4-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap8.0-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap8.1-to-eap8.1</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.0-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.1-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.2-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.3-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap7.4-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap8.0-to-eap8.1-userguide</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>jboss-server-migration-eap8.1-to-eap8.1-userguide</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

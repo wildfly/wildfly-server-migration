@@ -1,0 +1,94 @@
+// setup of vars used by this and/or included docs
+:server-source-productName: JBoss EAP 8.1
+:server-source-name: JBoss EAP
+:server-source-version: 8.1.0.GA
+:server-source-baseDir: jboss-eap-8.1
+
+:server-target-productName: JBoss EAP 8.1
+:server-target-name: JBoss EAP
+:server-target-version: 8.1.0.GA
+:server-target-baseDir: jboss-eap-8.1
+
+:includesDir: topics
+
+// toc setup
+:toc:
+:numbered:
+
+// include abstract
+include::{includesDir}/ServerMigration.adoc[]
+
+// customize
+The server migration from {server-source-productName} to {server-target-productName} includes:
+
+* Modules Migration
+* Standalone Server Migration
+* Managed Domain Migration
+
+:leveloffset: +1
+
+// --- modules migration
+
+include::{includesDir}/ServerMigration-Modules.adoc[]
+
+// --- standalone server migration
+
+include::{includesDir}/ServerMigration-StandaloneServer.adoc[]
+
+:leveloffset: +1
+
+// ------ standalone server configuration migration
+
+include::{includesDir}/ServerMigration-StandaloneServer-StandaloneServerConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1
+
+:leveloffset: -1
+
+// --- managed domain migration
+
+include::{includesDir}/ServerMigration-ManagedDomain.adoc[]
+
+// ------ domain configuration
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ManagedDomain-DomainConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
+
+:leveloffset: -1
+
+// ------ host configuration
+
+include::{includesDir}/ServerMigration-ManagedDomain-HostConfiguration.adoc[]
+
+:leveloffset: +1
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
+
+include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
+
+:leveloffset: -1
+
+:leveloffset: -1
+
+:leveloffset: -1
