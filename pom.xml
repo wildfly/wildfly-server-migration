@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>35</version>
+        <version>47</version>
     </parent>
 
     <groupId>org.jboss.migration</groupId>
@@ -49,8 +49,7 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <!--
             Dependency versions. Please keep alphabetical.
 
@@ -61,8 +60,8 @@
             versions, add the artifactId or other qualifier to the property name.
             For example: <version.org.jboss.as.console>
          -->
-        <version.server>35.0.0.Final</version.server>
         <version.org.asciidoctor.asciidoctor-maven-plugin>1.5.6</version.org.asciidoctor.asciidoctor-maven-plugin>
+        <version.server>35.0.0.Final</version.server>
 
         <!-- Surefire args -->
         <surefire.jpda.args/>
@@ -70,11 +69,7 @@
 
         <!-- Checkstyle configuration -->
         <linkXRef>false</linkXRef>
-        <version.checkstyle>6.8</version.checkstyle>
-
-        <version.org.wildfly.checkstyle-config>1.0.5.Final</version.org.wildfly.checkstyle-config>
-        <version.org.wildfly.build-tools>1.2.10.Final</version.org.wildfly.build-tools>
-        <version.org.wildfly.galleon-plugins>1.0.1.Final</version.org.wildfly.galleon-plugins>
+        <version.org.wildfly.checkstyle-config>1.0.8.Final</version.org.wildfly.checkstyle-config>
     </properties>
 
     <modules>
@@ -201,7 +196,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>1.8</version>
+                                    <version>17</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -218,6 +213,7 @@
                         <doclint>none</doclint>
                     </configuration>
                 </plugin>
+                <!-- Checkstyle -->
                 <!-- Checkstyle -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -244,7 +240,7 @@
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
                         <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        <excludes>**/*$logger.java,**/*$bundle.java</excludes>
+                        <excludes>**/*$logger.java,**/*$bundle.java,**/*$___Marshaller_*.java,**/*SerializationContextInitializerImpl.java</excludes>
                         <useFile></useFile>
                     </configuration>
                 </plugin>
@@ -976,6 +972,12 @@
                 <version>${version.server}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly.checkstyle</groupId>
+                <artifactId>wildfly-checkstyle-config</artifactId>
+                <version>${version.org.wildfly.checkstyle-config}</version>
             </dependency>
 
         </dependencies>

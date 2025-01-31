@@ -6,8 +6,8 @@ The JBoss Server Migration Tool is a tool that migrates JBoss Application Server
 System Requirements
 ------------
 
-* [Java 8.0 (Java SDK 1.8)](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) or later
-* [Apache Maven](http://maven.apache.org/download.cgi)
+* Java 17 or later
+* Apache Maven 3.x
 
 Build the Server Migration Tool
 ------------

@@ -15,7 +15,7 @@ Migrating an existing application server configuration from one release to anoth
 
 === Minimal Requirements
 
-The _JBoss Server Migration Tool_ is a Java standalone application. It requires Java version 8 or later.
+The _JBoss Server Migration Tool_ is a Java standalone application. It requires Java version 17 or later.
 
 It is recommended that you start the tool using the provided *.sh* (Linux, Mac OS) and *.bat* (Windows) scripts.
 
