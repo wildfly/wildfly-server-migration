@@ -16,15 +16,7 @@
 
 package org.jboss.migration.eap;
 
-import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
-import org.jboss.migration.wfly.task.subsystem.keycloak.MigrateKeycloakSubsystem;
-import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
-import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
-import org.jboss.migration.wfly10.config.task.update.MigrateDeployments;
-import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedExtensions;
-import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems;
-import org.jboss.migration.wfly10.config.task.update.ServerUpdate;
 
 /**
  * Server migration, from EAP XP 8.0 to EAP XP 8.1.
@@ -33,28 +25,8 @@ import org.jboss.migration.wfly10.config.task.update.ServerUpdate;
 public class EAPXP8_0ToEAPXP8_1ServerMigrationProvider implements EAPXPServerMigrationProvider8_1 {
 
     public WildFlyServerMigration10 getServerMigration() {
-        final ServerUpdate.Builders<WildFlyServer10> serverUpdateBuilders = new ServerUpdate.Builders<>();
-        return serverUpdateBuilders.serverUpdateBuilder()
-                .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
-                        .subtask(new RemoveUnsupportedExtensions<>())
-                        .subtask(new RemoveUnsupportedSubsystems<>())
-                        .subtask(new MigrateReferencedModules<>())
-                        .subtask(new WildFly26_0MigrateReferencedPaths<>())
-                        .subtask(new MigrateKeycloakSubsystem<>())
-                        .subtask(new MigrateDeployments<>()))
-                .domain(serverUpdateBuilders.domainBuilder()
-                        .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
-                                .subtask(new RemoveUnsupportedExtensions<>())
-                                .subtask(new RemoveUnsupportedSubsystems<>())
-                                .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
-                                .subtask(new MigrateKeycloakSubsystem<>())
-                                .subtask(new MigrateDeployments<>()))
-                        .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
-                                .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
-                        )
-                ).build();
+        // nothing more than the base migration
+        return new EAP8_0ToEAP8_1ServerMigrationProvider().getServerMigration();
     }
 
     @Override
