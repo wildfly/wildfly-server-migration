@@ -21,7 +21,9 @@ Function String-To-Array($value) {
 
 $TOOL_OPTS = @()
 for($i=0; $i -lt $args.Count; $i++){
-    $TOOL_OPTS += $Args[$i]
+    if ($Args[$i].Substring(0, 2) -ne "-D") {
+        $TOOL_OPTS += $Args[$i]
+    }
 }
 
 $BASE_DIR = $PSScriptRoot
@@ -30,6 +32,11 @@ $JAVA_OPTS = @()
 if(Test-Path env:JAVA_OPTS) {
     $javaOpts = (Get-ChildItem env:JAVA_OPTS).Value
     $JAVA_OPTS = String-To-Array -value $javaOpts
+}
+for($i=0; $i -lt $args.Count; $i++){
+    if ($Args[$i].Substring(0, 2) -eq "-D") {
+        $JAVA_OPTS += $Args[$i]
+    }
 }
 
 if (!(Test-Path env:JAVA)) {
