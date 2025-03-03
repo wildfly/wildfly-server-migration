@@ -52,10 +52,24 @@ if errorlevel == 1 (
   echo logging.configuration already set in JAVA_OPTS
 )
 
+rem Sort arguments into JAVA_OPTS and TOOL_OPTS
+set TOOL_OPTS=
+
+:argsLoop
+set "arg=%~1%"
+if "%arg:~0,2%"=="-D" (
+  set "JAVA_OPTS=%JAVA_OPTS% %arg%"
+) else (
+  set "TOOL_OPTS=%TOOL_OPTS% %arg%"
+)
+shift
+if not "%~1%"=="" goto argsLoop
+
+
 "%JAVA%" %JAVA_OPTS% ^
     -cp "%BASE_DIR%\lib\*" ^
     org.jboss.migration.cli.CommandLineServerMigration ^
-    %*
+    %TOOL_OPTS%
 
 set /A RC=%errorlevel%
 :END
