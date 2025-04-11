@@ -22,6 +22,8 @@ import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageLogger;
 import org.jboss.migration.core.ProductInfo;
 
+import java.lang.invoke.MethodHandles;
+
 import static org.jboss.logging.Logger.Level.INFO;
 
 /**
@@ -34,7 +36,7 @@ public interface ServerMigrationLogger extends BasicLogger {
     /**
      * the root logger instance
      */
-    ServerMigrationLogger ROOT_LOGGER = Logger.getMessageLogger(ServerMigrationLogger.class, ServerMigrationLogger.class.getPackage().getName());
+    ServerMigrationLogger ROOT_LOGGER = Logger.getMessageLogger(MethodHandles.lookup(), ServerMigrationLogger.class, ServerMigrationLogger.class.getPackage().getName());
 
     /**
      * Creates an exception indicating that no java.io.Console is available.
