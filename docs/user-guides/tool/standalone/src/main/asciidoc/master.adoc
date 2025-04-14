@@ -359,6 +359,18 @@ The XML Report may be found in the _output_ directory, by default its filename i
 
 This standard distribution of the JBoss Server Migration Tool includes support for the following server migrations, each with its own User Guide:
 
+* link:migrations/wildfly26.0-to-wildfly36.0/index.html[WildFly 26.0 to WildFly 36.0]
+* link:migrations/wildfly27.0-to-wildfly36.0/index.html[WildFly 27.0 to WildFly 36.0]
+* link:migrations/wildfly28.0-to-wildfly36.0/index.html[WildFly 28.0 to WildFly 36.0]
+* link:migrations/wildfly29.0-to-wildfly36.0/index.html[WildFly 29.0 to WildFly 36.0]
+* link:migrations/wildfly30.0-to-wildfly36.0/index.html[WildFly 30.0 to WildFly 36.0]
+* link:migrations/wildfly31.0-to-wildfly36.0/index.html[WildFly 31.0 to WildFly 36.0]
+* link:migrations/wildfly32.0-to-wildfly36.0/index.html[WildFly 32.0 to WildFly 36.0]
+* link:migrations/wildfly33.0-to-wildfly36.0/index.html[WildFly 33.0 to WildFly 36.0]
+* link:migrations/wildfly34.0-to-wildfly36.0/index.html[WildFly 34.0 to WildFly 36.0]
+* link:migrations/wildfly35.0-to-wildfly36.0/index.html[WildFly 35.0 to WildFly 36.0]
+* link:migrations/wildfly36.0-to-wildfly36.0/index.html[WildFly 36.0 to WildFly 36.0]
+
 * link:migrations/wildfly25.0-to-wildfly35.0/index.html[WildFly 25.0 to WildFly 35.0]
 * link:migrations/wildfly26.0-to-wildfly35.0/index.html[WildFly 26.0 to WildFly 35.0]
 * link:migrations/wildfly27.0-to-wildfly35.0/index.html[WildFly 27.0 to WildFly 35.0]
