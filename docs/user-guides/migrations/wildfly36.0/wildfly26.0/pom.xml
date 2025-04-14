@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.jboss.migration</groupId>
         <artifactId>jboss-server-migration-parent</artifactId>
-        <version>36.0.0.Final</version>
+        <version>37.0.0.Final-SNAPSHOT</version>
         <relativePath>../../../../../pom.xml</relativePath>
     </parent>
 
