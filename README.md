@@ -21,16 +21,16 @@ Run the Server Migration Tool (Standalone Build)
 
 1. Navigate to the `dist/standalone/target/` directory and unzip the ` jboss-server-migration-VERSION_NUMBER.zip` file
 
-        unzip jboss-server-migration-35.0.0.Final.zip
+        unzip jboss-server-migration-37.0.0.Final.zip
 2. Open a terminal and navigate to the `dist/standalone/target/jboss-server-migration/` directory.
 3. Run the following command.
 
         For Linux|Mac:   ./jboss-server-migration.sh -s SOURCE_SERVER_PATH -t TARGET_SERVER_PATH
         For Windows: jboss-server-migration.bat -s SOURCE_SERVER_PATH -t TARGET_SERVER_PATH
 
-    Replace `SOURCE_SERVER_PATH` with the path to previous version of the server installation that you want to migrate from, for example:  `${user.home}/wildfly-26.0.0.Final/`
+    Replace `SOURCE_SERVER_PATH` with the path to previous version of the server installation that you want to migrate from, for example:  `${user.home}/wildfly-27.0.0.Final/`
 
-    Replace `TARGET_SERVER_PATH` with the path to current version of the server installation that you want the old configuration migrated to, for example:  `${user.home}/wildfly-31.0.0.Final/`
+    Replace `TARGET_SERVER_PATH` with the path to current version of the server installation that you want the old configuration migrated to, for example:  `${user.home}/wildfly-37.0.0.Final/`
 4. When you execute the command, the tool identifies the source and target servers from provided paths, and starts the server migration.
 
         ----------------------------------------------------------
@@ -38,8 +38,8 @@ Run the Server Migration Tool (Standalone Build)
         ----------------------------------------------------------
         
         Retrieving servers...
-         INFO  SOURCE server name: WildFly Full, version: 26.0.0.Final.
-         INFO  TARGET server name: WildFly Full, version: 36.0.0.Final.
+         INFO  SOURCE server name: WildFly Full, version: 27.0.0.Final.
+         INFO  TARGET server name: WildFly Full, version: 37.0.0.Final.
         
         ----------------------------------------------------------
         ----------------------------------------------------------

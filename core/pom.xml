@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.jboss.migration</groupId>
         <artifactId>jboss-server-migration-parent</artifactId>
-        <version>37.0.0.Final-SNAPSHOT</version>
+        <version>37.0.0.Final</version>
     </parent>
 
     <artifactId>jboss-server-migration-core</artifactId>
