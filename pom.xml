@@ -27,7 +27,7 @@
 
     <groupId>org.jboss.migration</groupId>
     <artifactId>jboss-server-migration-parent</artifactId>
-    <version>37.0.0.Final</version>
+    <version>38.0.0.Final-SNAPSHOT</version>
 
     <name>JBoss Server Migration: Parent</name>
     <description>A tool used for migrating a JBoss server.</description>
