@@ -83,8 +83,8 @@ Upon execution, the tool scans the specified source and target server base direc
 ----------------------------------------------------------
 
 Retrieving servers...
-INFO  SOURCE server name: WildFly Full, version: 27.0.0.Final.
-INFO  TARGET server name: WildFly Full, version: 37.0.0.Final.
+INFO  SOURCE server name: WildFly Full, version: 28.0.0.Final.
+INFO  TARGET server name: WildFly Full, version: 38.0.0.Final.
 ----
 
 This is a fully automated process. The tool execution will fail if a server is not recognized or if the target server does not support migration from the specified source server.
@@ -370,18 +370,6 @@ This standard distribution of the JBoss Server Migration Tool includes support f
 * link:migrations/wildfly36.0-to-wildfly38.0/index.html[WildFly 36.0 to WildFly 38.0]
 * link:migrations/wildfly37.0-to-wildfly38.0/index.html[WildFly 37.0 to WildFly 38.0]
 * link:migrations/wildfly38.0-to-wildfly38.0/index.html[WildFly 38.0 to WildFly 38.0]
-
-* link:migrations/wildfly27.0-to-wildfly37.0/index.html[WildFly 27.0 to WildFly 37.0]
-* link:migrations/wildfly28.0-to-wildfly37.0/index.html[WildFly 28.0 to WildFly 37.0]
-* link:migrations/wildfly29.0-to-wildfly37.0/index.html[WildFly 29.0 to WildFly 37.0]
-* link:migrations/wildfly30.0-to-wildfly37.0/index.html[WildFly 30.0 to WildFly 37.0]
-* link:migrations/wildfly31.0-to-wildfly37.0/index.html[WildFly 31.0 to WildFly 37.0]
-* link:migrations/wildfly32.0-to-wildfly37.0/index.html[WildFly 32.0 to WildFly 37.0]
-* link:migrations/wildfly33.0-to-wildfly37.0/index.html[WildFly 33.0 to WildFly 37.0]
-* link:migrations/wildfly34.0-to-wildfly37.0/index.html[WildFly 34.0 to WildFly 37.0]
-* link:migrations/wildfly35.0-to-wildfly37.0/index.html[WildFly 35.0 to WildFly 37.0]
-* link:migrations/wildfly36.0-to-wildfly37.0/index.html[WildFly 36.0 to WildFly 37.0]
-* link:migrations/wildfly37.0-to-wildfly37.0/index.html[WildFly 37.0 to WildFly 37.0]
 
 * link:migrations/eap7.0-to-eap8.0/index.html[JBoss EAP 7.0 to JBoss EAP 8.0]
 * link:migrations/eap7.1-to-eap8.0/index.html[JBoss EAP 7.1 to JBoss EAP 8.0]
