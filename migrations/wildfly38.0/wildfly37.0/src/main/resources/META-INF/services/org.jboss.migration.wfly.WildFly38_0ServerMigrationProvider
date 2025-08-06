@@ -1,0 +1,3 @@
+#  ~ Copyright The WildFly Authors
+#  ~ SPDX-License-Identifier: Apache-2.0
+org.jboss.migration.wfly.WildFly37_0ToWildFly38_0ServerMigrationProvider
