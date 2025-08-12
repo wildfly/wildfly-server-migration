@@ -19,7 +19,7 @@ jobs:
         jdk: [17, 23]
         os: [ubuntu-latest, windows-latest]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         path: wildfly-server-migration
     - name: Set up JDK ${{ matrix.jdk }}
