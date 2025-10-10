@@ -24,6 +24,7 @@ import org.jboss.migration.wfly.task.subsystem.health.WildFly26_0AddHealthSubsys
 import org.jboss.migration.wfly.task.subsystem.keycloak.MigrateKeycloakSubsystem;
 import org.jboss.migration.wfly.task.subsystem.picketlink.MigratePicketLinkSubsystem;
 import org.jboss.migration.wfly.task.update.WildFly22_0UpdateInfinispanSubsystem;
+import org.jboss.migration.wfly.task.update.WildFly34_0UpdateInfinispanSubsystem;
 import org.jboss.migration.wfly.task.xml.WildFly26_0MigrateVault;
 import org.jboss.migration.wfly.task.xml.WildFly27_0MigrateJBossDomainProperties;
 import org.jboss.migration.wfly10.WildFlyServer10;
@@ -54,6 +55,7 @@ public class EAP7_3ToEAP8_1ServerMigrationProvider implements EAPServerMigration
                         .subtask(new WildFly26_0MigrateReferencedPaths<>())
                         .subtask(legacySecurityConfigurationMigration.getRemoveLegacySecurityRealms())
                         .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
+                        .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly26_0MigrateVault<>())
                         .subtask(legacySecurityConfigurationMigration.getEnsureBasicElytronSubsystem())
                         .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityRealmsToElytron())
@@ -74,6 +76,7 @@ public class EAP7_3ToEAP8_1ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new WildFly26_0MigrateReferencedPaths<>())
                                 .subtask(legacySecurityConfigurationMigration.getRemoveLegacySecurityRealms())
                                 .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
+                                .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
                                 .subtask(new EAP8_1AddHostExcludes<>())
                                 .subtask(legacySecurityConfigurationMigration.getEnsureBasicElytronSubsystem())
                                 .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityRealmsToElytron())
