@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.jboss.migration.eap;
+package org.jboss.migration.wfly.task.update;
 
 import org.jboss.migration.core.jboss.JBossSubsystemNames;
-import org.jboss.migration.wfly.task.subsystem.infinispan.WildFly22_0FixHibernateCacheModuleName;
 import org.jboss.migration.wfly.task.subsystem.infinispan.WildFly34_0FixWebCacheModuleName;
 import org.jboss.migration.wfly10.config.task.management.subsystem.UpdateSubsystemResources;
 
 /**
- * @author emmartins
+ * @author mpetrov
  */
-public class EAP7_1ToEAP8_1UpdateInfinispanSubsystem<S> extends UpdateSubsystemResources<S> {
-    public EAP7_1ToEAP8_1UpdateInfinispanSubsystem() {
+public class WildFly34_0UpdateInfinispanSubsystem<S> extends UpdateSubsystemResources<S> {
+    public WildFly34_0UpdateInfinispanSubsystem() {
         super(JBossSubsystemNames.INFINISPAN,
-                new WildFly22_0FixHibernateCacheModuleName<>(),
                 new WildFly34_0FixWebCacheModuleName<>());
     }
 }
