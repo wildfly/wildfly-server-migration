@@ -128,8 +128,8 @@ public class XMLFiles {
         XMLEventWriter xmlEventWriter = null;
         final XMLEventFactory xmlEventFactory = XMLEventFactory.newInstance();
         try {
-            xmlEventReader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
-            xmlEventWriter = XMLOutputFactory.newInstance().createXMLEventWriter(outputStream);
+            xmlEventReader = XMLInputFactory.newInstance().createXMLEventReader(inputStream, "UTF-8");
+            xmlEventWriter = XMLOutputFactory.newInstance().createXMLEventWriter(outputStream, "UTF-8");
             while (xmlEventReader.hasNext()) {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
                 if (xmlEvent.isStartElement()) {
