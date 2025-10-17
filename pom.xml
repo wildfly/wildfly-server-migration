@@ -61,7 +61,7 @@
             For example: <version.org.jboss.as.console>
          -->
         <version.org.asciidoctor.asciidoctor-maven-plugin>1.5.6</version.org.asciidoctor.asciidoctor-maven-plugin>
-        <version.server>37.0.0.Final</version.server>
+        <version.server>38.0.0.Final</version.server>
 
         <!-- Surefire args -->
         <surefire.jpda.args/>
