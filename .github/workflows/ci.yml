@@ -32,7 +32,7 @@ jobs:
       run: |
         cd wildfly-server-migration
         mvn -U -B -fae clean install
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: failure()
       with:
         name: surefire-reports-JDK${{ matrix.jdk }}-${{ matrix.os }}
