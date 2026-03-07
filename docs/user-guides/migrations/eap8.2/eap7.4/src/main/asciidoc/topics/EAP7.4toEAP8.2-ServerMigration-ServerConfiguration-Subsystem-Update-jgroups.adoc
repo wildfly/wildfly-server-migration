@@ -1,0 +1,11 @@
+= Update jgroups Subsystem Configuration
+
+The JBoss Server Migration Tool currently is not capable to automate the migration of the `jgroups` subsystem configuration, and thus reverts it to the default {server-target-productName} `jgroups` configuration.
+
+Please note that further manual `jgroups` subsystem configuration may be needed if the configuration being used was not the default {server-source-productName} `jgroups` subsystem configuration!
+
+The console logs a message when it updates the  `jgroups` subsystem configuration.
+[source,options="nowrap"]
+----
+ WARN  Configuration of JGroups protocols has been changed to match the default protocols of the target server. Please note that further manual configuration may be needed if the legacy configuration being used was not the source server's default configuration!
+----

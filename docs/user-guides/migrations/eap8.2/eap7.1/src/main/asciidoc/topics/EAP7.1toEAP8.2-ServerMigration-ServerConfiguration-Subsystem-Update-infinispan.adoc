@@ -1,0 +1,22 @@
+= Update the infinispan Subsystem
+
+The JBoss Server Migration Tool makes the following updates to the *infinispan* subsystem configuration to better match the {server-target-productName} default configurations.
+
+* Fixes the module name in the `hibernate` cache configuration.
+
+By default, the tool automatically updates any *infinispan* subsystem configuration to include these changes.
+If you prefer, you can configure the environment properties to customize the process of updating the *infinispan* subsystem configuration.
+
+|===
+| Property Name |Property Description
+
+| `subsystem.infinispan.update.skip` | If set to `true`, the tool skips the update of the *infinispan* subsystem.
+| `subsystem.infinispan.update.fix-hibernate-cache-module-name.skip` | If set to `true`, the tool does not fix the module name in the `hibernate` cache configuration.
+|===
+
+Upon successful migration of a *infinispan* subsystem configuration, you should see the following message in the console:
+
+[source,options="nowrap"]
+----
+ INFO  Subsystem infinispan updated.
+----

@@ -1,0 +1,24 @@
+= Update the undertow Subsystem
+
+The JBoss Server Migration Tool applies the following changes to *undertow* subsystem configurations.
+
+* Removes the `Server` response header.
+* Removes the `X-Powered-By` response header.
+
+By default, the tool automatically updates any *undertow* subsystem configuration to include these changes.
+If you prefer, you can configure the environment properties to customize the process of updating the *undertow* subsystem configuration.
+
+|===
+| Property Name |Property Description
+
+| `subsystem.undertow.update.skip` | If set to `true`, the tool skips the update of the *undertow* subsystem.
+| `subsystem.undertow.update.remove-response-header.server-header.skip` | If set to `true`, the tool does not removes the `Server` response header.
+| `subsystem.undertow.update.remove-response-header.x-powered-by-header.skip` | If set to `true`, the tool does not removes the `X-Powered-By` response header.
+|===
+
+Upon successful migration of a *undertow* subsystem configuration, you should see the following message in the console:
+
+[source,options="nowrap"]
+----
+ INFO  Subsystem undertow updated.
+----
