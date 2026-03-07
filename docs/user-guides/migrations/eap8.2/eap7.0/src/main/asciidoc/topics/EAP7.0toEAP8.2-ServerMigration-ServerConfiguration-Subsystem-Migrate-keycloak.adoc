@@ -1,0 +1,5 @@
+:subsystem-migrate-legacySubsystemName: keycloak
+:subsystem-migrate-legacyExtensionName: org.keycloak.keycloak-adapter-subsystem
+:subsystem-migrate-replacementSubsystemName: elytron-oidc-client
+
+include::ServerMigration-ServerConfiguration-Subsystem-Migrate.adoc[]

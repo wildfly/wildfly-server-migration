@@ -1,0 +1,18 @@
+= Migrate JBoss Domain Properties
+
+The words `master` and `slave` on Domain related property names were replaced with the words 'primary' and 'secondary', and the migrates automatically fixes any usage of the old property names.
+
+The console logs any properties renamed by the migration.
+
+[source,options="nowrap"]
+----
+  INFO  JBoss domain property jboss.domain.master.address migrated to jboss.domain.primary.address
+  INFO  JBoss domain property jboss.domain.master.port migrated to jboss.domain.primary.port
+  INFO  JBoss domain property jboss.domain.master.protocol migrated to jboss.domain.primary.protocol
+----
+
+If any property was successfully renamed the following message will be logged.
+[source,options="nowrap"]
+----
+  INFO JBoss domain properties migrated.
+----
