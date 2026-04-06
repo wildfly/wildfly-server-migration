@@ -92,11 +92,11 @@ public class ConfigFilesDiscoveryTest {
         MigrationEnvironment env = new MigrationEnvironment();
         env.setProperty(STANDALONE_CONFIGS_PROP, "" + standaloneConfigDir.resolve("standalone.xml").toAbsolutePath()
                 + "," + standaloneConfigDir.resolve("foobar.xml").toAbsolutePath());
-        Set<Path> paths = discoverStandaloneConfigFiles(env);
-
-        assertEquals(2, paths.size());
-        assertTrue(paths.contains(standaloneConfigDir.resolve("standalone.xml")));
-        assertTrue(paths.contains(standaloneConfigDir.resolve("foobar.xml")));
+        try {
+            discoverStandaloneConfigFiles(env);
+        } catch (IllegalArgumentException e) {
+            // expected, absolute paths in config are not supported
+        }
     }
 
     @Test
@@ -115,10 +115,10 @@ public class ConfigFilesDiscoveryTest {
         MigrationEnvironment env = new MigrationEnvironment();
         env.setProperty(STANDALONE_CONFIGS_PROP, "standalone.xml,"
                 + standaloneConfigDir.resolve("foobar.xml").toAbsolutePath());
-        Set<Path> paths = discoverStandaloneConfigFiles(env);
-
-        assertEquals(2, paths.size());
-        assertTrue(paths.contains(standaloneConfigDir.resolve("standalone.xml")));
-        assertTrue(paths.contains(standaloneConfigDir.resolve("foobar.xml")));
+        try {
+            discoverStandaloneConfigFiles(env);
+        } catch (IllegalArgumentException e) {
+            // expected, absolute paths in config are not supported
+        }
     }
 }

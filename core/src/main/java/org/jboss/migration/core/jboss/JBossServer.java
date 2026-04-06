@@ -132,10 +132,7 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         }
         if (envConfigs != null && !envConfigs.isEmpty()) {
             for (String envConfig : envConfigs) {
-                Path config = Paths.get(envConfig);
-                if (!config.isAbsolute()) {
-                    config = getConfigurationDir(configurationType).resolve(config);
-                }
+                Path config = getConfigurationDir(configurationType).resolve(Paths.get(envConfig));
                 if (Files.exists(config)) {
                     configs.add(new JBossServerConfiguration<>(config, configurationType, (S) this));
                 } else {
@@ -593,12 +590,26 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
             domainDataDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_DOMAIN_DATA_DIR));
             domainContentDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_DOMAIN_CONTENT_DIR));
             domainConfigFiles = migrationEnvironment.getPropertyAsList(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_DOMAIN_DOMAIN_CONFIG_FILES));
+            validateConfigFiles(domainConfigFiles, PROPERTY_DOMAIN_DOMAIN_CONFIG_FILES, PROPERTY_DOMAIN_CONFIG_DIR);
             hostConfigFiles = migrationEnvironment.getPropertyAsList(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_DOMAIN_HOST_CONFIG_FILES));
+            validateConfigFiles(hostConfigFiles, PROPERTY_DOMAIN_HOST_CONFIG_FILES, PROPERTY_DOMAIN_CONFIG_DIR);
             standaloneServerDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_STANDALONE_SERVER_DIR));
             standaloneConfigDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_STANDALONE_CONFIG_DIR));
             standaloneDataDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_STANDALONE_DATA_DIR));
             standaloneContentDir = migrationEnvironment.getPropertyAsString(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_STANDALONE_CONTENT_DIR));
             standaloneConfigFiles = migrationEnvironment.getPropertyAsList(getFullEnvironmentPropertyName(serverMigrationName, PROPERTY_STANDALONE_CONFIG_FILES));
+            validateConfigFiles(standaloneConfigFiles, PROPERTY_STANDALONE_CONFIG_FILES, PROPERTY_STANDALONE_CONFIG_DIR);
+        }
+
+        private void validateConfigFiles(List<String> configFiles, String propertyConfigFiles, String propertyConfigDir) {
+            if (configFiles != null && !configFiles.isEmpty()) {
+                for (String configFile : configFiles) {
+                    Path config = Paths.get(configFile);
+                    if (config.isAbsolute() || config.startsWith("..")) {
+                        throw new IllegalArgumentException("Environment property "+propertyConfigFiles+" must specify paths to files located in the respective configuration directory. The path must be a relative path, and must be relative to the respective configuration directory, which you may also customize using environment property "+propertyConfigDir);
+                    }
+                }
+            }
         }
 
         public String getEnvironmentDomainBaseDir() {
