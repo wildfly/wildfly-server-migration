@@ -18,9 +18,12 @@ package org.jboss.migration.wfly10.config.management.impl;
 
 import org.jboss.as.controller.PathAddress;
 import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.as.controller.descriptions.ModelDescriptionConstants;
+import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.management.HostControllerConfiguration;
+import org.jboss.migration.wfly10.config.management.ManagementOperationException;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
 import org.wildfly.core.embedded.EmbeddedProcessFactory;
 import org.wildfly.core.embedded.EmbeddedProcessStartException;
@@ -96,6 +99,23 @@ public class EmbeddedHostControllerConfiguration extends AbstractManageableServe
             throw new RuntimeException(e);
         }
         return hostController.getModelControllerClient();
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        // CMTOOL-400, domain config may have issues that prevent loading, migration should fail
+        if (domainConfig != null && profileResources.getResources().isEmpty()) {
+            final ModelNode operation = new ModelNode();
+            operation.get(ModelDescriptionConstants.OP).set("read-boot-errors");
+            final ModelNode address = operation.get(ModelDescriptionConstants.ADDRESS);
+            address.add("host",  hostResources.getResourceNames().iterator().next());
+            address.add("core-service", "management");
+            final ModelNode result = executeManagementOperation(operation);
+            if (!result.asList().isEmpty()) {
+                throw new ManagementOperationException("Host controller failed to boot the domain configuration. Boot errors: "+result);
+            }
+        }
     }
 
     @Override
