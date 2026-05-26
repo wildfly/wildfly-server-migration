@@ -18,7 +18,7 @@ public class WildFly40_0ServerProvider extends WildFly39_0ServerProvider {
 
     @Override
     protected String getProductNameRegex() {
-        return "WildFly( EE)?";
+        return "WildFly( EE)?( 10)?";
     }
 
     @Override
