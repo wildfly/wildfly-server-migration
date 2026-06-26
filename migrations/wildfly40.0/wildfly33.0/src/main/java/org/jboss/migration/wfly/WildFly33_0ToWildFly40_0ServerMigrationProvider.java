@@ -6,6 +6,7 @@ package org.jboss.migration.wfly;
 
 import org.jboss.migration.wfly.task.hostexclude.WildFly40_0AddHostExcludes;
 import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.subsystem.elytron.WildFly40_0UpdateElytronSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
@@ -29,6 +30,7 @@ public class WildFly33_0ToWildFly40_0ServerMigrationProvider implements WildFly4
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
                         .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new WildFly40_0UpdateElytronSubsystem<>())
                         .subtask(new MigrateDeployments<>())
                 )
                 .domain(serverUpdateBuilders.domainBuilder()
@@ -37,6 +39,7 @@ public class WildFly33_0ToWildFly40_0ServerMigrationProvider implements WildFly4
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
                                 .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly40_0UpdateElytronSubsystem<>())
                                 .subtask(new WildFly40_0AddHostExcludes<>())
                                 .subtask(new MigrateDeployments<>())
                         )

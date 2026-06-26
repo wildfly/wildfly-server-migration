@@ -4,32 +4,31 @@
  */
 package org.jboss.migration.wfly;
 
-import org.jboss.migration.core.ProductInfo;
-import org.jboss.migration.core.env.MigrationEnvironment;
-import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.wfly10.ServiceLoaderWildFlyServerMigrations10;
-import org.jboss.migration.wfly10.WildFlyServer10;
-import org.jboss.migration.wfly10.WildFlyServerMigrations10;
-
-import java.nio.file.Path;
-import java.util.ServiceLoader;
-
 /**
- * The WildFly 40.0 {@link org.jboss.migration.core.Server}.
+ * The WildFly 40.x {@link org.jboss.migration.core.Server}, which introduces Legacy distributions.
  * @author emmartins
  */
-public class WildFly40_0Server extends WildFlyServer10 {
+public interface WildFly40_0Server {
 
-    public static final JBossServer.Extensions EXTENSIONS = WildFly39_0Server.EXTENSIONS;
+    /**
+     * The type of WildFly 40.x server technology.
+     */
+    enum TechnologyType { LEGACY, STANDARD, PREVIEW }
 
-    private static final WildFlyServerMigrations10 SERVER_MIGRATIONS = new ServiceLoaderWildFlyServerMigrations10<>(ServiceLoader.load(WildFly40_0ServerMigrationProvider.class));
+    /**
+     * The type of WildFly 40.x server distribution.
+     */
+    enum DistributionType { EE_DIST, DIST}
 
-    public WildFly40_0Server(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
-    }
+    /**
+     *
+     * @return the server's technology type
+     */
+    TechnologyType getTechnologyType();
 
-    @Override
-    protected WildFlyServerMigrations10 getMigrations() {
-        return SERVER_MIGRATIONS;
-    }
+    /**
+     *
+     * @return the server's distribution type
+     */
+    DistributionType getDistributionType();
 }
