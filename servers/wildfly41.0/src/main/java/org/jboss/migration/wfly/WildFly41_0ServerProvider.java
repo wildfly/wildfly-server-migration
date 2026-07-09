@@ -11,7 +11,7 @@ import org.jboss.migration.core.env.MigrationEnvironment;
 import java.nio.file.Path;
 
 /**
- * The WildFly 41.x {@link org.jboss.migration.core.ServerProvider}.
+ * The WildFly 41.0 {@link org.jboss.migration.core.ServerProvider}.
  *  @author emmartins
  */
 public class WildFly41_0ServerProvider extends WildFly40_0ServerProvider {
@@ -26,11 +26,10 @@ public class WildFly41_0ServerProvider extends WildFly40_0ServerProvider {
 
     protected Server constructStandardEeDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
         return new WildFlyStandardEeDist41_0Server(migrationName, new ProductInfo("WildFly EE Dist", version), baseDir, migrationEnvironment);
-
     }
 
     protected Server constructLegacyDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        return new WildFlyLegacyEeDist41_0Server(migrationName, new ProductInfo("WildFly Legacy Dist", version), baseDir, migrationEnvironment);
+        return new WildFlyLegacyDist41_0Server(migrationName, new ProductInfo("WildFly Legacy Dist", version), baseDir, migrationEnvironment);
     }
 
     protected Server constructLegacyEeDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
@@ -38,6 +37,6 @@ public class WildFly41_0ServerProvider extends WildFly40_0ServerProvider {
     }
 
     public String getName() {
-        return "WildFly 41.x";
+        return "WildFly 41.0";
     }
 }

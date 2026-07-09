@@ -34,13 +34,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,9 +65,7 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
 
     private final Modules modules;
 
-    private final Extensions extensions;
-
-    public JBossServer(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment, Extensions extensions) {
+    public JBossServer(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
         super(migrationName, productInfo, baseDir, migrationEnvironment);
         this.environment = new Environment(this);
         this.domainBaseDir = getServerDir(environment.getDomainBaseDir(), baseDir);
@@ -102,8 +98,6 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         this.pathResolver.put("jboss.domain.temp.dir", domainBaseDir.resolve("tmp"));
 
         this.modules = new Modules(baseDir);
-
-        this.extensions = extensions;
     }
 
     public Environment getEnvironment() {
@@ -294,10 +288,6 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
         return modules;
     }
 
-    public Extensions getExtensions() {
-        return extensions;
-    }
-
     public class ValueExpressionResolver extends org.jboss.dmr.ValueExpressionResolver {
         @Override
         protected String resolvePart(String name) {
@@ -413,6 +403,18 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
             return modulesDir;
         }
 
+        public List<Path> getLayerDirs() {
+            return Collections.unmodifiableList(layerDirs);
+        }
+
+        public Path getOverlayDir() {
+            return overlayDir;
+        }
+
+        public List<Path> getAddonDirs() {
+            return addonDirs != null ? Collections.unmodifiableList(addonDirs) : null;
+        }
+
         public Module getModule(ModuleIdentifier moduleId) throws ServerMigrationFailureException {
             final Path moduleDir = getModuleDir(moduleId);
             if (!Files.exists(moduleDir)) {
@@ -472,81 +474,6 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
                 }
             }
             return false;
-        }
-    }
-
-    public static class Extensions {
-
-        private final Map<String, Extension> extensionMap;
-
-        protected Extensions(Builder builder) {
-            this.extensionMap = Collections.unmodifiableMap(builder.extensionMap);
-        }
-
-        public Collection<Extension> getExtensions() {
-            return extensionMap.values();
-        }
-
-        public Set<String> getExtensionModuleNames() {
-            return extensionMap.keySet();
-        }
-
-        public Extension getExtension(String moduleName) {
-            return extensionMap.get(moduleName);
-        }
-
-        public abstract static class Builder<T extends Builder<T>> {
-
-            private final Map<String, Extension> extensionMap = new HashMap<>();
-
-            protected abstract T getThis();
-
-            public T extension(Extension extension) {
-                this.extensionMap.put(extension.getModule(), extension);
-                return getThis();
-            }
-
-            public T extension(Extension.Builder extensionBuilder) {
-                return extension(extensionBuilder.build());
-            }
-
-            public T extensions(Extensions extensions) {
-                this.extensionMap.putAll(extensions.extensionMap);
-                return getThis();
-            }
-
-            public T extensionsExcept(Extensions extensions, String... moduleNamesToExclude) {
-                for (Extension extension : extensions.getExtensions()) {
-                    boolean exclude = false;
-                    if (moduleNamesToExclude != null) {
-                        for (String moduleName : moduleNamesToExclude) {
-                            if (moduleName.equals(extension.getModule())) {
-                                exclude = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!exclude) {
-                        this.extensionMap.put(extension.getModule(), extension);
-                    }
-                }
-                return getThis();
-            }
-
-            public Extensions build() {
-                return new Extensions(this);
-            }
-        }
-
-        private static class DefaultBuilder extends Builder {
-            @Override
-            protected DefaultBuilder getThis() {
-                return this;
-            }
-        }
-
-        public static Builder builder() {
-            return new DefaultBuilder();
         }
     }
 

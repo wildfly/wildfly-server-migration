@@ -17,6 +17,7 @@ package org.jboss.migration.wfly9;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossExtensions;
 import org.jboss.migration.core.jboss.JBossServer;
 import java.nio.file.Path;
@@ -27,7 +28,7 @@ import java.nio.file.Path;
  */
 public class WildFlyServer9 extends JBossServer<WildFlyServer9> {
 
-    public static final JBossServer.Extensions EXTENSIONS = JBossServer.Extensions.builder()
+    public static final Extensions EXTENSIONS = Extensions.builder()
             .extension(JBossExtensions.BATCH)
             .extension(JBossExtensions.BEAN_VALIDATION)
             .extension(JBossExtensions.CONNECTOR)
@@ -64,10 +65,10 @@ public class WildFlyServer9 extends JBossServer<WildFlyServer9> {
             .build();
 
     public WildFlyServer9(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 
     protected WildFlyServer9(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment, Extensions extensions) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, extensions);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 }

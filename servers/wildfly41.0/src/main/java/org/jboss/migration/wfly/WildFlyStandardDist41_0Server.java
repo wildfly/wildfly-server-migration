@@ -6,26 +6,22 @@ package org.jboss.migration.wfly;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.env.MigrationEnvironment;
-import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.wfly10.ServiceLoaderWildFlyServerMigrations10;
-import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigrations10;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;
 
 /**
- * The WildFly 41.x Standard Dist {@link org.jboss.migration.core.Server}.
+ * The WildFly 41.0 Standard Dist {@link org.jboss.migration.core.Server}.
  * @author emmartins
  */
-public class WildFlyStandardDist41_0Server extends WildFlyServer10 implements WildFly41_0Server{
-
-    public static final JBossServer.Extensions EXTENSIONS = WildFlyStandardDist40_0Server.EXTENSIONS;
+public class WildFlyStandardDist41_0Server extends WildFly41_0Server {
 
     private static final WildFlyServerMigrations10 SERVER_MIGRATIONS = new ServiceLoaderWildFlyServerMigrations10<>(ServiceLoader.load(WildFly41_0ServerMigrationProvider.class));
 
     public WildFlyStandardDist41_0Server(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 
     @Override

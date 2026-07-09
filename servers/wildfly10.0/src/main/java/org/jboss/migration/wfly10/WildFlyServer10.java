@@ -18,6 +18,7 @@ package org.jboss.migration.wfly10;
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.Server;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskContext;
@@ -29,19 +30,25 @@ import java.nio.file.Path;
  */
 public abstract class WildFlyServer10 extends JBossServer<WildFlyServer10> {
 
-    public WildFlyServer10(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment, JBossServer.Extensions extensions) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, extensions);
+    public WildFlyServer10(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 
     @Override
     public ServerMigrationTaskResult migrate(Server source, TaskContext context) throws IllegalArgumentException {
         final WildFlyServerMigration10 migration = getMigration(source);
         if (migration != null) {
+            beforeMigration(source, context);
             return migration.run(source, this, context);
         } else {
             return super.migrate(source, context);
         }
     }
+
+    protected void beforeMigration(Server source, TaskContext context) {
+    }
+
+    public abstract Extensions getExtensions();
 
     protected WildFlyServerMigrations10 getMigrations() {
         return null;

@@ -18,7 +18,7 @@ package org.jboss.migration.eap;
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.Server;
 import org.jboss.migration.core.env.MigrationEnvironment;
-import org.jboss.migration.core.jboss.JBossServer;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.wfly.WildFlyLegacyEeDist40_0Server;
 import org.jboss.migration.wfly10.ServiceLoaderWildFlyServerMigrations10;
 import org.jboss.migration.wfly10.WildFlyServer10;
@@ -35,10 +35,15 @@ public class EAPServer8_2 extends WildFlyServer10 {
 
     private static final WildFlyServerMigrations10 SERVER_MIGRATIONS = new ServiceLoaderWildFlyServerMigrations10<>(ServiceLoader.load(EAPServerMigrationProvider8_2.class));
 
-    public static final JBossServer.Extensions EXTENSIONS = WildFlyLegacyEeDist40_0Server.EXTENSIONS;
+    public static final Extensions EXTENSIONS = WildFlyLegacyEeDist40_0Server.EXTENSIONS;
 
     public EAPServer8_2(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
+    }
+
+    @Override
+    public Extensions getExtensions() {
+        return EXTENSIONS;
     }
 
     @Override

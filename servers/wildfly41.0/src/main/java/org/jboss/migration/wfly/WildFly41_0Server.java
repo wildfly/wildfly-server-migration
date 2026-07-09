@@ -4,31 +4,39 @@
  */
 package org.jboss.migration.wfly;
 
+import org.jboss.migration.core.ProductInfo;
+import org.jboss.migration.core.Server;
+import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
+import org.jboss.migration.core.task.TaskContext;
+import org.jboss.migration.wfly10.WildFlyServer10;
+
+import java.nio.file.Path;
+
 /**
- * The WildFly 41.x {@link org.jboss.migration.core.Server}, which introduces Legacy distributions.
+ * The WildFly 41.0 {@link org.jboss.migration.core.Server}.
  * @author emmartins
  */
-public interface WildFly41_0Server {
+public abstract class WildFly41_0Server extends WildFlyServer10 implements WildFly40_0Server {
 
-    /**
-     * The type of WildFly 41.x server technology.
-     */
-    enum TechnologyType { LEGACY, STANDARD, PREVIEW }
+    private Extensions extensions;
 
-    /**
-     * The type of WildFly 41.x server distribution.
-     */
-    enum DistributionType { EE_DIST, DIST}
+    public WildFly41_0Server(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
+    }
 
-    /**
-     *
-     * @return the server's technology type
-     */
-    TechnologyType getTechnologyType();
+    @Override
+    protected void beforeMigration(Server source, TaskContext context) {
+        extensions = Extensions.builder()
+                .extensions(SupportedExtensionsDiscovery.discoverSupportedExtensions(this))
+                .build();
+    }
 
-    /**
-     *
-     * @return the server's distribution type
-     */
-    DistributionType getDistributionType();
+    @Override
+    public Extensions getExtensions() {
+        if (extensions == null) {
+            throw new IllegalStateException("Extensions not available");
+        }
+        return extensions;
+    }
 }

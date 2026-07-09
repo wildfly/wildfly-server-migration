@@ -17,9 +17,9 @@ package org.jboss.migration.wfly;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossExtensionNames;
 import org.jboss.migration.core.jboss.JBossExtensions;
-import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.wfly10.ServiceLoaderWildFlyServerMigrations10;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigrations10;
@@ -33,7 +33,7 @@ import java.util.ServiceLoader;
  */
 public class WildFly25_0Server extends WildFlyServer10 {
 
-    public static final JBossServer.Extensions EXTENSIONS = JBossServer.Extensions.builder()
+    public static final Extensions EXTENSIONS = Extensions.builder()
             .extensionsExcept(WildFly24_0Server.EXTENSIONS, JBossExtensionNames.SECURITY)
             .extension(JBossExtensions.ELYTRON_OIDC_CLIENT)
             .extension(JBossExtensions.OPENTELEMETRY)
@@ -42,7 +42,12 @@ public class WildFly25_0Server extends WildFlyServer10 {
     private static final WildFlyServerMigrations10 SERVER_MIGRATIONS = new ServiceLoaderWildFlyServerMigrations10<>(ServiceLoader.load(WildFly25_0ServerMigrationProvider.class));
 
     public WildFly25_0Server(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
+    }
+
+    @Override
+    public Extensions getExtensions() {
+        return EXTENSIONS;
     }
 
     @Override

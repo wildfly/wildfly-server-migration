@@ -26,6 +26,7 @@ import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.core.task.component.SimpleComponentTask;
 import org.jboss.migration.core.util.xml.XMLFileFilter;
 import org.jboss.migration.core.util.xml.XMLFiles;
+import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
 
 import javax.xml.namespace.QName;
@@ -80,7 +81,8 @@ public class RemoveUnsupportedExtensions<S extends JBossServer<S>> implements Se
 
     protected void removeExtensions(final JBossServerConfiguration<S> source, final JBossServerConfiguration targetConfigurationPath, final TaskContext context) {
         // gather the module names of extensions to accept (env property includes + target server extensions - env property excludes)
-        final Set<String> accepted = new HashSet<>(targetConfigurationPath.getServer().getExtensions().getExtensionModuleNames());
+        // TODO rework to don't need cast
+        final Set<String> accepted = new HashSet<>(((WildFlyServer10)targetConfigurationPath.getServer()).getExtensions().getExtensionModuleNames());
         final MigrationEnvironment environment = context.getMigrationEnvironment();
         accepted.addAll(environment.getPropertyAsList(EnvironmentProperties.INCLUDES, Collections.emptyList()));
         accepted.removeAll(environment.getPropertyAsList(EnvironmentProperties.EXCLUDES, Collections.emptyList()));
