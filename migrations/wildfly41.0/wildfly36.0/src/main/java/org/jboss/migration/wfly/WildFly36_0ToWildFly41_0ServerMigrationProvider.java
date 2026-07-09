@@ -1,0 +1,57 @@
+/*
+ * Copyright The WildFly Authors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+package org.jboss.migration.wfly;
+
+import org.jboss.migration.wfly.task.hostexclude.WildFly41_0AddHostExcludes;
+import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.subsystem.elytron.WildFly41_0UpdateElytronSubsystem;
+import org.jboss.migration.wfly10.WildFlyServer10;
+import org.jboss.migration.wfly10.WildFlyServerMigration10;
+import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
+import org.jboss.migration.wfly10.config.task.update.MigrateDeployments;
+import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedExtensions;
+import org.jboss.migration.wfly10.config.task.update.RemoveUnsupportedSubsystems;
+import org.jboss.migration.wfly10.config.task.update.ServerUpdate;
+
+/**
+ * Server migration to WFLY 41.0, from WFLY 36.0.
+ * @author emmartins
+ */
+public class WildFly36_0ToWildFly41_0ServerMigrationProvider implements WildFly41_0ServerMigrationProvider {
+
+    @Override
+    public WildFlyServerMigration10 getServerMigration() {
+        final ServerUpdate.Builders<WildFlyServer10> serverUpdateBuilders = new ServerUpdate.Builders<>();
+        return serverUpdateBuilders.serverUpdateBuilder()
+                .standaloneServer(serverUpdateBuilders.standaloneConfigurationBuilder()
+                        .subtask(new RemoveUnsupportedExtensions<>())
+                        .subtask(new RemoveUnsupportedSubsystems<>())
+                        .subtask(new MigrateReferencedModules<>())
+                        .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new WildFly41_0UpdateElytronSubsystem<>())
+                        .subtask(new MigrateDeployments<>())
+                )
+                .domain(serverUpdateBuilders.domainBuilder()
+                        .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
+                                .subtask(new RemoveUnsupportedExtensions<>())
+                                .subtask(new RemoveUnsupportedSubsystems<>())
+                                .subtask(new MigrateReferencedModules<>())
+                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0UpdateElytronSubsystem<>())
+                                .subtask(new WildFly41_0AddHostExcludes<>())
+                                .subtask(new MigrateDeployments<>())
+                        )
+                        .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
+                                .subtask(new MigrateReferencedModules<>())
+                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        )
+                ).build();
+    }
+
+    @Override
+    public Class<WildFly36_0Server> getSourceType() {
+        return WildFly36_0Server.class;
+    }
+}
