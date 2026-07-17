@@ -43,7 +43,7 @@ include::{includesDir}/ServerMigration-StandaloneServer-StandaloneServerConfigur
 
 :leveloffset: +1
 
-include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems-Discovery.adoc[]
 
 include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
 
@@ -67,13 +67,13 @@ include::{includesDir}/ServerMigration-ManagedDomain-DomainConfiguration.adoc[]
 
 :leveloffset: +1
 
-include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems.adoc[]
+include::{includesDir}/ServerMigration-ServerConfiguration-RemoveUnsupportedSubsystems-Discovery.adoc[]
 
 include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedModules.adoc[]
 
 include::{includesDir}/ServerMigration-ServerConfiguration-MigrateReferencedPaths.adoc[]
 
-include::{includesDir}/ServerMigration-ManagedDomain-AddHostExcludes.adoc[]
+include::{includesDir}/ServerMigration-ManagedDomain-AddHostExcludes-Discovery.adoc[]
 
 include::{includesDir}/ServerMigration-ServerConfiguration-MigrateDeployments.adoc[]
 
