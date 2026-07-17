@@ -18,8 +18,8 @@ package org.jboss.migration.eap;
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.Server;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossExtensionNames;
-import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.wfly10.ServiceLoaderWildFlyServerMigrations10;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigrations10;
@@ -35,7 +35,7 @@ public class EAPServer8_1 extends WildFlyServer10 {
 
     private static final WildFlyServerMigrations10 SERVER_MIGRATIONS = new ServiceLoaderWildFlyServerMigrations10<>(ServiceLoader.load(EAPServerMigrationProvider8_1.class));
 
-    public static final JBossServer.Extensions EXTENSIONS = Extensions.builder()
+    public static final Extensions EXTENSIONS = Extensions.builder()
             .extensionsExcept(EAPXPServer8_1.EXTENSIONS,
                     JBossExtensionNames.MICROMETER,
                     JBossExtensionNames.MICROPROFILE_CONFIG_SMALLRYE,
@@ -54,7 +54,12 @@ public class EAPServer8_1 extends WildFlyServer10 {
             ).build();
 
     public EAPServer8_1(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
+    }
+
+    @Override
+    public Extensions getExtensions() {
+        return EXTENSIONS;
     }
 
     @Override

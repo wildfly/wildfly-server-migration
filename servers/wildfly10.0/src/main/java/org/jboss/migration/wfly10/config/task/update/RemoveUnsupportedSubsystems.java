@@ -26,6 +26,7 @@ import org.jboss.migration.core.task.TaskContext;
 import org.jboss.migration.core.task.component.SimpleComponentTask;
 import org.jboss.migration.core.util.xml.XMLFileFilter;
 import org.jboss.migration.core.util.xml.XMLFiles;
+import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
 
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class RemoveUnsupportedSubsystems<S extends JBossServer<S>> implements Se
 
     protected void run(final JBossServerConfiguration<S> source, final JBossServerConfiguration targetConfigurationPath, final TaskContext context) {
         // gather the namespaces of subsystems to accept (env property includes + target server subsystems - env property excludes)
-        final Set<String> accepted = new HashSet<>(targetConfigurationPath.getServer().getExtensions().getExtensions().stream()
+        final Set<String> accepted = new HashSet<>(((WildFlyServer10)targetConfigurationPath.getServer()).getExtensions().getExtensions().stream()
                 .flatMap(extension -> extension.getSubsystems().stream())
                 .map(subsystem -> subsystem.getNamespaceWithoutVersion())
                 .collect(toList()));

@@ -46,7 +46,7 @@ public class ExtensionModulesFinder implements ConfigurationModulesMigrationTask
         final String moduleId = reader.getAttributeValue(null, "module");
         if (moduleId != null) {
             // gather the module names of extensions to accept (env property includes + target server extensions - env property excludes)
-            final Set<String> accepted = new HashSet<>(moduleMigrator.getTargetServer().getExtensions().getExtensionModuleNames());
+            final Set<String> accepted = new HashSet<>();
             final MigrationEnvironment environment = context.getMigrationEnvironment();
             accepted.addAll(environment.getPropertyAsList(RemoveUnsupportedExtensions.EnvironmentProperties.INCLUDES, Collections.emptyList()));
             accepted.removeAll(environment.getPropertyAsList(RemoveUnsupportedExtensions.EnvironmentProperties.EXCLUDES, Collections.emptyList()));

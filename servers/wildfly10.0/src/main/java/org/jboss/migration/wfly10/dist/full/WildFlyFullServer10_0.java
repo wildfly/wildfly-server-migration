@@ -17,8 +17,8 @@ package org.jboss.migration.wfly10.dist.full;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossExtensions;
-import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.wfly10.WildFlyServer10;
 
 import java.nio.file.Path;
@@ -28,7 +28,7 @@ import java.nio.file.Path;
  */
 public class WildFlyFullServer10_0 extends WildFlyServer10 {
 
-    public static final JBossServer.Extensions EXTENSIONS = JBossServer.Extensions.builder()
+    public static final Extensions EXTENSIONS = Extensions.builder()
             .extension(JBossExtensions.BATCH_JBERET)
             .extension(JBossExtensions.BEAN_VALIDATION)
             .extension(JBossExtensions.CONNECTOR)
@@ -69,6 +69,11 @@ public class WildFlyFullServer10_0 extends WildFlyServer10 {
             .build();
 
     public WildFlyFullServer10_0(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
+    }
+
+    @Override
+    public Extensions getExtensions() {
+        return EXTENSIONS;
     }
 }

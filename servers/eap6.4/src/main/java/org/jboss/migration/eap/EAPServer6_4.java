@@ -17,6 +17,7 @@ package org.jboss.migration.eap;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.env.MigrationEnvironment;
+import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossExtensions;
 import org.jboss.migration.core.jboss.JBossServer;
 
@@ -28,7 +29,7 @@ import java.nio.file.Path;
  */
 public class EAPServer6_4 extends JBossServer<EAPServer6_4> {
 
-    public static final JBossServer.Extensions EXTENSIONS = JBossServer.Extensions.builder()
+    public static final Extensions EXTENSIONS = Extensions.builder()
             .extension(JBossExtensions.CMP)
             .extension(JBossExtensions.CONFIGADMIN)
             .extension(JBossExtensions.CONNECTOR)
@@ -63,10 +64,6 @@ public class EAPServer6_4 extends JBossServer<EAPServer6_4> {
             .build();
 
     public EAPServer6_4(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, EXTENSIONS);
-    }
-
-    protected EAPServer6_4(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment, Extensions extensions) {
-        super(migrationName, productInfo, baseDir, migrationEnvironment, extensions);
+        super(migrationName, productInfo, baseDir, migrationEnvironment);
     }
 }

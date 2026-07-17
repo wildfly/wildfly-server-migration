@@ -28,6 +28,6 @@ public class TestJBossServer extends JBossServer {
     static final String MIGRATION_NAME = SERVER_NAME + "Migration";
 
     public TestJBossServer(Path baseDir, MigrationEnvironment migrationEnvironment) {
-        super(MIGRATION_NAME, new ProductInfo(SERVER_NAME, SERVER_VERSION), baseDir, migrationEnvironment, JBossServer.Extensions.builder().build());
+        super(MIGRATION_NAME, new ProductInfo(SERVER_NAME, SERVER_VERSION), baseDir, migrationEnvironment);
     }
 }

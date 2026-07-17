@@ -54,10 +54,6 @@ public class WildFly40_0ServerProvider implements ServerProvider {
         return result;
     }
 
-    protected Server constructServer(String migrationName, ProductInfo productInfo, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        return new WildFlyLegacyDist40_0Server(migrationName, productInfo, baseDir, migrationEnvironment);
-    }
-
     @Override
     public Server getServer(String migrationName, Path baseDir, MigrationEnvironment migrationEnvironment) throws ServerMigrationFailureException {
         try {
@@ -118,11 +114,10 @@ public class WildFly40_0ServerProvider implements ServerProvider {
 
     protected Server constructStandardEeDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
         return new WildFlyStandardEeDist40_0Server(migrationName, new ProductInfo("WildFly EE Dist", version), baseDir, migrationEnvironment);
-
     }
 
     protected Server constructLegacyDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
-        return new WildFlyLegacyEeDist40_0Server(migrationName, new ProductInfo("WildFly Legacy Dist", version), baseDir, migrationEnvironment);
+        return new WildFlyLegacyDist40_0Server(migrationName, new ProductInfo("WildFly Legacy Dist", version), baseDir, migrationEnvironment);
     }
 
     protected Server constructLegacyEeDistServer(String migrationName, String version, Path baseDir, MigrationEnvironment migrationEnvironment) {
