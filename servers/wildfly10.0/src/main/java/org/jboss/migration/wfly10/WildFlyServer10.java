@@ -17,6 +17,7 @@ package org.jboss.migration.wfly10;
 
 import org.jboss.migration.core.ProductInfo;
 import org.jboss.migration.core.Server;
+import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.jboss.Extensions;
 import org.jboss.migration.core.jboss.JBossServer;
@@ -45,7 +46,7 @@ public abstract class WildFlyServer10 extends JBossServer<WildFlyServer10> {
         }
     }
 
-    protected void beforeMigration(Server source, TaskContext context) {
+    protected void beforeMigration(Server source, TaskContext context) throws ServerMigrationFailureException {
     }
 
     public abstract Extensions getExtensions();

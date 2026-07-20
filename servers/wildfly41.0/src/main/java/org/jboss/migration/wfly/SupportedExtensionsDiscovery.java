@@ -5,7 +5,6 @@
 package org.jboss.migration.wfly;
 
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.EXTENSION;
-import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.FAILURE_DESCRIPTION;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.MODULE;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.OUTCOME;
 import static org.jboss.as.controller.descriptions.ModelDescriptionConstants.RESULT;
@@ -15,31 +14,39 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.as.controller.operations.common.Util;
 import org.jboss.dmr.ModelNode;
 import org.jboss.migration.core.ServerMigrationFailureException;
+import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.jboss.Extension;
 import org.jboss.migration.core.jboss.ExtensionsDiscovery;
+import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.jboss.Subsystem;
 import org.jboss.migration.core.logger.ServerMigrationLogger;
 import org.jboss.migration.wfly10.config.management.impl.EmbeddedStandaloneServerConfiguration;
+import org.jboss.modules.Module;
+import org.jboss.modules.ModuleLoader;
+import org.wildfly.core.embedded.Configuration;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
  * Discovers which extensions are actually supported by a server by checking which ones
  * successfully load when the server starts with its standard configuration.
- *
  * This validation is necessary because not all extensions found in the modules directory
  * may be compatible with the current server version.
  *
  * @author emmartins
  */
 public class SupportedExtensionsDiscovery {
+
+    public static final String PROPERTY_CONFIG_FILE = "discovery.extensions.configFile";
+    public static final String DEFAULT_CONFIG_FILE = "standalone.xml";
 
     /**
      * Discovers extensions module names and validates which are supported by checking which ones exist as resources
@@ -48,8 +55,8 @@ public class SupportedExtensionsDiscovery {
      * @param server the server
      * @return a set of Extensions that are supported
      */
-    public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server) {
-        return discoverSupportedExtensions(server, ExtensionsDiscovery.discoverExtensionModuleNames(server.getModules()));
+    public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, MigrationEnvironment migrationEnvironment) throws ServerMigrationFailureException {
+        return discoverSupportedExtensions(server, ExtensionsDiscovery.discoverExtensionModuleNames(server.getModules()), migrationEnvironment);
     }
 
     /**
@@ -60,28 +67,54 @@ public class SupportedExtensionsDiscovery {
      * @param candidateExtensions the set of module names of candidate Extensions to validate
      * @return a set of Extensions that are supported
      */
-    public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, Set<String> candidateExtensions) {
+    public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, Set<String> candidateExtensions, MigrationEnvironment migrationEnvironment) {
+        final String configFileName = migrationEnvironment.getPropertyAsString(JBossServer.Environment.getFullEnvironmentPropertyName(server.getMigrationName(), PROPERTY_CONFIG_FILE), DEFAULT_CONFIG_FILE);
+        final Path configFilePath = server.getStandaloneConfigurationDir().resolve(configFileName);
+        if (!Files.exists(configFilePath)) {
+            throw new ServerMigrationFailureException("Failed to discover target server supported extensions, "+configFilePath.toAbsolutePath()+" config file not found.");
+        }
         if (candidateExtensions.isEmpty()) {
             return Set.of();
         }
         final Set<Extension> supportedExtensions = new HashSet<>();
-        final String sourceConfigName = "standalone.xml";
-        final Path sourceConfig = server.getStandaloneConfigurationDir().resolve(sourceConfigName);
-        final String cloneConfigName = SupportedExtensionsDiscovery.class.getName()+java.util.UUID.randomUUID()+'-'+sourceConfigName;
-        final Path clonedConfig = server.getStandaloneConfigurationDir().resolve(cloneConfigName);
+        final String cloneConfigFileName = SupportedExtensionsDiscovery.class.getName()+java.util.UUID.randomUUID()+'-'+configFileName;
+        final Path clonedConfigFilePath = server.getStandaloneConfigurationDir().resolve(cloneConfigFileName);
         try {
-            // Clone standalone.xml to avoid modifying the original
-            Files.copy(sourceConfig, clonedConfig, StandardCopyOption.REPLACE_EXISTING);
+            // Clone the configuration file to avoid modifying the original
+            Files.copy(configFilePath, clonedConfigFilePath, StandardCopyOption.REPLACE_EXISTING);
             // Start the embedded server
-            final EmbeddedStandaloneServerConfiguration embeddedStandaloneServerConfiguration = new EmbeddedStandaloneServerConfiguration(new JBossServerConfiguration<>(clonedConfig, JBossServerConfiguration.Type.STANDALONE, server), server);
+            final EmbeddedStandaloneServerConfiguration embeddedStandaloneServerConfiguration = new EmbeddedStandaloneServerConfiguration(new JBossServerConfiguration<>(clonedConfigFilePath, JBossServerConfiguration.Type.STANDALONE, server), server);
             embeddedStandaloneServerConfiguration.start();
+            final Configuration.Builder configurationBuilder = Configuration.Builder.of(server.getBaseDir());
+            configurationBuilder.addSystemPackage("org.jboss.logmanager");
+            final Configuration configuration = configurationBuilder.build();
+            final ModuleLoader moduleLoader = configuration.getModuleLoader();
             try {
                 final ModelControllerClient client = embeddedStandaloneServerConfiguration.getModelControllerClient();
                 // Check which candidate extensions are supported and populate their subsystems
                 for (String candidateExtension : candidateExtensions) {
-                    final Extension extensionWithSubsystems = discoverExtensionWithSubsystems(client, candidateExtension);
-                    if (extensionWithSubsystems != null) {
-                        supportedExtensions.add(extensionWithSubsystems);
+                    // unsupported Extensions extend AbstractLegacyExtension
+                    Module module = moduleLoader.loadModule(candidateExtension);
+                    boolean unsupported = false;
+                    Class<?> extensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.Extension");
+                    Class<?> abstractLegacyExtensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.extension.AbstractLegacyExtension");
+                    Iterator<?> iterator = module.loadService(extensionClass).iterator();
+                    while (iterator.hasNext()) {
+                        Object extension = iterator.next();
+                        if (abstractLegacyExtensionClass.isAssignableFrom(extension.getClass())) {
+                            ServerMigrationLogger.ROOT_LOGGER.debugf("Extension class %s is legacy.", extension.getClass().getName());
+                            unsupported = true;
+                            break;
+                        }
+                    }
+                    if (!unsupported) {
+                        ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is supported.", candidateExtension);
+                        final Extension extensionWithSubsystems = discoverExtensionWithSubsystems(client, candidateExtension);
+                        if (extensionWithSubsystems != null) {
+                            supportedExtensions.add(extensionWithSubsystems);
+                        }
+                    } else {
+                        ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is not supported.", candidateExtension);
                     }
                 }
             } finally {
@@ -93,7 +126,7 @@ public class SupportedExtensionsDiscovery {
         } finally {
             // Clean up test config file
             try {
-                Files.deleteIfExists(clonedConfig);
+                Files.deleteIfExists(clonedConfigFilePath);
             } catch (IOException e) {
                 ServerMigrationLogger.ROOT_LOGGER.debugf("Failed to delete test config file: %s", e.getMessage());
             }
@@ -108,47 +141,29 @@ public class SupportedExtensionsDiscovery {
     public static Extension discoverExtensionWithSubsystems(ModelControllerClient client, String extensionModule) {
         try {
             final PathAddress extensionAddress = PathAddress.pathAddress(EXTENSION, extensionModule);
-
-            // First, check if extension resource already exists (from standalone.xml)
+            // First, check if extension resource already exists
             ModelNode readOp = Util.createEmptyOperation("read-resource", extensionAddress);
             readOp.get("include-runtime").set(true);
             ModelNode readResult = client.execute(readOp);
-
             boolean extensionExists = isSuccessful(readResult);
-
             if (!extensionExists) {
                 // Not loaded, try to add it
                 final ModelNode addOp = Util.createAddOperation(extensionAddress);
                 addOp.get(MODULE).set(extensionModule);
                 final ModelNode addResult = client.execute(addOp);
-
                 if (!isSuccessful(addResult)) {
-                    final String failureDesc = addResult.hasDefined(FAILURE_DESCRIPTION) ?
-                            addResult.get(FAILURE_DESCRIPTION).asString() : "add operation failed";
-                    ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is not supported: %s",
-                            extensionModule, failureDesc);
-                    return null;
+                    throw new ServerMigrationFailureException("Failed to add extension " + extensionModule + " to the standalone server.");
                 }
-
                 // Re-read the extension resource to get subsystems
-                readOp = Util.createEmptyOperation("read-resource", extensionAddress);
-                readOp.get("include-runtime").set(true);
                 readResult = client.execute(readOp);
-
                 if (!isSuccessful(readResult)) {
-                    ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s could not be read after adding", extensionModule);
-                    return null;
+                    throw new ServerMigrationFailureException("Extension " + extensionModule + " could not be read after adding.");
                 }
             }
-
-            // Extension is supported - now discover its subsystems
-            ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is supported, discovering subsystems...", extensionModule);
+            // discover extension's subsystems
             return buildExtensionWithSubsystems(client, extensionModule, readResult);
-
-        } catch (Exception e) {
-            ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is not supported: %s",
-                    extensionModule, e.getMessage());
-            return null;
+        } catch (IOException e) {
+            throw new ServerMigrationFailureException("Failed to validate extension " + extensionModule, e);
         }
     }
 
@@ -210,10 +225,9 @@ public class SupportedExtensionsDiscovery {
                     }
                 }
             }
-        } catch (Exception e) {
-            ServerMigrationLogger.ROOT_LOGGER.debugf("Failed to read xml-namespaces for subsystem %s: %s", subsystemName, e.getMessage());
+        } catch (IOException e) {
+            throw new ServerMigrationFailureException("Failed to read xml-namespaces for subsystem " + subsystemName, e);
         }
-
         // Fallback to default pattern
         return "urn:jboss:domain:" + subsystemName;
     }

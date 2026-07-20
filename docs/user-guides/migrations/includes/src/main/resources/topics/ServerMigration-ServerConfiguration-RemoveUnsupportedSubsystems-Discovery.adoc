@@ -1,0 +1,44 @@
+= Remove Unsupported Subsystems
+
+All subsystems, and related extensions, which are not supported by {server-target-productName}, are automatically removed from a migrated configuration.
+
+NOTE: A subsystem installed in {server-source-productName} by the user, is also considered as unsupported by {server-target-productName}, and by default will not be migrated.
+
+The console logs the configuration namespaces, and extension modules, of unsupported subsystems removed from the server configuration being migrated:
+
+[source,options="nowrap"]
+----
+ INFO  Unsupported extensions removed: [com.example.extension1]
+ INFO  Unsupported subsystems removed: [urn:example:domain:subsystem1:1.0]
+----
+
+It is possible to override the default behaviour and indicate subsystems and extensions which should always, or never, be migrated, by configuring the following environment properties:
+|===
+| Property Name |Property Description
+
+|`extensions.excludes` |A list with the module names of extensions that should never be migrated.
+|`extensions.includes` |A list with the module names of extensions that should always be migrated.
+|`subsystems.excludes` |A list with the XML Namespaces, without the version part, of subsystems that should never be migrated.
+|`subsystems.includes` |A list with the XML Namespaces, without the version part, of subsystems that should always be migrated.
+|`server.target.discovery.extensions.configFile` |The path to an existent target server standalone config file, relative to the target server's standalone config dir, which the tool may use to discover supported extensions and subsystems. If not defined the property value defaults to 'standalone.xml'
+|===
+
+The environment configuration can be customized in one of the following ways:
+
+* You can configure the properties in the tool's `config/environment.properties` file:
++
+[source,options="nowrap"]
+----
+extensions.excludes=com.example.extension1
+extensions.includes=com.example.extension2,com.example.extension3
+subsystems.excludes=urn:example:domain:subsystem1
+subsystems.includes=urn:example:domain:subsystem2,urn:example:domain:subsystem3
+server.target.discovery.extensions.configFile=never-standalone.xml
+----
+* You can include the above properties in your own custom properties file, and then pass the file on the command line using the `--environment` argument.
+* You can pass the information on the command line using a system property. The environment property names must be prefixed with `jboss.server.migration.`, for example:
++
+[source,options="nowrap"]
+----
+-Djboss.server.migration.extensions.excludes="com.example.extension1" -Djboss.server.migration.subsystems.excludes="urn:example:domain:subsystem1"
+----

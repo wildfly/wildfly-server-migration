@@ -1,0 +1,35 @@
+= Add Host Excludes
+
+A {server-target-productName} domain controller may have functionality that is not supported by hosts running on older version, and it's through its "host-excludes" configuration that such functionality is filtered.
+
+The JBoss Migration Tool, when migrating a domain controller configuration, will add/replace the source's "host-excludes" configuration, with the target's one.
+
+The configuration changes are fully automated, and upon successful completion of the configuration, you should see the following messages in the console:
+
+[source,options="nowrap"]
+----
+  INFO  Host-excludes configuration added.
+----
+
+It is possible to override the default behaviour and indicate the target server's domain config file used to discover the host-exludes configuration to add, by configuring the following environment property:
+|===
+| Property Name |Property Description
+
+|`server.target.discovery.host-excludes.configFile` |The path to an existent target server domain config file, relative to the target server's domain config dir, which the tool may use to discover the host-excludes configuration to add. If not defined the property value defaults to 'domain.xml'
+|===
+
+The environment configuration can be customized in one of the following ways:
+
+* You can configure the properties in the tool's `config/environment.properties` file:
++
+[source,options="nowrap"]
+----
+server.target.discovery.host-excludes.configFile=kingKaiDomain.xml
+----
+* You can include the above properties in your own custom properties file, and then pass the file on the command line using the `--environment` argument.
+* You can pass the information on the command line using a system property. The environment property names must be prefixed with `jboss.server.migration.`, for example:
++
+[source,options="nowrap"]
+----
+-Djboss.server.migration.server.target.discovery.host-excludes.configFile=kingKaiDomain.xml"
+----

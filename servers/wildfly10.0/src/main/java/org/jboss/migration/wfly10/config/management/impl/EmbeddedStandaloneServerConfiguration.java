@@ -24,12 +24,12 @@ import org.jboss.migration.wfly10.config.management.DeploymentResource;
 import org.jboss.migration.wfly10.config.management.ManagementOperationException;
 import org.jboss.migration.wfly10.config.management.StandaloneServerConfiguration;
 import org.jboss.migration.wfly10.config.task.ServerConfigurationMigration;
+import org.wildfly.core.embedded.Configuration;
 import org.wildfly.core.embedded.EmbeddedProcessFactory;
 import org.wildfly.core.embedded.EmbeddedProcessStartException;
 import org.wildfly.core.embedded.StandaloneServer;
 import org.wildfly.security.manager.WildFlySecurityManager;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,18 +73,19 @@ public class EmbeddedStandaloneServerConfiguration extends AbstractManageableSer
 
     @Override
     protected ModelControllerClient startConfiguration() {
-        final List<String> cmds = new ArrayList<>();
-        cmds.add("--server-config="+config);
-        cmds.add("--admin-only");
-        cmds.add("-Dorg.wildfly.logging.embedded=false");
+        final Configuration.Builder configurationBuilder = Configuration.Builder.of(getServer().getBaseDir());
+        configurationBuilder.addCommandArgument("--server-config="+config);
+        configurationBuilder.addCommandArgument("--admin-only");
+        configurationBuilder.addCommandArgument("-Dorg.wildfly.logging.embedded=false");
         if (!getServer().getEnvironment().isDefaultStandaloneServerDir()) {
             setSystemProperty("jboss.server.base.dir", getServer().getStandaloneDir());
         }
         if (!getServer().getEnvironment().isDefaultStandaloneConfigDir()) {
             setSystemProperty("jboss.server.config.dir", getServer().getStandaloneConfigurationDir());
         }
-        final String[] systemPackages = {"org.jboss.logmanager"};
-        standaloneServer = EmbeddedProcessFactory.createStandaloneServer(getServer().getBaseDir().toString(), null, systemPackages, cmds.toArray(new String[cmds.size()]));
+        configurationBuilder.addSystemPackage("org.jboss.logmanager");
+        final Configuration configuration = configurationBuilder.build();
+        standaloneServer = EmbeddedProcessFactory.createStandaloneServer(configuration);
         try {
             standaloneServer.start();
         } catch (EmbeddedProcessStartException e) {
