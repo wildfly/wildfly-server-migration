@@ -32,11 +32,12 @@ public abstract class WildFly41_0Server extends WildFlyServer10 implements WildF
     @SuppressWarnings("unchecked")
     @Override
     protected void beforeMigration(Server source, TaskContext context) throws ServerMigrationFailureException {
+        ServerMigrationLogger.ROOT_LOGGER.debugf("Discovering target server's supported extensions and subsystems...");
         extensions = Extensions.builder()
                 .extensions(SupportedExtensionsDiscovery.discoverSupportedExtensions(this, getMigrationEnvironment()))
                 .build();
-        ServerMigrationLogger.ROOT_LOGGER.debugf("Extensions discovered: %s", extensions.getExtensions().toString());
 
+        ServerMigrationLogger.ROOT_LOGGER.debugf("Discovering target server's host-excludes configuration...");
         try {
             hostExcludes = HostExcludesDiscovery.discoverHostExcludes(this, getMigrationEnvironment());
             ServerMigrationLogger.ROOT_LOGGER.debugf("Host Excludes discovered: %s", hostExcludes.getHostExcludes().toString());
