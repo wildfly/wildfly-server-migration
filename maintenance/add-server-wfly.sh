@@ -203,6 +203,8 @@ echo "  Copied $SRC_SERVER_DIR to $TGT_SERVER_DIR"
 # Step 2: Replace version references in the new server module
 echo "Step 2: Replacing version references in new server module..."
 apply_version_replacements "$TGT_SERVER_DIR" "$SOURCE_VERSION" "$TARGET_VERSION"
+apply_version_replacements "$TGT_SERVER_DIR" "$VERSION_BEFORE_SOURCE" "$SOURCE_VERSION"
+
 echo "  Version replacements complete"
 
 # Step 3: Add module to root pom.xml
