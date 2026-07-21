@@ -81,6 +81,7 @@ public abstract class JBossServer<S extends JBossServer<S>> extends AbstractServ
 
         this.pathResolver = new HashMap<>();
         this.pathResolver.put("jboss.home.dir", baseDir);
+        this.pathResolver.put("jboss.home", baseDir);
         this.pathResolver.put("jboss.server.base.dir", standaloneServerDir);
         this.pathResolver.put("jboss.server.config.dir", standaloneConfigDir);
         this.pathResolver.put("jboss.server.content.dir", standaloneContentDir);

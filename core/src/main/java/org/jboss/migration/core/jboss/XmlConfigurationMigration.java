@@ -44,6 +44,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
  */
 public class XmlConfigurationMigration<S extends JBossServer<S>> implements TaskRunnable {
 
+    public static final String ANY_ELEMENT_NAME = "*";
     private final Set<ComponentFactory> componentFactories;
     private final JBossServerConfiguration<S> sourceConfiguration;
     private final JBossServerConfiguration<S> targetConfiguration;
@@ -80,6 +81,12 @@ public class XmlConfigurationMigration<S extends JBossServer<S>> implements Task
                     if (elementComponents != null) {
                         for (Component elementComponent : elementComponents) {
                             elementComponent.processElement(reader, sourceConfiguration, targetConfiguration, context);
+                        }
+                    }
+                    final List<Component> anyElementComponents = componentsMap.get(ANY_ELEMENT_NAME);
+                    if (anyElementComponents != null) {
+                        for (Component anyElementComponent : anyElementComponents) {
+                            anyElementComponent.processElement(reader, sourceConfiguration, targetConfiguration, context);
                         }
                     }
                 }
