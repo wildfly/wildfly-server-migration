@@ -15,7 +15,7 @@
  */
 package org.jboss.migration.core.env;
 
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 
 public class SystemEnvironmentTest extends AbstractEnvironmentTest<SystemEnvironment> {
     public SystemEnvironmentTest() {
@@ -33,7 +33,7 @@ public class SystemEnvironmentTest extends AbstractEnvironmentTest<SystemEnviron
         return new SystemEnvironment();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanSystemProperties() {
         System.clearProperty("jboss.server.migration.empty.property");
         System.clearProperty("jboss.server.migration.simple.property");

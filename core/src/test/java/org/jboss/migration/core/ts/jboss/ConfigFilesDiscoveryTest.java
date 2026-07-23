@@ -18,10 +18,9 @@ package org.jboss.migration.core.ts.jboss;
 import org.jboss.migration.core.ServerPath;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,22 +30,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigFilesDiscoveryTest {
     private static final String STANDALONE_CONFIGS_PROP = JBossServer.Environment.getFullEnvironmentPropertyName(TestJBossServer.MIGRATION_NAME, JBossServer.Environment.PROPERTY_STANDALONE_CONFIG_FILES);
 
-    @Rule
-    public final TemporaryFolder tmp = new TemporaryFolder();
+    @TempDir
+    Path tmp;
 
     private Path baseDir;
     private Path standaloneConfigDir;
 
-    @Before
+    @BeforeEach
     public void prepareStandaloneConfigDir() throws IOException {
-        baseDir = tmp.getRoot().toPath();
-        standaloneConfigDir = tmp.newFolder("standalone", "configuration").toPath();
+        baseDir = tmp;
+        standaloneConfigDir = Files.createDirectories(tmp.resolve("standalone").resolve("configuration"));
 
         byte[] standaloneConfigFile = "<server xmlns=\"urn:jboss:domain:1.7\" />".getBytes(StandardCharsets.UTF_8);
         Files.write(standaloneConfigDir.resolve("standalone.xml"), standaloneConfigFile);

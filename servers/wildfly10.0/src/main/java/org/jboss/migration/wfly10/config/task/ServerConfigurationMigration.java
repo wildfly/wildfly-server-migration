@@ -111,7 +111,7 @@ public class ServerConfigurationMigration<S, T extends ManageableServerConfigura
                     }
                 }
                 //consoleWrapper.printf("%n");
-                return ServerMigrationTaskResult.SUCCESS;
+                return new ServerMigrationTaskResult.Builder().success().addAttribute("targetPath", targetConfiguration.getPath().toAbsolutePath()).build();
             }
         };
     }

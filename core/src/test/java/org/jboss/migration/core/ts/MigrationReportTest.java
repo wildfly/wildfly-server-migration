@@ -19,7 +19,7 @@ import org.jboss.migration.core.report.HtmlReportWriter;
 import org.jboss.migration.core.report.SummaryReportWriter;
 import org.jboss.migration.core.report.XmlReportWriter;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import static org.jboss.migration.core.ts.MigrationTasksTest.migrationData;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MigrationReportTest {
     @Test

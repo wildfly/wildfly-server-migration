@@ -18,8 +18,8 @@ package org.jboss.migration.core.ts;
 import org.jboss.migration.core.MigrationData;
 import org.jboss.migration.core.ServerMigration;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author emmartins
@@ -32,7 +32,7 @@ public class BasicMigrationTestCase {
                 .from(TestSourceServerProvider.SERVER.getBaseDir())
                 .to(TestTargetServerProvider.SERVER.getBaseDir())
                 .run();
-        Assert.assertTrue(migrationData.getRootTask().getResult().getStatus() == ServerMigrationTaskResult.Status.SUCCESS);
+        Assertions.assertTrue(migrationData.getRootTask().getResult().getStatus() == ServerMigrationTaskResult.Status.SUCCESS);
     }
 
     @Test
@@ -41,6 +41,6 @@ public class BasicMigrationTestCase {
                 .to(TestSourceServerProvider.SERVER.getBaseDir())
                 .from(TestTargetServerProvider.SERVER.getBaseDir())
                 .run();
-        Assert.assertNotNull(migrationData.getRootTask().getResult().getFailReason());
+        Assertions.assertNotNull(migrationData.getRootTask().getResult().getFailReason());
     }
 }

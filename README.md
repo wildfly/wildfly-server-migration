@@ -39,7 +39,7 @@ Run the Server Migration Tool (Standalone Build)
         
         Retrieving servers...
          INFO  SOURCE server name: WildFly Full, version: 41.0.0.Final.
-         INFO  TARGET server name: WildFly Full, version: 42.0.0.Final.
+         INFO  TARGET server name: WildFly Full, version: 42.0.0.Final-SNAPSHOT.
         
         ----------------------------------------------------------
         ----------------------------------------------------------
@@ -112,7 +112,10 @@ Run the Server Migration Tool (Standalone Build)
 12. Migration Failed Error
   * If you get an error message telling you that the migration failed because of version Y not supporting migrations from version X please refer to the [Releases](https://github.com/wildfly/wildfly-server-migration/releases) section to see which version of the Migration Tool you need for migrating your versions. For example you cannot use the Migration Tool 1.11.0 Final for migrating WildFly 16.0.0 to WildFly 22.0.0. For that you require the Migration Tool Version 1.10.0 Final.
       
-  
+Integration Testing
+------------
+See README.md in testsuite.
+
 Development
 ------------
 
@@ -122,7 +125,7 @@ Development
 Contributions
 ------------
 
-All new features and enhancements should be submitted to _master_ branch.
+All new features and enhancements should be submitted to _main_ branch.
 Our [contribution guide](CONTRIBUTING.md) will guide you through the steps for getting started on the project and will go through how to format and submit your first PR.
 
 

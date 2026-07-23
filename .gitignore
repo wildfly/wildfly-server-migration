@@ -20,3 +20,4 @@ testsuite/*.log
 hs_err_*.log
 replay_*.log
 CLAUDE.md
+testsuite/server-cache/servers
