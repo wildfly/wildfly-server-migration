@@ -11,8 +11,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SERVERS_DIR="${PROJECT_ROOT}/servers"
 MIGRATIONS_DIR="${PROJECT_ROOT}/migrations"
+IT_MODULES_DIR="${PROJECT_ROOT}/testsuite/integration-tests"
 ROOT_POM="${PROJECT_ROOT}/pom.xml"
 DIST_POM="${PROJECT_ROOT}/dist/standalone/pom.xml"
+IT_PARENT_POM="${PROJECT_ROOT}/testsuite/integration-tests/pom.xml"
 
 # Function to extract version components from major.minor format
 # Args: version (e.g., "8.2")
@@ -524,6 +526,35 @@ if [ -f "$MASTER_ADOC" ] && [ -d "$TGT_DOCS_MIGRATIONS_DIR" ]; then
     fi
 fi
 
+# Step 12: Create integration-test module for the new target version
+echo "Step 12: Creating integration-test module..."
+
+SRC_IT_MODULE_DIR="${IT_MODULES_DIR}/eap${SOURCE_VERSION}"
+TGT_IT_MODULE_DIR="${IT_MODULES_DIR}/eap${TARGET_VERSION}"
+
+if [ ! -d "$SRC_IT_MODULE_DIR" ]; then
+    echo "  Warning: Source IT module not found: $SRC_IT_MODULE_DIR — skipping"
+else
+    # Step 12a: Copy source IT module to target
+    cp -r "$SRC_IT_MODULE_DIR" "$TGT_IT_MODULE_DIR"
+    echo "  Copied IT module from eap${SOURCE_VERSION} to eap${TARGET_VERSION}"
+
+    # Step 12b: Replace version references in the new IT module
+    apply_version_replacements "$TGT_IT_MODULE_DIR" "$SOURCE_VERSION" "$TARGET_VERSION"
+    echo "  Version replacements complete in IT module"
+
+    # Step 12c: Register the new module in testsuite/integration-tests/pom.xml
+    LAST_IT_MODULE_LINE=$(grep -n "<module>eap${SOURCE_VERSION}</module>" "$IT_PARENT_POM" | tail -1 | cut -d: -f1)
+    if [ -n "$LAST_IT_MODULE_LINE" ]; then
+        sed -i '' "${LAST_IT_MODULE_LINE}a\\
+        <module>eap${TARGET_VERSION}</module>
+" "$IT_PARENT_POM"
+        echo "  Registered <module>eap${TARGET_VERSION}</module> in testsuite/integration-tests/pom.xml"
+    else
+        echo "  Warning: Could not find <module>eap${SOURCE_VERSION}</module> in IT parent pom — add it manually"
+    fi
+fi
+
 echo ""
 echo "========================================"
 echo "SUCCESS!"
@@ -538,9 +569,11 @@ if [ -d "$TGT_DOCS_MIGRATIONS_DIR" ]; then
     echo "New user guide docs created at:"
     echo "  $TGT_DOCS_MIGRATIONS_DIR"
 fi
+echo "New integration-test module created at:"
+echo "  $TGT_IT_MODULE_DIR"
 echo ""
 echo "Next steps:"
 echo "  1. Review the generated modules"
 echo "  2. Update migration logic as needed for JBoss EAP ${TARGET_VERSION}"
-echo "  3. Build the project: mvn clean package"
+echo "  3. Build the project: mvn clean install"
 echo "========================================"

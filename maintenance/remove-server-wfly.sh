@@ -11,8 +11,10 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SERVERS_DIR="${PROJECT_ROOT}/servers"
 MIGRATIONS_DIR="${PROJECT_ROOT}/migrations"
 DOCS_DIR="${PROJECT_ROOT}/docs/user-guides/migrations"
+IT_MODULES_DIR="${PROJECT_ROOT}/testsuite/integration-tests"
 ROOT_POM="${PROJECT_ROOT}/pom.xml"
 DIST_POM="${PROJECT_ROOT}/dist/standalone/pom.xml"
+IT_PARENT_POM="${PROJECT_ROOT}/testsuite/integration-tests/pom.xml"
 TOOL_POM="${PROJECT_ROOT}/docs/user-guides/tool/standalone/pom.xml"
 MASTER_ADOC="${PROJECT_ROOT}/docs/user-guides/tool/standalone/src/main/asciidoc/master.adoc"
 
@@ -66,23 +68,26 @@ echo "========================================"
 SERVER_DIR="${SERVERS_DIR}/wildfly${VERSION}"
 MIGRATIONS_VERSION_DIR="${MIGRATIONS_DIR}/wildfly${VERSION}"
 DOCS_VERSION_DIR="${DOCS_DIR}/wildfly${VERSION}"
+IT_MODULE_DIR="${IT_MODULES_DIR}/wildfly${VERSION}"
 
 # Check if at least one directory exists
 if $MIGRATIONS_ONLY; then
-    # When skipping server, only check migrations and docs
-    if [ ! -d "$MIGRATIONS_VERSION_DIR" ] && [ ! -d "$DOCS_VERSION_DIR" ]; then
-        echo "Error: No migration or doc directories found for WildFly ${VERSION}"
+    # When skipping server, only check migrations, docs and IT module
+    if [ ! -d "$MIGRATIONS_VERSION_DIR" ] && [ ! -d "$DOCS_VERSION_DIR" ] && [ ! -d "$IT_MODULE_DIR" ]; then
+        echo "Error: No migration, doc or integration-test directories found for WildFly ${VERSION}"
         echo "  Checked: $MIGRATIONS_VERSION_DIR"
         echo "  Checked: $DOCS_VERSION_DIR"
+        echo "  Checked: $IT_MODULE_DIR"
         exit 1
     fi
 else
-    # When not skipping server, check all three
-    if [ ! -d "$SERVER_DIR" ] && [ ! -d "$MIGRATIONS_VERSION_DIR" ] && [ ! -d "$DOCS_VERSION_DIR" ]; then
+    # When not skipping server, check all four
+    if [ ! -d "$SERVER_DIR" ] && [ ! -d "$MIGRATIONS_VERSION_DIR" ] && [ ! -d "$DOCS_VERSION_DIR" ] && [ ! -d "$IT_MODULE_DIR" ]; then
         echo "Error: No directories found for WildFly ${VERSION}"
         echo "  Checked: $SERVER_DIR"
         echo "  Checked: $MIGRATIONS_VERSION_DIR"
         echo "  Checked: $DOCS_VERSION_DIR"
+        echo "  Checked: $IT_MODULE_DIR"
         exit 1
     fi
 fi
@@ -127,8 +132,17 @@ else
     echo "  No doc modules to remove"
 fi
 
-# Step 4: Remove dependencies from root pom.xml (dependencyManagement)
-echo "Step 4: Removing dependencies from dependencyManagement..."
+# Step 4: Remove integration-test module from testsuite/integration-tests/pom.xml
+echo "Step 4: Removing integration-test module from testsuite/integration-tests/pom.xml..."
+if grep -q "<module>wildfly${VERSION}</module>" "$IT_PARENT_POM"; then
+    sed -i '' "/<module>wildfly${VERSION}<\/module>/d" "$IT_PARENT_POM"
+    echo "  Removed <module>wildfly${VERSION}</module>"
+else
+    echo "  Module entry not found (skipping)"
+fi
+
+# Step 5: Remove dependencies from root pom.xml (dependencyManagement)
+echo "Step 5: Removing dependencies from dependencyManagement..."
 
 # Remove comment line (only if not skipping server, as comment belongs to version block)
 if ! $MIGRATIONS_ONLY; then
@@ -190,8 +204,8 @@ fi
 
 echo "  Removed dependencies from dependencyManagement"
 
-# Step 5: Remove dependencies from dist/standalone/pom.xml
-echo "Step 5: Removing dependencies from dist/standalone/pom.xml..."
+# Step 6: Remove dependencies from dist/standalone/pom.xml
+echo "Step 6: Removing dependencies from dist/standalone/pom.xml..."
 
 # Remove comment (only if not skipping server)
 if ! $MIGRATIONS_ONLY; then
@@ -217,8 +231,8 @@ fi
 
 echo "  Removed dependencies from dist/standalone/pom.xml"
 
-# Step 6: Remove userguide dependencies and executions from tool pom.xml
-echo "Step 6: Removing userguides from tool documentation..."
+# Step 7: Remove userguide dependencies and executions from tool pom.xml
+echo "Step 7: Removing userguides from tool documentation..."
 
 if [ -f "$TOOL_POM" ]; then
     # Remove comment
@@ -274,8 +288,8 @@ else
     echo "  Tool pom.xml not found (skipping)"
 fi
 
-# Step 7: Remove migration links from master.adoc
-echo "Step 7: Removing migration links from master.adoc..."
+# Step 8: Remove migration links from master.adoc
+echo "Step 8: Removing migration links from master.adoc..."
 
 if [ -f "$MASTER_ADOC" ] && [ -d "$DOCS_VERSION_DIR" ]; then
     for doc_dir in $(ls "$DOCS_VERSION_DIR" 2>/dev/null | grep "^wildfly" || true); do
@@ -288,8 +302,8 @@ else
     echo "  master.adoc not found or no docs to remove (skipping)"
 fi
 
-# Step 8: Remove directories
-echo "Step 8: Removing directories..."
+# Step 9: Remove directories
+echo "Step 9: Removing directories..."
 
 if ! $MIGRATIONS_ONLY; then
     if [ -d "$SERVER_DIR" ]; then
@@ -308,6 +322,11 @@ if [ -d "$DOCS_VERSION_DIR" ]; then
     echo "  Removed $DOCS_VERSION_DIR"
 fi
 
+if [ -d "$IT_MODULE_DIR" ]; then
+    rm -rf "$IT_MODULE_DIR"
+    echo "  Removed $IT_MODULE_DIR"
+fi
+
 echo ""
 echo "========================================"
 echo "SUCCESS!"
@@ -318,6 +337,7 @@ if $MIGRATIONS_ONLY; then
     echo "  - Documentation modules"
     echo "  - POM files (migrations and docs only)"
     echo "  - Master documentation"
+    echo "  - Integration-test module"
 else
     echo "WildFly ${VERSION} has been removed from:"
     echo "  - Server modules"
@@ -325,9 +345,10 @@ else
     echo "  - Documentation modules"
     echo "  - All POM files"
     echo "  - Master documentation"
+    echo "  - Integration-test module"
 fi
 echo ""
 echo "Next steps:"
 echo "  1. Review the changes with: git status"
-echo "  2. Build the project: mvn clean package"
+echo "  2. Build the project: mvn clean install"
 echo "========================================"

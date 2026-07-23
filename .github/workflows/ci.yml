@@ -16,12 +16,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk: [17, 23]
+        jdk: [17, 25]
         os: [ubuntu-latest, windows-latest]
     steps:
     - uses: actions/checkout@v7
-      with:
-        path: wildfly-server-migration
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v5
       with:
@@ -30,11 +28,10 @@ jobs:
         cache: 'maven'
     - name: Build Server Migration Tool
       run: |
-        cd wildfly-server-migration
-        mvn -U -B -fae clean install
+        mvn -B -fae install "-Dtestsuite.serverCacheDir=./cache"
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: surefire-reports-JDK${{ matrix.jdk }}-${{ matrix.os }}
-        path: 'wildfly-server-migration/**/surefire-reports/*.txt'
+        path: './**/surefire-reports/*.txt'
 
