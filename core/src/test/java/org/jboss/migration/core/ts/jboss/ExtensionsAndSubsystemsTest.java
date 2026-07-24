@@ -2,8 +2,11 @@ package org.jboss.migration.core.ts.jboss;
 
 import org.jboss.migration.core.jboss.Extension;
 import org.jboss.migration.core.jboss.Subsystem;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author emmartins
@@ -31,10 +34,10 @@ public class ExtensionsAndSubsystemsTest {
                 .build();
 
         // validate extension
-        Assert.assertNotNull(e1);
-        Assert.assertEquals(e1.getModule(), e1Module);
-        Assert.assertEquals(e1.getSubsystemNames().size(), 4);
-        Assert.assertEquals(e1.getSubsystems().size(), 4);
+        assertNotNull(e1);
+        assertEquals(e1.getModule(), e1Module);
+        assertEquals(e1.getSubsystemNames().size(), 4);
+        assertEquals(e1.getSubsystems().size(), 4);
 
         // validate subsystem 1
         final Subsystem e1s1 = validateAndGetSubsystem(e1, e1s1SubsystemName);
@@ -44,11 +47,11 @@ public class ExtensionsAndSubsystemsTest {
 
         // validate subsystem 3
         final Subsystem e1s3 = validateAndGetSubsystem(e1, e1s3SubsystemName);
-        Assert.assertEquals(e1s3.getNamespaceWithoutVersion(), e1s3SubsystemNamespaceWithoutVersion);
+        assertEquals(e1s3.getNamespaceWithoutVersion(), e1s3SubsystemNamespaceWithoutVersion);
 
         // validate subsystem 4
         final Subsystem e1s4 = validateAndGetSubsystem(e1, e1s4SubsystemName);
-        Assert.assertEquals(e1s4.getNamespaceWithoutVersion(), e1s4SubsystemNamespaceWithoutVersion);
+        assertEquals(e1s4.getNamespaceWithoutVersion(), e1s4SubsystemNamespaceWithoutVersion);
     }
 
     private String getSubsystemName(String extensionModule, int subsystemNumber) {
@@ -57,10 +60,10 @@ public class ExtensionsAndSubsystemsTest {
 
     private Subsystem validateAndGetSubsystem(Extension e, String subsystemName) {
         Subsystem s = e.getSubsystem(subsystemName);
-        Assert.assertNotNull(s);
-        Assert.assertEquals(e, s.getExtension());
-        Assert.assertTrue(e.getSubsystemNames().contains(subsystemName));
-        Assert.assertTrue(e.getSubsystems().contains(s));
+        assertNotNull(s);
+        assertEquals(e, s.getExtension());
+        assertTrue(e.getSubsystemNames().contains(subsystemName));
+        assertTrue(e.getSubsystems().contains(s));
         return s;
     }
 }

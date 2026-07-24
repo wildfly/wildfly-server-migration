@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright The WildFly Authors
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.migration</groupId>
+        <artifactId>jboss-server-migration-parent</artifactId>
+        <version>42.0.0.Final-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>jboss-server-migration-integration-tests</artifactId>
+    <packaging>pom</packaging>
+
+    <name>JBoss Server Migration: Integration Tests</name>
+
+    <!--
+        Parent pom for all per-target integration-test modules.
+
+        Shared across all child modules:
+          - Dependencies: build artifact (ordering), testsuite-common, server-cache, JUnit 5
+          - Build: maven-failsafe-plugin wired to integration-test + verify, with all
+            required system property variables forwarded from root properties.
+          - Checkstyle: disabled (no production sources in IT modules).
+
+        Each child module only needs to declare:
+          - <artifactId> and <name>
+          - <testsuite.baseDir> correction (always "../..")
+          - One *MigrationIT.java test class
+
+        Path notes (child modules live at testsuite/integration-tests/<target>/):
+          - testsuite.baseDir  → ${project.basedir}/../..  (= testsuite/)
+          - migrations.projectDir → ${project.basedir}/../../../migrations
+    -->
+
+    <properties>
+        <!-- Corrected for children: project.basedir = testsuite/integration-tests/<target> -->
+        <testsuite.baseDir>${project.basedir}/../..</testsuite.baseDir>
+    </properties>
+
+    <modules>
+        <module>wildfly42.0</module>
+        <module>eap7.4</module>
+        <module>eap8.0</module>
+        <module>eap8.1</module>
+        <module>eap8.2</module>
+    </modules>
+
+    <dependencies>
+        <!--
+            Reactor ordering: ensure this module (and its children) build after
+            dist/standalone, which produces the tool zip.
+        -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-build</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Shared base class (AbstractMigrationIT) and before-patch resources -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-testsuite-common</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ServerCacheLookup used at test runtime -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jboss-server-migration-server-cache</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Disable checkstyle — IT modules contain only test sources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- Wire integration-test + verify to failsafe and forward system properties -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <testsuite.serverCacheDir>${testsuite.serverCacheDir}</testsuite.serverCacheDir>
+                        <testsuite.beforeDir>${project.basedir}/../../before</testsuite.beforeDir>
+                        <testsuite.toolZip>${project.basedir}/../../../dist/standalone/target/jboss-server-migration-${project.version}.zip</testsuite.toolZip>
+                        <migrations.buildDir>${project.build.directory}/migrations</migrations.buildDir>
+                        <migrations.projectDir>${project.basedir}/../../../migrations</migrations.projectDir>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

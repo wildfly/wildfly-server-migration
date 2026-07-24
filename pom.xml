@@ -63,6 +63,11 @@
         <version.org.asciidoctor.asciidoctor-maven-plugin>1.5.6</version.org.asciidoctor.asciidoctor-maven-plugin>
         <version.server>41.0.0.Final</version.server>
 
+        <!-- integration testsuite configuration -->
+        <!-- note: any usage of the properties below in child modules, require correcting testsuite.baseDir due to dynamic change of project.basedir -->
+        <testsuite.baseDir>${project.basedir}/testsuite</testsuite.baseDir>
+        <testsuite.serverCacheDir>${testsuite.baseDir}/server-cache/servers</testsuite.serverCacheDir>
+
         <!-- Surefire args -->
         <surefire.jpda.args/>
         <surefire.system.args>-da ${surefire.jpda.args}</surefire.system.args>
@@ -200,6 +205,9 @@
         <module>servers/wildfly40.0</module>
         <module>servers/wildfly41.0</module>
         <module>servers/wildfly42.0</module>
+        <module>testsuite/common</module>
+        <module>testsuite/server-cache</module>
+        <module>testsuite/integration-tests</module>
     </modules>
 
     <build>

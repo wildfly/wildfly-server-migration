@@ -18,19 +18,18 @@ package org.jboss.migration.core.ts;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
-import org.hamcrest.CoreMatchers;
 import org.jboss.migration.core.MigrationFiles;
 import org.jboss.migration.core.ServerMigration;
 import org.jboss.migration.core.ServerMigrationFailureException;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Simple test class for MigrationFiles copy method.
@@ -39,11 +38,8 @@ import org.junit.rules.TemporaryFolder;
  */
 public class MigrationFilesTest {
 
-    @Rule
-    public final TemporaryFolder tmp = new TemporaryFolder();
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
+    @TempDir
+    Path tmp;
 
     private final Random random = new Random();
 
@@ -56,7 +52,7 @@ public class MigrationFilesTest {
             .getMigrationFiles();
 
     private Path createNewFile(String name, int size) throws IOException {
-        Path file = tmp.newFile(name).toPath();
+        Path file = tmp.resolve(name);
         return createNewFile(file, size);
     }
 
@@ -72,23 +68,23 @@ public class MigrationFilesTest {
     @Test
     public void copyFile() throws IOException {
         Path source = createNewFile("source.bin", 32);
-        Path target = tmp.getRoot().toPath().resolve("target.bin");
+        Path target = tmp.resolve("target.bin");
 
         migrationFiles.copy(source, target);
 
-        Assert.assertTrue("Target file is created", Files.exists(target));
-        Assert.assertArrayEquals("Contents of the files are OK", Files.readAllBytes(source), Files.readAllBytes(target));
+        assertTrue(Files.exists(target), "Target file is created");
+        assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target), "Contents of the files are OK");
     }
 
     @Test
     public void copyFileSeveralLevels() throws IOException {
         Path source = createNewFile("source.bin", 32);
-        Path target = tmp.getRoot().toPath().resolve("level1").resolve("level2").resolve("target.bin");
+        Path target = tmp.resolve("level1").resolve("level2").resolve("target.bin");
 
         migrationFiles.copy(source, target);
 
-        Assert.assertTrue("Target file is created", Files.exists(target));
-        Assert.assertArrayEquals("Contents of the files are OK", Files.readAllBytes(source), Files.readAllBytes(target));
+        assertTrue(Files.exists(target), "Target file is created");
+        assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target), "Contents of the files are OK");
     }
 
     @Test
@@ -98,69 +94,67 @@ public class MigrationFilesTest {
 
         migrationFiles.copy(source, target);
 
-        Assert.assertTrue("Target file is created", Files.exists(target));
-        Assert.assertArrayEquals("Contents of the files are OK", Files.readAllBytes(source), Files.readAllBytes(target));
-        Assert.assertTrue("Backup file is created", Files.exists(tmp.getRoot().toPath().resolve("target.bin.beforeMigration")));
+        assertTrue(Files.exists(target), "Target file is created");
+        assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target), "Contents of the files are OK");
+        assertTrue(Files.exists(tmp.resolve("target.bin.beforeMigration")), "Backup file is created");
     }
 
     @Test
     public void copyFileWithALink() throws IOException {
         Path source = createNewFile("source.bin", 32);
-        Path realTargetDir = tmp.newFolder("realLevel1").toPath();
-        Path linkTargetDir = tmp.getRoot().toPath().resolve("linkLevel1");
+        Path realTargetDir = Files.createDirectory(tmp.resolve("realLevel1"));
+        Path linkTargetDir = tmp.resolve("linkLevel1");
         Files.createSymbolicLink(linkTargetDir, realTargetDir);
         Path target = linkTargetDir.resolve("target.bin");
 
         migrationFiles.copy(source, target);
 
-        Assert.assertTrue("Target file is created", Files.exists(target));
-        Assert.assertArrayEquals("Contents of the files are OK", Files.readAllBytes(source), Files.readAllBytes(target));
+        assertTrue(Files.exists(target), "Target file is created");
+        assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target), "Contents of the files are OK");
     }
 
     @Test
     public void copyFileWithALinkSeveralLevels() throws IOException {
         Path source = createNewFile("source.bin", 32);
-        Path realTargetDir = tmp.newFolder("realLevel1").toPath();
-        Path linkTargetDir = tmp.getRoot().toPath().resolve("linkLevel1");
+        Path realTargetDir = Files.createDirectory(tmp.resolve("realLevel1"));
+        Path linkTargetDir = tmp.resolve("linkLevel1");
         Files.createSymbolicLink(linkTargetDir, realTargetDir);
         Path target = linkTargetDir.resolve("level2").resolve("level3").resolve("target.bin");
 
         migrationFiles.copy(source, target);
 
-        Assert.assertTrue("Target file is created", Files.exists(target));
-        Assert.assertArrayEquals("Contents of the files are OK", Files.readAllBytes(source), Files.readAllBytes(target));
+        assertTrue(Files.exists(target), "Target file is created");
+        assertArrayEquals(Files.readAllBytes(source), Files.readAllBytes(target), "Contents of the files are OK");
     }
 
     @Test
     public void copyDirectory() throws IOException {
-        Path sourceDir = tmp.newFolder("source").toPath();
+        Path sourceDir = Files.createDirectory(tmp.resolve("source"));
         Path source1 = createNewFile(sourceDir.resolve("source1.bin"), 32);
         Path source2 = createNewFile(sourceDir.resolve("source2.bin"), 32);
         Path levels = sourceDir.resolve("level1").resolve("level2");
         Files.createDirectories(levels);
         Path source3 = createNewFile(levels.resolve("source3.bin"), 32);
-        Path targetDir = tmp.newFolder("target").toPath();
+        Path targetDir = Files.createDirectory(tmp.resolve("target"));
 
         migrationFiles.copy(sourceDir, targetDir);
 
-        Assert.assertTrue("Target source1.bin file is created", Files.exists(targetDir.resolve("source1.bin")));
-        Assert.assertArrayEquals("Contents of source1.bin are OK", Files.readAllBytes(source1), Files.readAllBytes(targetDir.resolve("source1.bin")));
-        Assert.assertTrue("Target source2.bin file is created", Files.exists(targetDir.resolve("source2.bin")));
-        Assert.assertArrayEquals("Contents of source2.bin are OK", Files.readAllBytes(source2), Files.readAllBytes(targetDir.resolve("source2.bin")));
-        Assert.assertTrue("Target source3.bin file is created", Files.exists(targetDir.resolve("level1").resolve("level2").resolve("source3.bin")));
-        Assert.assertArrayEquals("Contents of source3.bin are OK", Files.readAllBytes(source3),
-                Files.readAllBytes(targetDir.resolve("level1").resolve("level2").resolve("source3.bin")));
+        assertTrue(Files.exists(targetDir.resolve("source1.bin")), "Target source1.bin file is created");
+        assertArrayEquals(Files.readAllBytes(source1), Files.readAllBytes(targetDir.resolve("source1.bin")), "Contents of source1.bin are OK");
+        assertTrue(Files.exists(targetDir.resolve("source2.bin")), "Target source2.bin file is created");
+        assertArrayEquals(Files.readAllBytes(source2), Files.readAllBytes(targetDir.resolve("source2.bin")), "Contents of source2.bin are OK");
+        assertTrue(Files.exists(targetDir.resolve("level1").resolve("level2").resolve("source3.bin")), "Target source3.bin file is created");
+        assertArrayEquals(Files.readAllBytes(source3),
+                Files.readAllBytes(targetDir.resolve("level1").resolve("level2").resolve("source3.bin")), "Contents of source3.bin are OK");
     }
 
     @Test
     public void copyDirectoryAlreadyExists() throws IOException {
-        Path sourceDir = tmp.newFolder("source").toPath();
+        Path sourceDir = Files.createDirectory(tmp.resolve("source"));
         createNewFile(sourceDir.resolve("source1.bin"), 32);
-        Path target = tmp.newFile("target").toPath();
+        Path target = createNewFile("target", 0);
 
-        exception.expect(ServerMigrationFailureException.class);
-        exception.expectCause(CoreMatchers.isA(FileAlreadyExistsException.class));
-
-        migrationFiles.copy(sourceDir, target);
+        assertThrows(ServerMigrationFailureException.class,
+                () -> migrationFiles.copy(sourceDir, target));
     }
 }

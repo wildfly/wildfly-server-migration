@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright The WildFly Authors
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss.migration</groupId>
+        <artifactId>jboss-server-migration-parent</artifactId>
+        <version>42.0.0.Final-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>jboss-server-migration-server-cache</artifactId>
+
+    <name>JBoss Server Migration: Server Cache</name>
+
+    <!--
+        Maintains a persistent cache of WildFly server distributions at
+        testsuite/wildfly-servers/.
+
+        Supported versions are discovered from the /migrations directory tree:
+          - Each wildfly* child of /migrations is a supported target version.
+          - Each wildfly* child of a target directory is a supported source version.
+
+        For each version:
+          1. If a GitHub Final release exists and is newer than the cache → replace.
+          2. If no Final release exists → clone wildfly:main, build, copy dist/target/wildfly-* as-is.
+          3. If a SNAPSHOT is cached from main and the branch has new commits → rebuild + replace.
+
+        The build fails hard if any required server cannot be provisioned.
+        This module produces a jar consumed by the integration-test modules for cache lookup.
+    -->
+
+    <properties>
+        <!-- override to fix dynamic project.basedir -->
+        <testsuite.baseDir>${project.basedir}/..</testsuite.baseDir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+                Run the cache updater during generate-test-resources so it completes
+                before each supported target server integration-test module runs.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>update-server-cache</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.jboss.migration.test.cache.WildFlyServerCache</mainClass>
+                            <arguments>
+                                <!-- migrations root: <repo>/migrations -->
+                                <argument>${project.basedir}/../../migrations</argument>
+                                <!-- cache root: testsuite/server-cache/servers -->
+                                <argument>${testsuite.serverCacheDir}</argument>
+                            </arguments>
+                            <classpathScope>compile</classpathScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -20,12 +20,12 @@ import org.jboss.migration.core.ServerMigration;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.task.ServerMigrationTaskResult;
 import org.jboss.migration.core.task.TaskExecution;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MigrationTasksTest {
     static MigrationData migrationData(boolean shouldFail) {
