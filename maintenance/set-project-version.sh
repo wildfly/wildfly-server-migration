@@ -92,8 +92,8 @@ DOCS_UPDATED=0
 
 if [ -f "$README_FILE" ]; then
     # Update version references in README.md (e.g., jboss-server-migration-41.0.0.Final-SNAPSHOT.zip)
-    if grep -q "jboss-server-migration-${CURRENT_VERSION}" "$README_FILE"; then
-        sed -i '' "s/jboss-server-migration-${CURRENT_VERSION}/jboss-server-migration-${NEW_VERSION}/g" "$README_FILE"
+    if grep -q "${CURRENT_VERSION}" "$README_FILE"; then
+        sed -i '' "s/${CURRENT_VERSION}/${NEW_VERSION}/g" "$README_FILE"
         echo "  Updated README.md"
         DOCS_UPDATED=$((DOCS_UPDATED + 1))
     fi
@@ -101,8 +101,8 @@ fi
 
 if [ -f "$MASTER_ADOC" ]; then
     # Update version references in master.adoc if any
-    if grep -q "jboss-server-migration-${CURRENT_VERSION}" "$MASTER_ADOC"; then
-        sed -i '' "s/jboss-server-migration-${CURRENT_VERSION}/jboss-server-migration-${NEW_VERSION}/g" "$MASTER_ADOC"
+    if grep -q "${CURRENT_VERSION}" "$MASTER_ADOC"; then
+        sed -i '' "s/${CURRENT_VERSION}/${NEW_VERSION}/g" "$MASTER_ADOC"
         echo "  Updated master.adoc"
         DOCS_UPDATED=$((DOCS_UPDATED + 1))
     fi
@@ -130,5 +130,5 @@ fi
 echo ""
 echo "Next steps:"
 echo "  1. Review the changes with: git diff"
-echo "  2. Build the project: mvn clean package"
+echo "  2. Build the project: mvn clean install"
 echo "========================================"

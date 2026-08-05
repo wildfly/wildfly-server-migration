@@ -16,25 +16,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk: [17, 23]
+        jdk: [17, 25]
         os: [ubuntu-latest, windows-latest]
     steps:
     - uses: actions/checkout@v7
-      with:
-        path: wildfly-server-migration
     - name: Set up JDK ${{ matrix.jdk }}
       uses: actions/setup-java@v5
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'temurin'
         cache: 'maven'
+    - name: Restore server cache
+      uses: actions/cache@v6
+      with:
+        path: ${{ github.workspace }}/cache
+        # Key covers: OS (cache dirs are OS-specific binaries) + the full migrations tree
+        # (adding/removing a migration version or source bumps the key and forces re-download).
+        # A cache miss is safe: the server-cache module will reprovision everything from scratch.
+        key: server-cache-${{ runner.os }}-${{ hashFiles('migrations/**') }}
+        restore-keys: |
+          server-cache-${{ runner.os }}-
     - name: Build Server Migration Tool
-      run: |
-        cd wildfly-server-migration
-        mvn -U -B -fae clean install
+      run: mvn -B -fae install -DrunITs "-Dtestsuite.serverCacheDir=${{ github.workspace }}/cache"
+      shell: bash
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
-        name: surefire-reports-JDK${{ matrix.jdk }}-${{ matrix.os }}
-        path: 'wildfly-server-migration/**/surefire-reports/*.txt'
-
+        name: failsafe-reports-JDK${{ matrix.jdk }}-${{ matrix.os }}
+        path: './**/failsafe-reports/*.txt'

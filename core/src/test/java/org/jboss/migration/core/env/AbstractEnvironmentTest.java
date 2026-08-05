@@ -16,17 +16,17 @@
 package org.jboss.migration.core.env;
 
 import org.jboss.migration.core.ServerMigrationFailureException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractEnvironmentTest<T extends Environment> {
     protected final T env;
@@ -56,24 +56,12 @@ public abstract class AbstractEnvironmentTest<T extends Environment> {
         assertNull(env.getPropertyAsList("missing.property"));
         assertEquals(listOf("foobar"), env.getPropertyAsList("missing.property", listOf("foobar")));
 
-        try {
-            env.requirePropertyAsBoolean("missing.property");
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
-        try {
-            env.requirePropertyAsString("missing.property", false);
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
-        try {
-            env.requirePropertyAsList("missing.property", false);
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsBoolean("missing.property"));
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsString("missing.property", false));
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsList("missing.property", false));
     }
 
     @Test
@@ -88,24 +76,12 @@ public abstract class AbstractEnvironmentTest<T extends Environment> {
         assertEquals("", env.requirePropertyAsString("empty.property", false));
         assertEquals(listOf(), env.requirePropertyAsList("empty.property", false));
 
-        try {
-            env.requirePropertyAsBoolean("empty.property");
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
-        try {
-            env.requirePropertyAsString("empty.property", true);
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
-        try {
-            env.requirePropertyAsList("empty.property", true);
-            fail();
-        } catch (ServerMigrationFailureException ignored) {
-            // expected
-        }
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsBoolean("empty.property"));
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsString("empty.property", true));
+        assertThrows(ServerMigrationFailureException.class,
+                () -> env.requirePropertyAsList("empty.property", true));
     }
 
     @Test
