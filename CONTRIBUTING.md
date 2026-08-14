@@ -56,7 +56,7 @@ It is recommended that you use a separate branch for every issue you work on. To
 ## Setting up your Developer Environment
 You will need:
 
-* JDK 8
+* JDK 17+
 * Git
 * Maven
 * An [IDE](https://en.wikipedia.org/wiki/Comparison_of_integrated_development_environments#Java)
