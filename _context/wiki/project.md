@@ -105,3 +105,67 @@ See the [testsuite README](../testsuite/README.md#running-the-tests) for the ful
 - Migration tasks form a tree; `CompositeTask` / `LeafTask` builders in `core.task.component` are the primary composition primitives.
 - Environment properties (`core.env`) allow tasks to be skipped or configured without code changes — useful for non-interactive / automated migrations.
 - `XmlConfigurationMigration` in `core.jboss` is the base for all XML-level configuration migrations; per-subsystem tasks extend it.
+
+---
+
+## Migrating paths referenced in configurations
+
+### Overview
+
+The tool copies files referenced by path attributes in XML configurations (keystores, certificate files, etc.) from the source server to the target server. The entry point is `WildFly41_0MigrateReferencedPaths` (in `servers/wildfly41.0`), which is registered as a subtask of every migration's server-configuration migration step.
+
+### Class hierarchy
+
+```
+ConfigurationPathsMigrationTaskFactory   (servers/wildfly10.0 — task factory wired into the migration pipeline)
+  └── WildFly41_0MigrateReferencedPaths  (servers/wildfly41.0 — composites the component factories below)
+
+XmlConfigurationMigration.Component      (core.jboss — SPI; one implementation per path-source type)
+  ├── VaultPathsMigration                (servers/wildfly10.0 — legacy vault path)
+  ├── WebSubsystemPathsMigration         (servers/wildfly10.0 — urn:jboss:domain:web ssl/@certificate-key-file, ssl/@ca-certificate-file)
+  ├── ModclusterSubsystemPathsMigration  (servers/wildfly41.0 — urn:jboss:domain:modcluster ssl/@certificate-key-file, @ca-certificate-file, @ca-revocation-url)
+  └── AttributesResolvablePathsMigration (servers/wildfly41.0 — generic: any element with path+relative-to attributes)
+```
+
+### How `XmlConfigurationMigration.Component` works
+
+Each component is a two-phase SAX-style visitor registered against a set of XML element local names:
+
+1. **`getElementLocalNames()`** — returns the set of element names the component wants to visit. Use `XmlConfigurationMigration.ANY_ELEMENT_NAME` to visit every element (as `AttributesResolvablePathsMigration` does).
+2. **`processElement(reader, source, target, context)`** — called once per matching element while the XML is being parsed. Collect attribute values into instance fields (e.g. `Set<String>`); do not execute tasks here.
+3. **`afterProcessingElements(source, target, taskContext)`** — called once after the full XML has been parsed. Execute `MigrateResolvablePathTaskBuilder` subtasks for every collected path.
+
+The `Factory` inner class (implements `XmlConfigurationMigration.ComponentFactory`) simply calls `new YourComponent()`, giving each XML file its own fresh component instance.
+
+### Adding a new paths migration component
+
+1. **Create** a new class in `servers/wildfly41.0/src/main/java/org/jboss/migration/wfly/task/paths/` implementing `XmlConfigurationMigration.Component`. Use `ModclusterSubsystemPathsMigration` (subsystem-specific, non-standard attributes) or `AttributesResolvablePathsMigration` (generic `path`/`relative-to`) as a template depending on how the paths are encoded in the XML.
+
+2. **Key implementation choices:**
+   - Filter by namespace URI prefix in `processElement` to avoid false matches from other subsystems that happen to use the same element local name (e.g. `ssl`).
+   - Use `ResolvablePath.fromPathExpression(value)` when the attribute value is a standalone path expression; use `new ResolvablePath(path, relativeTo)` when both `path` and `relative-to` attributes are present.
+   - Set `skipIfSourcePathDoesNotExists(true)` on `MigrateResolvablePathTaskBuilder` when the path might legitimately be absent in the source.
+
+3. **Register** the new `Factory` in `WildFly41_0MigrateReferencedPaths` by adding `.componentFactory(new YourComponent.Factory())` to the `XmlConfigurationMigration.Builder` chain — before `AttributesResolvablePathsMigration.Factory` (which is the generic catch-all and should remain last).
+
+4. **Add a unit test** by subclassing `AbstractXmlConfigurationMigrationComponentTest` (in `servers/wildfly10.0/src/test/`) — see the unit testing section below.
+
+5. **Build** with `mvn clean install -pl servers/wildfly41.0 -am` to verify. The `subtask 3(always=fails)` test error in that module is intentional and pre-existing — a `BUILD SUCCESS` result means the code is correct.
+
+### Unit testing a XML Configuration component
+
+`AbstractXmlConfigurationMigrationComponentTest` (in `servers/wildfly10.0/src/test/`) is the base class for all component unit tests. It handles the full test lifecycle; a subclass only needs to implement three methods:
+
+| Method | What to return |
+|---|---|
+| `getXmlConfig()` | XML string to parse (placed in the target server's config dir) |
+| `getComponentFactory()` | `new YourComponent.Factory()` |
+| `getExpectedCopiedPaths()` | Paths relative to the server base dir that must be copied (e.g. `"standalone/data/server.keystore"`) |
+
+The base test builds real `JBossServerConfiguration` objects backed by `@TempDir` server trees, runs `XmlConfigurationMigration` through `TaskExecutionImpl`, and asserts every expected file was copied.
+
+**Important:** Paths in the XML must be expressed as `${jboss.home.dir}/...` expressions so that `MigrateResolvablePathTaskRunnable` resolves them relative to the server base dir and performs the copy. Bare absolute paths are skipped with a warning.
+
+**Module placement:**
+- If the component lives in `servers/wildfly10.0` → add the test there directly.
+- If the component lives in a later server module (e.g. `servers/wildfly41.0`) → depend on the `wildfly10.0` test-jar (`<type>test-jar</type>`, `<scope>test</scope>`) and place the test in that module's `src/test/`.
