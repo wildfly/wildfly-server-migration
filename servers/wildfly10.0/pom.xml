@@ -31,11 +31,32 @@
 
     <name>JBoss Server Migration: WildFly 10.0</name>
 
-    <dependencies>   
+    <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jboss-server-migration-core</artifactId>
         </dependency>
-    </dependencies>   
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
