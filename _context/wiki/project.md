@@ -117,14 +117,15 @@ The tool copies files referenced by path attributes in XML configurations (keyst
 ### Class hierarchy
 
 ```
-ConfigurationPathsMigrationTaskFactory   (servers/wildfly10.0 — task factory wired into the migration pipeline)
-  └── WildFly41_0MigrateReferencedPaths  (servers/wildfly41.0 — composites the component factories below)
+ConfigurationPathsMigrationTaskFactory        (servers/wildfly10.0 — task factory wired into the migration pipeline)
+  └── WildFly41_0MigrateReferencedPaths       (servers/wildfly41.0 — composites the component factories below)
 
-XmlConfigurationMigration.Component      (core.jboss — SPI; one implementation per path-source type)
-  ├── VaultPathsMigration                (servers/wildfly10.0 — legacy vault path)
-  ├── WebSubsystemPathsMigration         (servers/wildfly10.0 — urn:jboss:domain:web ssl/@certificate-key-file, ssl/@ca-certificate-file)
-  ├── ModclusterSubsystemPathsMigration  (servers/wildfly41.0 — urn:jboss:domain:modcluster ssl/@certificate-key-file, @ca-certificate-file, @ca-revocation-url)
-  └── AttributesResolvablePathsMigration (servers/wildfly41.0 — generic: any element with path+relative-to attributes)
+XmlConfigurationMigration.Component           (core.jboss — SPI; one implementation per path-source type)
+  ├── VaultPathsMigration                     (servers/wildfly10.0 — legacy vault path)
+  ├── WebSubsystemPathsMigration              (servers/wildfly10.0 — urn:jboss:domain:web ssl/@certificate-key-file, ssl/@ca-certificate-file)
+  ├── ModclusterSubsystemPathsMigration       (servers/wildfly41.0 — urn:jboss:domain:modcluster ssl/@certificate-key-file, @ca-certificate-file, @ca-revocation-url)
+  ├── ElytronOidcClientSubsystemPathsMigration(servers/wildfly41.0 — urn:wildfly:elytron-oidc-client: client-keystore/@file, truststore/@file, credential/@client-keystore-file, request-object-signing-keystore-file/@file)
+  └── AttributesResolvablePathsMigration      (servers/wildfly41.0 — generic: any element with path+relative-to attributes)
 ```
 
 ### How `XmlConfigurationMigration.Component` works
@@ -139,14 +140,14 @@ The `Factory` inner class (implements `XmlConfigurationMigration.ComponentFactor
 
 ### Adding a new paths migration component
 
-1. **Create** a new class in `servers/wildfly41.0/src/main/java/org/jboss/migration/wfly/task/paths/` implementing `XmlConfigurationMigration.Component`. Use `ModclusterSubsystemPathsMigration` (subsystem-specific, non-standard attributes) or `AttributesResolvablePathsMigration` (generic `path`/`relative-to`) as a template depending on how the paths are encoded in the XML.
+1. **Create** a new class in `servers/wildfly41.0/src/main/java/org/jboss/migration/wfly/task/paths/` implementing `XmlConfigurationMigration.Component`. Use `ModclusterSubsystemPathsMigration` or `ElytronOidcClientSubsystemPathsMigration` (subsystem-specific, non-standard attribute names) or `AttributesResolvablePathsMigration` (generic `path`/`relative-to`) as a template depending on how the paths are encoded in the XML.
 
 2. **Key implementation choices:**
    - Filter by namespace URI prefix in `processElement` to avoid false matches from other subsystems that happen to use the same element local name (e.g. `ssl`).
    - Use `ResolvablePath.fromPathExpression(value)` when the attribute value is a standalone path expression; use `new ResolvablePath(path, relativeTo)` when both `path` and `relative-to` attributes are present.
    - Set `skipIfSourcePathDoesNotExists(true)` on `MigrateResolvablePathTaskBuilder` when the path might legitimately be absent in the source.
 
-3. **Register** the new `Factory` in `WildFly41_0MigrateReferencedPaths` by adding `.componentFactory(new YourComponent.Factory())` to the `XmlConfigurationMigration.Builder` chain — before `AttributesResolvablePathsMigration.Factory` (which is the generic catch-all and should remain last).
+3. **Register** the new `Factory` in `WildFly41_0MigrateReferencedPaths` by adding `.componentFactory(new YourComponent.Factory())` to the `XmlConfigurationMigration.Builder` chain — before `AttributesResolvablePathsMigration.Factory` (which is the generic catch-all and should remain last). **Do not create a new `WildFlyNN_0MigrateReferencedPaths` subclass** for new components — adding to `WildFly41_0MigrateReferencedPaths` directly means the component is picked up by all existing and future migration providers at no extra cost.
 
 4. **Add a unit test** by subclassing `AbstractXmlConfigurationMigrationComponentTest` (in `servers/wildfly10.0/src/test/`) — see the unit testing section below.
 

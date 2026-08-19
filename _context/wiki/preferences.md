@@ -19,9 +19,18 @@
 
 ## JIRA workflow
 
+The CMTOOL project lives on **Red Hat's Jira instance** (`redhat.atlassian.net`), not IBM's. When using Atlassian MCP tools, always use:
+
+- **`cloudId`**: `2b9e35e3-6bd3-4cec-b838-f4249ee02432`
+- **Issue URL pattern**: `https://redhat.atlassian.net/browse/CMTOOL-NNN`
+
+Do **not** try `ibm-cloudtools.atlassian.net` — it will 404. If you don't have the cloudId handy, use the `search` tool with the issue key (e.g. `CMTOOL-416`) to resolve it first.
+
+**Before writing a single line of code**, complete step 1 below. This is mandatory — do not defer it.
+
 For every issue worked on:
 
-1. **At the start** — assign the issue to yourself so other developers know it is taken.
+1. **At the start, before any code changes** — assign the issue to yourself. This signals to other developers that the issue is taken.
 2. **After submitting the PR** — set `customfield_10875` (the "Pull Request" field) on the JIRA issue to the PR URL, using an ADF inline card:
    ```json
    {
@@ -34,6 +43,19 @@ For every issue worked on:
    }
    ```
    Set this via `editJiraIssue` with `contentFormat: adf`.
+
+### PR description format
+
+The PR body must follow this structure — issue link **first**, on its own line at the top:
+
+```
+Issue: https://issues.redhat.com/browse/CMTOOL-NNN
+
+<rest of description>
+```
+
+- Use `Issue:` (not `JIRA:`)
+- The issue link must be the **first line** of the body
 
 ---
 
