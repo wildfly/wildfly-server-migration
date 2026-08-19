@@ -17,6 +17,26 @@
 
 ---
 
+## JIRA workflow
+
+For every issue worked on:
+
+1. **At the start** — assign the issue to yourself so other developers know it is taken.
+2. **After submitting the PR** — set `customfield_10875` (the "Pull Request" field) on the JIRA issue to the PR URL, using an ADF inline card:
+   ```json
+   {
+     "customfield_10875": {
+       "type": "doc", "version": 1,
+       "content": [{"type": "paragraph", "content": [
+         {"type": "inlineCard", "attrs": {"url": "https://github.com/wildfly/wildfly-server-migration/pull/NNN"}}
+       ]}]
+     }
+   }
+   ```
+   Set this via `editJiraIssue` with `contentFormat: adf`.
+
+---
+
 ## Commit messages and pull requests
 
 See [`CONTRIBUTING.md`](../CONTRIBUTING.md) for the canonical rules. Key points for AI context:

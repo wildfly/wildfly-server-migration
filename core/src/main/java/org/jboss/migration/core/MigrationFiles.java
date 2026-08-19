@@ -42,7 +42,7 @@ public class MigrationFiles {
 
     private final Map<Path, Path> copiedFiles;
 
-    MigrationFiles() {
+    public MigrationFiles() {
         this.copiedFiles = new HashMap<>();
     }
 
