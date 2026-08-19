@@ -19,6 +19,7 @@ public class WildFly41_0MigrateReferencedPaths<S extends JBossServer<S>> extends
                 .componentFactory(new VaultPathsMigration.Factory())
                 .componentFactory(new WebSubsystemPathsMigration.Factory())
                 .componentFactory(new ModclusterSubsystemPathsMigration.Factory())
+                .componentFactory(new ElytronOidcClientSubsystemPathsMigration.Factory())
                 .componentFactory(new AttributesResolvablePathsMigration.Factory())
         );
     }
