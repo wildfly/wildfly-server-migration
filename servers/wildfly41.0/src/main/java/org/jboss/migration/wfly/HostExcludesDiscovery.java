@@ -44,7 +44,7 @@ public class HostExcludesDiscovery {
      */
     public static HostExcludes discoverHostExcludes(WildFly41_0Server server, MigrationEnvironment migrationEnvironment) {
         final String configFileName = migrationEnvironment.getPropertyAsString(JBossServer.Environment.getFullEnvironmentPropertyName(server.getMigrationName(), PROPERTY_CONFIG_FILE), DEFAULT_CONFIG_FILE);
-        final Path configFilePath = server.getDomainConfigurationDir().resolve(configFileName);
+        final Path configFilePath = server.getDefaultDomainConfigurationDir().resolve(configFileName);
         return discoverHostExcludes(configFilePath);
     }
 

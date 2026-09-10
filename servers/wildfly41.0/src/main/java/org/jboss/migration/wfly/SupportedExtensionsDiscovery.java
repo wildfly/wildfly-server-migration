@@ -17,14 +17,16 @@ import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.jboss.Extension;
 import org.jboss.migration.core.jboss.ExtensionsDiscovery;
+import org.jboss.migration.core.jboss.JBossExtensionNames;
 import org.jboss.migration.core.jboss.JBossServer;
-import org.jboss.migration.core.jboss.JBossServerConfiguration;
 import org.jboss.migration.core.jboss.Subsystem;
 import org.jboss.migration.core.logger.ServerMigrationLogger;
-import org.jboss.migration.wfly10.config.management.impl.EmbeddedStandaloneServerConfiguration;
 import org.jboss.modules.Module;
 import org.jboss.modules.ModuleLoader;
 import org.wildfly.core.embedded.Configuration;
+import org.wildfly.core.embedded.EmbeddedProcessFactory;
+import org.wildfly.core.embedded.EmbeddedProcessStartException;
+import org.wildfly.core.embedded.StandaloneServer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,6 +50,8 @@ public class SupportedExtensionsDiscovery {
     public static final String PROPERTY_CONFIG_FILE = "discovery.extensions.configFile";
     public static final String DEFAULT_CONFIG_FILE = "standalone.xml";
 
+    public static final Set<String> LEGACY_EXTENSIONS_WITH_MIGRATE_OP = Set.of(JBossExtensionNames.KEYCLOAK, JBossExtensionNames.PICKETLINK);
+
     /**
      * Discovers extensions module names and validates which are supported by checking which ones exist as resources
      * in a server.
@@ -69,7 +73,7 @@ public class SupportedExtensionsDiscovery {
      */
     public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, Set<String> candidateExtensions, MigrationEnvironment migrationEnvironment) {
         final String configFileName = migrationEnvironment.getPropertyAsString(JBossServer.Environment.getFullEnvironmentPropertyName(server.getMigrationName(), PROPERTY_CONFIG_FILE), DEFAULT_CONFIG_FILE);
-        final Path configFilePath = server.getStandaloneConfigurationDir().resolve(configFileName);
+        final Path configFilePath = server.getDefaultStandaloneConfigurationDir().resolve(configFileName);
         if (!Files.exists(configFilePath)) {
             throw new ServerMigrationFailureException("Failed to discover target server supported extensions, "+configFilePath.toAbsolutePath()+" config file not found.");
         }
@@ -78,33 +82,43 @@ public class SupportedExtensionsDiscovery {
         }
         final Set<Extension> supportedExtensions = new HashSet<>();
         final String cloneConfigFileName = SupportedExtensionsDiscovery.class.getName()+java.util.UUID.randomUUID()+'-'+configFileName;
-        final Path clonedConfigFilePath = server.getStandaloneConfigurationDir().resolve(cloneConfigFileName);
+        final Path clonedConfigFilePath = server.getDefaultStandaloneConfigurationDir().resolve(cloneConfigFileName);
         try {
             // Clone the configuration file to avoid modifying the original
             Files.copy(configFilePath, clonedConfigFilePath, StandardCopyOption.REPLACE_EXISTING);
             // Start the embedded server
-            final EmbeddedStandaloneServerConfiguration embeddedStandaloneServerConfiguration = new EmbeddedStandaloneServerConfiguration(new JBossServerConfiguration<>(clonedConfigFilePath, JBossServerConfiguration.Type.STANDALONE, server), server);
-            embeddedStandaloneServerConfiguration.start();
             final Configuration.Builder configurationBuilder = Configuration.Builder.of(server.getBaseDir());
+            configurationBuilder.addCommandArgument("--server-config="+cloneConfigFileName);
+            configurationBuilder.addCommandArgument("--admin-only");
+            configurationBuilder.addCommandArgument("-Dorg.wildfly.logging.embedded=false");
             configurationBuilder.addSystemPackage("org.jboss.logmanager");
             final Configuration configuration = configurationBuilder.build();
+            final StandaloneServer standaloneServer = EmbeddedProcessFactory.createStandaloneServer(configuration);
+            try {
+                standaloneServer.start();
+            } catch (EmbeddedProcessStartException e) {
+                throw new ServerMigrationFailureException(e);
+            }
             final ModuleLoader moduleLoader = configuration.getModuleLoader();
             try {
-                final ModelControllerClient client = embeddedStandaloneServerConfiguration.getModelControllerClient();
+                final ModelControllerClient client = standaloneServer.getModelControllerClient();
                 // Check which candidate extensions are supported and populate their subsystems
                 for (String candidateExtension : candidateExtensions) {
-                    // unsupported Extensions extend AbstractLegacyExtension
-                    Module module = moduleLoader.loadModule(candidateExtension);
                     boolean unsupported = false;
-                    Class<?> extensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.Extension");
-                    Class<?> abstractLegacyExtensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.extension.AbstractLegacyExtension");
-                    Iterator<?> iterator = module.loadService(extensionClass).iterator();
-                    while (iterator.hasNext()) {
-                        Object extension = iterator.next();
-                        if (abstractLegacyExtensionClass.isAssignableFrom(extension.getClass())) {
-                            ServerMigrationLogger.ROOT_LOGGER.debugf("Extension class %s is legacy.", extension.getClass().getName());
-                            unsupported = true;
-                            break;
+                    // extensions extending AbstractLegacyExtension are by default unsupported, but there are
+                    // exceptions, which should only be removed after invoking its migrate() op
+                    if (!LEGACY_EXTENSIONS_WITH_MIGRATE_OP.contains(candidateExtension)) {
+                        Module module = moduleLoader.loadModule(candidateExtension);
+                        Class<?> extensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.Extension");
+                        Class<?> abstractLegacyExtensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.extension.AbstractLegacyExtension");
+                        Iterator<?> iterator = module.loadService(extensionClass).iterator();
+                        while (iterator.hasNext()) {
+                            Object extension = iterator.next();
+                            if (abstractLegacyExtensionClass.isAssignableFrom(extension.getClass())) {
+                                ServerMigrationLogger.ROOT_LOGGER.debugf("Extension class %s is legacy.", extension.getClass().getName());
+                                unsupported = true;
+                                break;
+                            }
                         }
                     }
                     if (!unsupported) {
@@ -119,7 +133,7 @@ public class SupportedExtensionsDiscovery {
                 }
             } finally {
                 // Stop the embedded server
-                embeddedStandaloneServerConfiguration.stop();
+                standaloneServer.stop();
             }
         } catch (Exception e) {
             throw new ServerMigrationFailureException("Failed to validate extensions", e);

@@ -16,7 +16,8 @@
 
 package org.jboss.migration.eap;
 
-import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.hostexclude.WildFly41_0AddHostExcludes;
+import org.jboss.migration.wfly.task.paths.WildFly41_0MigrateReferencedPaths;
 import org.jboss.migration.wfly.task.update.WildFly34_0UpdateInfinispanSubsystem;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
@@ -39,7 +40,7 @@ public class EAP8_0ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                         .subtask(new RemoveUnsupportedExtensions<>())
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
-                        .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new WildFly41_0MigrateReferencedPaths<>())
                         .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
                         .subtask(new MigrateDeployments<>()))
                 .domain(serverUpdateBuilders.domainBuilder()
@@ -47,12 +48,13 @@ public class EAP8_0ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new RemoveUnsupportedExtensions<>())
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                                 .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
+                                .subtask(new WildFly41_0AddHostExcludes<>())
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                         )
                 ).build();
     }

@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jboss-server-migration-wildfly40.0-server</artifactId>
+            <artifactId>jboss-server-migration-wildfly41.0-server</artifactId>
         </dependency>
     </dependencies>   
 

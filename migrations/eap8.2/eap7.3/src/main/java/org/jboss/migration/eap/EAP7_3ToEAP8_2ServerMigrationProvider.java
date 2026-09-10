@@ -16,9 +16,9 @@
 
 package org.jboss.migration.eap;
 
-import org.jboss.migration.eap.task.hostexclude.EAP8_2AddHostExcludes;
 import org.jboss.migration.eap.task.subsystem.metrics.EAP8_2AddMetricsSubsystem;
-import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.hostexclude.WildFly41_0AddHostExcludes;
+import org.jboss.migration.wfly.task.paths.WildFly41_0MigrateReferencedPaths;
 import org.jboss.migration.wfly.task.security.LegacySecurityConfigurationMigration;
 import org.jboss.migration.wfly.task.subsystem.health.WildFly26_0AddHealthSubsystem;
 import org.jboss.migration.wfly.task.subsystem.keycloak.MigrateKeycloakSubsystem;
@@ -52,7 +52,7 @@ public class EAP7_3ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                         .subtask(new RemoveUnsupportedExtensions<>())
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
-                        .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new WildFly41_0MigrateReferencedPaths<>())
                         .subtask(legacySecurityConfigurationMigration.getRemoveLegacySecurityRealms())
                         .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
                         .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
@@ -73,11 +73,11 @@ public class EAP7_3ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new RemoveUnsupportedExtensions<>())
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                                 .subtask(legacySecurityConfigurationMigration.getRemoveLegacySecurityRealms())
                                 .subtask(new WildFly22_0UpdateInfinispanSubsystem<>())
                                 .subtask(new WildFly34_0UpdateInfinispanSubsystem<>())
-                                .subtask(new EAP8_2AddHostExcludes<>())
+                                .subtask(new WildFly41_0AddHostExcludes<>())
                                 .subtask(legacySecurityConfigurationMigration.getEnsureBasicElytronSubsystem())
                                 .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityRealmsToElytron())
                                 .subtask(legacySecurityConfigurationMigration.getMigrateLegacySecurityDomainsToElytron())
@@ -89,7 +89,7 @@ public class EAP7_3ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                                 .subtask(new WildFly27_0MigrateJBossDomainProperties<>())
                                 .subtask(legacySecurityConfigurationMigration.getReadLegacySecurityConfiguration())
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                                 .subtask(legacySecurityConfigurationMigration.getRemoveLegacySecurityRealms())
                                 .subtask(serverUpdateBuilders.hostBuilder()
                                         .subtask(legacySecurityConfigurationMigration.getEnsureBasicElytronSubsystem())

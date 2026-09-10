@@ -16,7 +16,7 @@
 
 package org.jboss.migration.eap;
 
-import org.jboss.migration.wfly.task.paths.WildFly26_0MigrateReferencedPaths;
+import org.jboss.migration.wfly.task.paths.WildFly41_0MigrateReferencedPaths;
 import org.jboss.migration.wfly10.WildFlyServer10;
 import org.jboss.migration.wfly10.WildFlyServerMigration10;
 import org.jboss.migration.wfly10.config.task.module.MigrateReferencedModules;
@@ -38,18 +38,18 @@ public class EAP8_2ToEAP8_2ServerMigrationProvider implements EAPServerMigration
                         .subtask(new RemoveUnsupportedExtensions<>())
                         .subtask(new RemoveUnsupportedSubsystems<>())
                         .subtask(new MigrateReferencedModules<>())
-                        .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                        .subtask(new WildFly41_0MigrateReferencedPaths<>())
                         .subtask(new MigrateDeployments<>()))
                 .domain(serverUpdateBuilders.domainBuilder()
                         .domainConfigurations(serverUpdateBuilders.domainConfigurationBuilder()
                                 .subtask(new RemoveUnsupportedExtensions<>())
                                 .subtask(new RemoveUnsupportedSubsystems<>())
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                                 .subtask(new MigrateDeployments<>()))
                         .hostConfigurations(serverUpdateBuilders.hostConfigurationBuilder()
                                 .subtask(new MigrateReferencedModules<>())
-                                .subtask(new WildFly26_0MigrateReferencedPaths<>())
+                                .subtask(new WildFly41_0MigrateReferencedPaths<>())
                         )
                 ).build();
     }
