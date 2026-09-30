@@ -170,3 +170,62 @@ The base test builds real `JBossServerConfiguration` objects backed by `@TempDir
 **Module placement:**
 - If the component lives in `servers/wildfly10.0` → add the test there directly.
 - If the component lives in a later server module (e.g. `servers/wildfly41.0`) → depend on the `wildfly10.0` test-jar (`<type>test-jar</type>`, `<scope>test</scope>`) and place the test in that module's `src/test/`.
+
+---
+
+## Legacy extension migration (WildFly 41+ / EAP 8.2+)
+
+### What is a legacy extension?
+
+A legacy extension is one whose Java class extends `org.jboss.as.controller.extension.AbstractLegacyExtension`. Such extensions are no longer supported in normal mode and their subsystem configurations should be removed. They may still be present in the server's module tree to support mixed-version domains. A standalone server that includes a legacy extension can only be started in admin-only mode.
+
+A legacy extension's subsystem may optionally provide a `migrate()` management operation that automates the migration of its configuration to the new form.
+
+### Discovery: how legacy extensions are detected
+
+`SupportedExtensionsDiscovery` (in `servers/wildfly41.0`) embeds a temporary standalone server and uses reflection over the `org.jboss.modules` module loader to check whether each candidate extension's `org.jboss.as.controller.Extension` implementation extends `AbstractLegacyExtension`. Legacy extensions are now **included** in the supported-extensions result, but with `Extension.isLegacy() == true`. This means:
+
+- They **will not** be removed by `RemoveUnsupportedExtensions` or `RemoveUnsupportedSubsystems` (those tasks only remove extensions/subsystems not in the supported set).
+- They **will** be processed by the dedicated `MigrateLegacyExtensions` task.
+
+### Task pipeline
+
+`MigrateLegacyExtensions` is added as a subtask (before `MigrateDeployments`) to both `standaloneConfigurationBuilder` and `domainConfigurationBuilder` in every migration targeting WildFly 41+/EAP 8.2+ servers that use auto-discovery. The task tree is:
+
+```
+MigrateLegacyExtensions                       (servers/wildfly41.0 — iterates all legacy extensions)
+  └─ MigrateLegacyExtension (per extension)   (servers/wildfly41.0 — migrates one legacy extension)
+       ├─ MigrateSubsystemResources (per subsystem)
+       │    └─ migrate-config subtask:
+       │         • invokes migrate() op if available (failure is non-fatal — legacy ext may not have it)
+       │         • removes the subsystem configuration afterwards if still exists at this point
+       └─ remove-extension subtask             (uses RemoveExtensionTaskBuilder)
+```
+
+### Key classes
+
+| Class | Module | Role |
+|---|---|---|
+| `Extension.isLegacy()` / `Extension.Builder.legacy(boolean)` | `core` | Marks an extension as legacy |
+| `Extensions.getLegacyExtensions()` | `core` | Filters extensions where `isLegacy() == true` |
+| `SupportedExtensionsDiscovery` | `servers/wildfly41.0` | Discovers supported extensions; legacy ones are included with `legacy=true` |
+| `MigrateSubsystemResources` | `servers/wildfly41.0` (`task/subsystem/`) | Invokes `migrate()` if present, then removes subsystem config; **no extension removal** |
+| `MigrateLegacyExtension` | `servers/wildfly41.0` (`task/extension/`) | Per-extension task factory: subsystem migrate subtasks + remove-extension |
+| `MigrateLegacyExtensions` | `servers/wildfly41.0` (`task/extension/`) | Top-level task builder; iterates legacy extensions, executes one `MigrateLegacyExtension` per extension |
+
+### Migration providers affected
+
+All providers targeting **WildFly 42+** and **EAP 8.2+** (those that use auto-discovery via `WildFly41_0Server`) include `MigrateLegacyExtensions` before `MigrateDeployments` in both their standalone and domain configuration builders.
+
+**EAP 7.x → EAP 8.2 providers (7.0, 7.1, 7.2, 7.3, 7.4)** are a special case: they explicitly retain `MigratePicketLinkSubsystem` and `MigrateKeycloakSubsystem` as subtasks *before* `MigrateLegacyExtensions`. These two tasks do work beyond simply calling `migrate()`:
+- `MigratePicketLinkSubsystem` — adds the `keycloak-saml-adapter` extension as a prerequisite before invoking the picketlink `migrate()` op; fails early with a clear error if the module is absent.
+- `MigrateKeycloakSubsystem` — after invoking the keycloak `migrate()` op, removes residual Elytron resources (custom realms, service-loader factories, aggregate http-server-mechanism factories, constant realm mappers, security domains, http/sasl authentication factories) and updates Undertow, Remoting, and EJB3 references that still point at the Keycloak security domain.
+
+`MigrateLegacyExtensions` then runs after these two tasks and handles any remaining legacy extensions automatically. Any future custom legacy extension/subsystem migration task should always be executed before `MigrateLegacyExtensions`. 
+
+**EAP 8.x → EAP 8.2 providers (8.0, 8.1, 8.2) and all WildFly 42+ providers** do not carry explicit Keycloak/PicketLink tasks — `MigrateLegacyExtensions` covers everything automatically.
+
+### Adding support for a new legacy extension (no action required)
+
+No code changes are needed to handle new legacy extensions. As long as the extension module is present on the target server and its class extends `AbstractLegacyExtension`, `SupportedExtensionsDiscovery` will automatically detect it and `MigrateLegacyExtensions` will process it. If the subsystem provides a `migrate()` op, it will be invoked automatically; if not, the subsystem is simply removed.
+

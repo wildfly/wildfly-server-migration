@@ -21,7 +21,7 @@ import org.jboss.migration.wfly10.config.management.ManageableServerConfiguratio
 import org.jboss.migration.wfly10.config.task.management.configuration.ManageableServerConfigurationLeafTask;
 
 /**
- * A task which creates an extension if its missing from the server's config.
+ * A task which removes an extension from a server configuration.
  * @author emmartins
  */
 public class RemoveExtensionTaskBuilder<S> extends ManageableServerConfigurationLeafTask.Builder<S> {
@@ -31,7 +31,7 @@ public class RemoveExtensionTaskBuilder<S> extends ManageableServerConfiguration
             final ManageableServerConfiguration extensionResourceParent = params.getServerConfiguration();
             if (extensionResourceParent.getExtensionResourceNames().contains(extensionModule)) {
                 extensionResourceParent.removeExtensionResource(extensionModule);
-                context.getLogger().debugf("Extension %s removed.",extensionModule);
+                context.getLogger().infof("Extension %s removed.",extensionModule);
                 return ServerMigrationTaskResult.SUCCESS;
             } else {
                 context.getLogger().debugf("Skipped extension %s removal, doesn't exists in config.", extensionModule);

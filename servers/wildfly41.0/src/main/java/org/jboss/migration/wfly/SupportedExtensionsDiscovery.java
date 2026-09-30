@@ -17,7 +17,6 @@ import org.jboss.migration.core.ServerMigrationFailureException;
 import org.jboss.migration.core.env.MigrationEnvironment;
 import org.jboss.migration.core.jboss.Extension;
 import org.jboss.migration.core.jboss.ExtensionsDiscovery;
-import org.jboss.migration.core.jboss.JBossExtensionNames;
 import org.jboss.migration.core.jboss.JBossServer;
 import org.jboss.migration.core.jboss.Subsystem;
 import org.jboss.migration.core.logger.ServerMigrationLogger;
@@ -50,14 +49,12 @@ public class SupportedExtensionsDiscovery {
     public static final String PROPERTY_CONFIG_FILE = "discovery.extensions.configFile";
     public static final String DEFAULT_CONFIG_FILE = "standalone.xml";
 
-    public static final Set<String> LEGACY_EXTENSIONS_WITH_MIGRATE_OP = Set.of(JBossExtensionNames.KEYCLOAK, JBossExtensionNames.PICKETLINK);
-
     /**
      * Discovers extensions module names and validates which are supported by checking which ones exist as resources
      * in a server.
      *
      * @param server the server
-     * @return a set of Extensions that are supported
+     * @return a set of Extensions that are supported (including legacy extensions marked with {@link Extension#isLegacy()})
      */
     public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, MigrationEnvironment migrationEnvironment) throws ServerMigrationFailureException {
         return discoverSupportedExtensions(server, ExtensionsDiscovery.discoverExtensionModuleNames(server.getModules()), migrationEnvironment);
@@ -65,11 +62,12 @@ public class SupportedExtensionsDiscovery {
 
     /**
      * Validates which extensions are supported by checking which ones exist as resources
-     * in a server.
+     * in a server. Legacy extensions (those extending {@code AbstractLegacyExtension}) are included
+     * in the result and marked with {@link Extension#isLegacy()} {@code true}.
      *
      * @param server the server
      * @param candidateExtensions the set of module names of candidate Extensions to validate
-     * @return a set of Extensions that are supported
+     * @return a set of Extensions that are supported (including legacy extensions)
      */
     public static Set<Extension> discoverSupportedExtensions(WildFly41_0Server server, Set<String> candidateExtensions, MigrationEnvironment migrationEnvironment) {
         final String configFileName = migrationEnvironment.getPropertyAsString(JBossServer.Environment.getFullEnvironmentPropertyName(server.getMigrationName(), PROPERTY_CONFIG_FILE), DEFAULT_CONFIG_FILE);
@@ -104,31 +102,23 @@ public class SupportedExtensionsDiscovery {
                 final ModelControllerClient client = standaloneServer.getModelControllerClient();
                 // Check which candidate extensions are supported and populate their subsystems
                 for (String candidateExtension : candidateExtensions) {
-                    boolean unsupported = false;
-                    // extensions extending AbstractLegacyExtension are by default unsupported, but there are
-                    // exceptions, which should only be removed after invoking its migrate() op
-                    if (!LEGACY_EXTENSIONS_WITH_MIGRATE_OP.contains(candidateExtension)) {
-                        Module module = moduleLoader.loadModule(candidateExtension);
-                        Class<?> extensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.Extension");
-                        Class<?> abstractLegacyExtensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.extension.AbstractLegacyExtension");
-                        Iterator<?> iterator = module.loadService(extensionClass).iterator();
-                        while (iterator.hasNext()) {
-                            Object extension = iterator.next();
-                            if (abstractLegacyExtensionClass.isAssignableFrom(extension.getClass())) {
-                                ServerMigrationLogger.ROOT_LOGGER.debugf("Extension class %s is legacy.", extension.getClass().getName());
-                                unsupported = true;
-                                break;
-                            }
+                    boolean legacy = false;
+                    Module module = moduleLoader.loadModule(candidateExtension);
+                    Class<?> extensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.Extension");
+                    Class<?> abstractLegacyExtensionClass = module.getClassLoader().loadClass("org.jboss.as.controller.extension.AbstractLegacyExtension");
+                    Iterator<?> iterator = module.loadService(extensionClass).iterator();
+                    while (iterator.hasNext()) {
+                        Object extension = iterator.next();
+                        if (abstractLegacyExtensionClass.isAssignableFrom(extension.getClass())) {
+                            ServerMigrationLogger.ROOT_LOGGER.debugf("Extension class %s is legacy.", extension.getClass().getName());
+                            legacy = true;
+                            break;
                         }
                     }
-                    if (!unsupported) {
-                        ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is supported.", candidateExtension);
-                        final Extension extensionWithSubsystems = discoverExtensionWithSubsystems(client, candidateExtension);
-                        if (extensionWithSubsystems != null) {
-                            supportedExtensions.add(extensionWithSubsystems);
-                        }
-                    } else {
-                        ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is not supported.", candidateExtension);
+                    ServerMigrationLogger.ROOT_LOGGER.debugf("Extension %s is %s.", candidateExtension, legacy ? "legacy" : "supported");
+                    final Extension extensionWithSubsystems = discoverExtensionWithSubsystems(client, candidateExtension, legacy);
+                    if (extensionWithSubsystems != null) {
+                        supportedExtensions.add(extensionWithSubsystems);
                     }
                 }
             } finally {
@@ -153,6 +143,15 @@ public class SupportedExtensionsDiscovery {
      * Returns null if the extension is not supported.
      */
     public static Extension discoverExtensionWithSubsystems(ModelControllerClient client, String extensionModule) {
+        return discoverExtensionWithSubsystems(client, extensionModule, false);
+    }
+
+    /**
+     * Discovers an extension with its subsystems populated.
+     * Returns null if the extension is not supported.
+     * @param legacy whether this extension is a legacy extension (extends {@code AbstractLegacyExtension})
+     */
+    public static Extension discoverExtensionWithSubsystems(ModelControllerClient client, String extensionModule, boolean legacy) {
         try {
             final PathAddress extensionAddress = PathAddress.pathAddress(EXTENSION, extensionModule);
             // First, check if extension resource already exists
@@ -175,7 +174,7 @@ public class SupportedExtensionsDiscovery {
                 }
             }
             // discover extension's subsystems
-            return buildExtensionWithSubsystems(client, extensionModule, readResult);
+            return buildExtensionWithSubsystems(client, extensionModule, readResult, legacy);
         } catch (IOException e) {
             throw new ServerMigrationFailureException("Failed to validate extension " + extensionModule, e);
         }
@@ -184,8 +183,8 @@ public class SupportedExtensionsDiscovery {
     /**
      * Builds an Extension with subsystems populated from the extension resource.
      */
-    private static Extension buildExtensionWithSubsystems(ModelControllerClient client, String extensionModule, ModelNode extensionResource) throws IOException {
-        final Extension.Builder extensionBuilder = Extension.builder().module(extensionModule);
+    private static Extension buildExtensionWithSubsystems(ModelControllerClient client, String extensionModule, ModelNode extensionResource, boolean legacy) throws IOException {
+        final Extension.Builder extensionBuilder = Extension.builder().module(extensionModule).legacy(legacy);
 
         // Read child resources to get subsystems
         final PathAddress extensionAddress = PathAddress.pathAddress(EXTENSION, extensionModule);
