@@ -25,6 +25,10 @@ public class Extensions {
         return extensionMap.values();
     }
 
+    public Collection<Extension> getLegacyExtensions() {
+        return extensionMap.values().stream().filter(Extension::isLegacy).toList();
+    }
+
     public Set<String> getExtensionModuleNames() {
         return extensionMap.keySet();
     }

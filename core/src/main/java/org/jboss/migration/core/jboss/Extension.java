@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toMap;
 public class Extension {
 
     private final String module;
+    private final boolean legacy;
     protected final Map<String, Subsystem> subsystems;
 
     protected Extension(Builder builder) {
@@ -39,6 +40,7 @@ public class Extension {
         if (module == null) {
             throw new IllegalArgumentException();
         }
+        this.legacy = builder.legacy;
         final Stream<Subsystem.Builder> subsystemBuilderStream = builder.subsystems.stream();
         subsystems = Collections.unmodifiableMap(subsystemBuilderStream
                 .map(subsystemBuilder -> subsystemBuilder.extension(this).build())
@@ -47,6 +49,10 @@ public class Extension {
 
     public String getModule() {
         return module;
+    }
+
+    public boolean isLegacy() {
+        return legacy;
     }
 
     public Collection<Subsystem> getSubsystems() {
@@ -83,11 +89,17 @@ public class Extension {
 
         private final List<Subsystem.Builder> subsystems = new ArrayList<>();
         private String module;
+        private boolean legacy;
 
         protected abstract T getThis();
 
         public T module(String module) {
             this.module = module;
+            return getThis();
+        }
+
+        public T legacy(boolean legacy) {
+            this.legacy = legacy;
             return getThis();
         }
 
