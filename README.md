@@ -21,7 +21,7 @@ Run the Server Migration Tool (Standalone Build)
 
 1. Navigate to the `dist/standalone/target/` directory and unzip the ` jboss-server-migration-VERSION_NUMBER.zip` file
 
-        unzip jboss-server-migration-42.0.0.Final.zip
+        unzip jboss-server-migration-43.0.0.Final-SNAPSHOT.zip
 2. Open a terminal and navigate to the `dist/standalone/target/jboss-server-migration/` directory.
 3. Run the following command.
 
@@ -30,7 +30,7 @@ Run the Server Migration Tool (Standalone Build)
 
     Replace `SOURCE_SERVER_PATH` with the path to previous version of the server installation that you want to migrate from, for example:  `${user.home}/wildfly-41.0.0.Final/`
 
-    Replace `TARGET_SERVER_PATH` with the path to current version of the server installation that you want the old configuration migrated to, for example:  `${user.home}/wildfly-42.0.0.Final/`
+    Replace `TARGET_SERVER_PATH` with the path to current version of the server installation that you want the old configuration migrated to, for example:  `${user.home}/wildfly-43.0.0.Final-SNAPSHOT/`
 4. When you execute the command, the tool identifies the source and target servers from provided paths, and starts the server migration.
 
         ----------------------------------------------------------
@@ -39,7 +39,7 @@ Run the Server Migration Tool (Standalone Build)
         
         Retrieving servers...
          INFO  SOURCE server name: WildFly Full, version: 41.0.0.Final.
-         INFO  TARGET server name: WildFly Full, version: 42.0.0.Final.
+         INFO  TARGET server name: WildFly Full, version: 43.0.0.Final-SNAPSHOT.
         
         ----------------------------------------------------------
         ----------------------------------------------------------
