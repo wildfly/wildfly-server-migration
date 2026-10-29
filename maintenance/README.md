@@ -92,7 +92,7 @@ Sets the project version across all POM files and documentation.
 **Usage:**
 ```bash
 ./maintenance/set-project-version.sh 42.0.0.Final
-./maintenance/set-project-version.sh 42.0.0.Final-SNAPSHOT
+./maintenance/set-project-version.sh 43.0.0.Final-SNAPSHOT
 ```
 
 **What it does:**
@@ -119,11 +119,11 @@ mvn clean install
 ### Preparing a release
 ```bash
 # Set version to release
-./maintenance/set-project-version.sh 41.0.0.Final
+./maintenance/set-project-version.sh 42.0.0.Final
 
 # Build and verify
-mvn clean install
+mvn clean install -DrunITs
 
 # After release, bump to next SNAPSHOT
-./maintenance/set-project-version.sh 42.0.0.Final-SNAPSHOT
+./maintenance/set-project-version.sh 43.0.0.Final-SNAPSHOT
 ```
