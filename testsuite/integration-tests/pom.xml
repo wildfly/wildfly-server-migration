@@ -46,6 +46,7 @@
 
     <modules>
         <module>wildfly42.0</module>
+        <module>wildfly43.0</module>
         <module>eap7.4</module>
         <module>eap8.0</module>
         <module>eap8.1</module>
